@@ -1,3 +1,6 @@
 [submodule "AlasCore/vendor/spdlog"]
 	path = AlasCore/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "AlasCore/vendor/sdl2"]
+	path = AlasCore/vendor/sdl2
+	url = https://github.com/libsdl-org/SDL.git
