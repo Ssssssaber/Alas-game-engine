@@ -28,11 +28,16 @@ namespace AGS {
             EVENT_CLASS_TYPE(WindowResize)
 		    EVENT_CLASS_CATEGORY(EventCategoryApplication)
 
-            // static EventType GetStaticType() { return EventType::WindowResize; } 
-            // virtual EventType GetEventType() const override { return GetStaticType(); }
-            // virtual const char* GetName() const override { return "WindowResize"; }
-            // virtual int GetCategoryFlags() const override { return EventCategory::EventCategoryApplication; }
         private:
             unsigned int _width, _height;
+    };
+
+    class WindowCloseEvent : public Event
+    {
+    public:
+        WindowCloseEvent() {}
+
+        EVENT_CLASS_TYPE(WindowClose)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 }

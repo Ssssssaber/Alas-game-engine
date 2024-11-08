@@ -63,7 +63,7 @@ namespace AGS {
             template<typename T>
             bool Dispatch(EventFn<T> func)
             {
-                if (_event.GetEventType == T::GetStaticType())
+                if (_event.GetEventType() == T::GetStaticType())
                 {
                     _event._handled = func(*(T*)&_event);
                     return true;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Platform/SDL/SDLWindow.h"
+#include "Events/ApplicationEvent.h"
+
 namespace AGS
 {
     class Application 
@@ -10,6 +13,14 @@ namespace AGS
         virtual ~Application();
         
         void Run();
+
+        void OnEvent(Event& e);
+
+        bool OnWindowClose(WindowCloseEvent& event);
+    
+    private:
+        Window* _window;
+        bool _isRunning;
     };
 
     Application* CreateApplication();
