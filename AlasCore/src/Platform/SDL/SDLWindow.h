@@ -1,7 +1,11 @@
 #pragma once
+#include <glad/glad.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #include "Core/Window.h"
-#include "SDL.h"
+struct SDL_Window;
+
 namespace AGS{
 
     class SDLGLWindow : public Window 
@@ -36,7 +40,5 @@ namespace AGS{
         
 
         SDL_Window* _window;
-        SDL_GLContext _context;
-        SDL_Renderer* _renderer;
     };
 }

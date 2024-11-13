@@ -1,6 +1,11 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 option(MYGAME_VENDORED "Use vendored libraries" OFF)
 option(SDL_WINDOWS "Use SDL2 for window creation" ON)
+option(AGS_ENABLE_ASSERTS "Use assertions during app running" ON)
+
+if (AGS_ENABLE_ASSERTS)
+    add_definitions(-DAGS_ENABLE_ASSERTS)
+endif()
 
 if (SDL_WINDOWS)
     add_definitions(-DSDL_WINDOWS)
@@ -16,7 +21,7 @@ else()
     find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 endif()
 
-
+find_package(OpenGL)
 
 file(GLOB_RECURSE SOURCES
     src/*.cpp
@@ -28,6 +33,12 @@ add_library(alas_engine_core SHARED ${SOURCES})
 target_precompile_headers(alas_engine_core PRIVATE src/Core/precompiled.h)
 
 target_include_directories(alas_engine_core PUBLIC src)
+
+add_subdirectory(vendor/OpenGL/GLAD/)
+add_dependencies(alas_engine_core glad_lib)
+
+target_link_libraries(alas_engine_core PUBLIC glad_lib)
+
 add_subdirectory(vendor/spdlog)
 add_dependencies(alas_engine_core spdlog)
 target_link_libraries(alas_engine_core PUBLIC  spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)

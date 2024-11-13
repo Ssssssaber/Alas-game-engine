@@ -1,8 +1,7 @@
 #pragma once
-
 #include "Platform/SDL/SDLWindow.h"
 #include "Events/ApplicationEvent.h"
-
+// use pointers 
 namespace AGS
 {
     class Application 

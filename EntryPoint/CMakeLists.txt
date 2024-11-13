@@ -9,7 +9,9 @@ target_include_directories(alas_entry_point PRIVATE ../AlasCore/vendor/spdlog/in
 target_include_directories(alas_entry_point PRIVATE ../AlasCore/src)
 
 find_package(SDL2 REQUIRED)
+find_package(OpenGL REQUIRED)
 target_include_directories(alas_entry_point PUBLIC ${SDL2_INCLUDE_DIRS})
+target_include_directories(alas_engine_core PUBLIC ../AlasCore/vendor/OpenGL/GLAD/include/)
 
 if(WIN32)
   add_custom_command(

@@ -1,6 +1,10 @@
+
+
 #include "SDLWindow.h"
 #include "Events/Event.h"
 #include <Events/ApplicationEvent.h>
+
+
 namespace AGS {
 
     static bool s_IsSDLInitialized = false;
@@ -23,6 +27,52 @@ namespace AGS {
     {
         ShutDown();
     }
+    
+    void SDLGLWindow::Init()
+    {
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+        if (!s_IsSDLInitialized)
+        {
+            int success = SDL_Init(SDL_INIT_VIDEO);
+            // AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
+            AGS_ASSERT(!success, "SDL was not initialized: {0}", SDL_GetError())
+                
+            if (success < 0)
+            {
+                AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
+                return;
+            }
+            s_IsSDLInitialized = true;
+        }
+        
+        _window = SDL_CreateWindow(_params.title.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _params.width, _params.height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+        if (_window == NULL)
+        {
+            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
+            return;
+        }
+
+        SDL_GLContext context = SDL_GL_CreateContext(_window); 
+        int status = gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
+        AGS_ASSERT(status, "GLAD was not initialized")
+        
+        AGS_CORE_INFO("OpenGL {0}.{1}", GLVersion.major, GLVersion.minor);
+        AGS_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+        AGS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+        AGS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+
+        SDL_GL_MakeCurrent(_window, context);
+    }
+
+    void SDLGLWindow::ShutDown()
+    {
+        SDL_DestroyWindow(_window);
+    }
 
     void SDLGLWindow::OnUpdate()
     {
@@ -38,15 +88,12 @@ namespace AGS {
                 break;
             }
             case SDL_MOUSEMOTION:
-                // AGS_CORE_INFO("Mouse event");
                 break;
             default:
                 break;
             }
         }
-        SDL_UpdateWindowSurface(_window);
-    
-        SDL_RenderPresent(_renderer);
+        SDL_GL_SwapWindow(_window);
     }
 
     void SDLGLWindow::SetVSync(bool enabled)
@@ -62,45 +109,5 @@ namespace AGS {
         return _params.isVsync;
     }
 
-    void SDLGLWindow::Init()
-    {
-        if (!s_IsSDLInitialized)
-        {
-            int success = SDL_Init(SDL_INIT_VIDEO);
-            AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-            if (success < 0)
-            {
-                AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-                return;
-            }
-            s_IsSDLInitialized = true;
-        }
-        
-        _window = SDL_CreateWindow(_params.title.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _params.width, _params.height, SDL_WINDOW_SHOWN);
-        AGS_CORE_ERROR("keke {0} {1}", "is", "you");
-        AGS_CORE_ERROR(SDL_GetError());
-        AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-        if (_window == NULL)
-        {
-            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
-            return;
-        }
-        _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
-        AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
-        if (_renderer == NULL)
-        {
-            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
-            return;
-        }
-        _context = SDL_GL_CreateContext(_window); 
-        SDL_GL_MakeCurrent(_window, _context);
-
-        SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-        SDL_RenderClear(_renderer);
-    }
-
-    void SDLGLWindow::ShutDown()
-    {
-        SDL_DestroyWindow(_window);
-    }
+   
 }

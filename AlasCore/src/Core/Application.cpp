@@ -2,7 +2,9 @@
 #include "Events/ApplicationEvent.h"
 #include "Core/Logger.h"
 
-
+// #include <glad/glad.h>
+// #include <SDL.h>
+// #include <SDL_opengl.h>
 namespace AGS
 {
 
@@ -32,9 +34,22 @@ namespace AGS
         AGS_CORE_INFO(e.ToString());
         while (_isRunning)
         {
+            glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
             _window->OnUpdate();
         }
         SDL_Delay(2000);
+        
+        
+        // SDL_Window* window = SDL_CreateWindow(
+        //     "caption", 
+        //     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+        //     1280, 720, SDL_WINDOW_OPENGL
+        // );
+        // SDL_GLContext context = SDL_GL_CreateContext(window);
+
+        
+        // SDL_Delay(20000);
     }
 
     bool Application::OnWindowClose(WindowCloseEvent& event)
