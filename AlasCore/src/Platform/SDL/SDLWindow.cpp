@@ -76,23 +76,7 @@ namespace AGS {
 
     void SDLGLWindow::OnUpdate()
     {
-        SDL_Event e;
-        while (SDL_PollEvent (&e) != 0) {
-            switch (e.type)
-            {
-            case SDL_QUIT:
-            {
-                WindowCloseEvent event;
-                _params.EventCallback(event);
-                ShutDown();
-                break;
-            }
-            case SDL_MOUSEMOTION:
-                break;
-            default:
-                break;
-            }
-        }
+        ProcessEvents();
         SDL_GL_SwapWindow(_window);
     }
 
@@ -109,5 +93,25 @@ namespace AGS {
         return _params.isVsync;
     }
 
-   
+    void SDLGLWindow::ProcessEvents()
+    {
+        SDL_Event e;
+        while (SDL_PollEvent (&e) != 0) {
+            switch (e.type)
+            {
+            case SDL_QUIT:
+            {
+                WindowCloseEvent event;
+                _params.EventCallback(event);
+                ShutDown();
+                break;
+            }
+            // case SDL_
+            case SDL_MOUSEMOTION:
+                break;
+            default:
+                break;
+            }
+        }
+    }
 }

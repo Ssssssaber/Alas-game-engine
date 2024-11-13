@@ -25,6 +25,7 @@ namespace AGS{
 
     private:
         void Init();
+        void ProcessEvents();
         void ShutDown();
 
         struct SDLParams {
