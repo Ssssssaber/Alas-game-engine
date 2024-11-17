@@ -12,6 +12,8 @@ find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 target_include_directories(alas_entry_point PUBLIC ${SDL2_INCLUDE_DIRS})
 target_include_directories(alas_engine_core PUBLIC ../AlasCore/vendor/OpenGL/GLAD/include/)
+target_precompile_headers(alas_engine_core PUBLIC ../AlasCore/src/Core/precompiled.h)
+
 
 if(WIN32)
   add_custom_command(

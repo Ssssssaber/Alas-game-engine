@@ -3,6 +3,8 @@
 #include "SDLWindow.h"
 #include "Events/Event.h"
 #include <Events/ApplicationEvent.h>
+#include <Events/MouseEvent.h>
+#include <Events/KeyboardEvent.h>
 
 
 namespace AGS {
@@ -76,7 +78,21 @@ namespace AGS {
 
     void SDLGLWindow::OnUpdate()
     {
-        ProcessEvents();
+        SDL_Event e;
+        while (SDL_PollEvent (&e) != 0) {
+
+            if (e.type == SDL_QUIT)
+            {
+                WindowCloseEvent event;
+                _params.EventCallback(event);
+                ShutDown();
+                break;
+            }
+            else 
+            {
+                ProcessEvents(e);
+            }
+        }
         SDL_GL_SwapWindow(_window);
     }
 
@@ -93,23 +109,57 @@ namespace AGS {
         return _params.isVsync;
     }
 
-    void SDLGLWindow::ProcessEvents()
+    void SDLGLWindow::ProcessEvents(SDL_Event& sdlEvent) 
     {
-        SDL_Event e;
-        while (SDL_PollEvent (&e) != 0) {
-            switch (e.type)
+        switch(sdlEvent.type)
+        {
+            //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+            case SDL_MOUSEBUTTONDOWN:
             {
-            case SDL_QUIT:
-            {
-                WindowCloseEvent event;
-                _params.EventCallback(event);
-                ShutDown();
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonPressedEvent e(sdlEvent.button.button);
+                _params.EventCallback(e);
                 break;
             }
-            // case SDL_
-            case SDL_MOUSEMOTION:
+            case SDL_MOUSEBUTTONUP:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonReleasedEvent e(sdlEvent.button.button);
+                _params.EventCallback(e);
                 break;
-            default:
+            }
+            case SDL_MOUSEMOTION:
+            {
+                MouseMovedEvent e(sdlEvent.button.x, sdlEvent.button.y);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_MOUSEWHEEL:
+            {
+                MouseScrolledEvent e(sdlEvent.wheel.y, sdlEvent.wheel.y);
+                _params.EventCallback(e);
+                break;
+            }
+            // KeyPressed, KeyReleased, KeyTyped,
+            case SDL_KEYDOWN:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonReleasedEvent e(sdlEvent.key.keysym.sym);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_KEYUP:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonReleasedEvent e(sdlEvent.key.keysym.sym);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_TEXTINPUT:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonReleasedEvent e(sdlEvent.key.keysym.sym);
+                _params.EventCallback(e);
                 break;
             }
         }

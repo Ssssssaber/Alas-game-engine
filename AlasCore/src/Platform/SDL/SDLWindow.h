@@ -25,8 +25,8 @@ namespace AGS{
 
     private:
         void Init();
-        void ProcessEvents();
         void ShutDown();
+        void ProcessEvents(SDL_Event& sdlEvent);
 
         struct SDLParams {
             std::string title;

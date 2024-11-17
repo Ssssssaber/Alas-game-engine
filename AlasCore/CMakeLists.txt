@@ -1,4 +1,7 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+
 option(MYGAME_VENDORED "Use vendored libraries" OFF)
 option(SDL_WINDOWS "Use SDL2 for window creation" ON)
 option(AGS_ENABLE_ASSERTS "Use assertions during app running" ON)
@@ -26,11 +29,26 @@ find_package(OpenGL)
 file(GLOB_RECURSE SOURCES
     src/*.cpp
     src/*.h
+
+    vendor/imgui/imconfig.h
+    vendor/imgui/imgui.cpp
+    vendor/imgui/imgui.h
+    vendor/imgui/imgui_demo.cpp
+    vendor/imgui/imgui_draw.cpp
+    vendor/imgui/imgui_internal.h
+    vendor/imgui/imgui_widgets.cpp
+    vendor/imgui/imstb_rectpack.h
+    vendor/imgui/imstb_textedit.h
+    vendor/imgui/imstb_truetype.h
+    vendor/imgui/imgui_impl_sdlrenderer.cpp
+    vendor/imgui/imgui_impl_sdlrenderer.h
+    vendor/imgui/imgui_impl_sdl.cpp
+    vendor/imgui/imgui_impl_sdl.h
 )
 
-add_library(alas_engine_core SHARED ${SOURCES})
 
-target_precompile_headers(alas_engine_core PRIVATE src/Core/precompiled.h)
+add_library(alas_engine_core SHARED ${SOURCES})
+# target_link_libraries(${PROJECT_NAME} PRIVATE ImGui::imgui)
 
 target_include_directories(alas_engine_core PUBLIC src)
 

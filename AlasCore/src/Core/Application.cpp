@@ -26,6 +26,16 @@ namespace AGS
         );
 
         AGS_CORE_INFO("Event {0}: ", e.ToString());
+
+        for (auto it = _layerStack.end(); it != _layerStack.begin();)
+        {
+            (*--it)->OnEvent(e);
+            if (e.Handled())
+            {
+                break;
+            }
+        }
+
     }
     
     void Application::Run()
@@ -36,6 +46,12 @@ namespace AGS
         {
             glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            for (Layer* layer : _layerStack)
+            {
+                layer->OnUpdate();
+            }
+
             _window->OnUpdate();
         }
         SDL_Delay(2000);
@@ -45,5 +61,14 @@ namespace AGS
     {
         _isRunning = false;
         return true;
+    }
+    
+    void Application::PushLayer(Layer* layer)
+    {
+        _layerStack.PushLayer(layer);
+    }
+    void Application::PushOverlay(Layer* layer)
+    {
+        _layerStack.PushOverlay(layer);
     }
 }
