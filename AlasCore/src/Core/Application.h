@@ -4,6 +4,7 @@
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
 // use pointers 
+
 namespace AGS
 {
     class Application 
@@ -21,8 +22,12 @@ namespace AGS
 
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
+
+        inline Window& GetWindow() { return *_window; }
+        inline static Application& Get() { return *_instance; }
     
     private:
+        static Application* _instance;
         Window* _window;
         LayerStack _layerStack;
         bool _isRunning;

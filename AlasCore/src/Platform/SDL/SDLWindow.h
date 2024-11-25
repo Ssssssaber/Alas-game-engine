@@ -21,7 +21,7 @@ namespace AGS{
         
         void SetEventCallback(const EventCallbackFunction& callback) override { _params.EventCallback = callback; }
         void SetVSync(bool enabled) override;
-        bool IsVSync() override;
+        bool IsVSync() override;    
 
     private:
         void Init();
@@ -41,5 +41,6 @@ namespace AGS{
         
 
         SDL_Window* _window;
+        SDL_GLContext  _context;
     };
 }

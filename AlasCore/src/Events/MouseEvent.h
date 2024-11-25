@@ -9,7 +9,7 @@ namespace AGS {
     {
     public:
         MouseButtonPressedEvent(int buttonCode) : _buttonCode(buttonCode) {}
-        inline float GetKeyCode() const { return _buttonCode; }
+        inline int GetKeyCode() const { return _buttonCode; }
 
         std::string ToString() const override
         {
@@ -30,7 +30,7 @@ namespace AGS {
     {
     public:
         MouseButtonReleasedEvent(int buttonCode) : _buttonCode(buttonCode) {}
-        inline float GetKeyCode() const { return _buttonCode; }
+        inline int GetKeyCode() const { return _buttonCode; }
         
         std::string ToString() const override
         {
@@ -82,6 +82,9 @@ namespace AGS {
 
             return ss.str();
         }
+        
+        inline float GetXOffset() { return _offsetX; }
+        inline float GetYOffset() { return _offsetY; }
 
         EVENT_CLASS_TYPE(MouseScrolled)
         EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse)

@@ -10,7 +10,7 @@ public:
 
     void OnUpdate() override
     {
-        AGS_CLIENT_INFO("ExampleLayer::Update");
+        // AGS_CLIENT_INFO("ExampleLayer::Update");
     }
 
     void OnEvent(AGS::Event& event) override
@@ -25,6 +25,7 @@ public:
     Sandbox()
     {
         PushLayer(new ExampleLayer());
+        PushOverlay(new AGS::ImGuiLayer());
     }
 
     ~Sandbox()

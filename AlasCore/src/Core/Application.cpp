@@ -2,14 +2,14 @@
 #include "Events/ApplicationEvent.h"
 #include "Core/Logger.h"
 
-// #include <glad/glad.h>
-// #include <SDL.h>
-// #include <SDL_opengl.h>
 namespace AGS
 {
-
+    Application* Application::_instance = nullptr;
     Application::Application() 
     {
+        AGS_ASSERT(!_instance, "Application already exists");
+        _instance = this;
+
         _window = AGS::Window::Create();
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
@@ -66,9 +66,11 @@ namespace AGS
     void Application::PushLayer(Layer* layer)
     {
         _layerStack.PushLayer(layer);
+        layer->OnAttach();
     }
     void Application::PushOverlay(Layer* layer)
     {
         _layerStack.PushOverlay(layer);
+        layer->OnAttach();
     }
 }

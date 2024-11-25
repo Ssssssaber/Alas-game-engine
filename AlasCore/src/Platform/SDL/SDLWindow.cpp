@@ -6,6 +6,9 @@
 #include <Events/MouseEvent.h>
 #include <Events/KeyboardEvent.h>
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
 
 namespace AGS {
 
@@ -59,7 +62,7 @@ namespace AGS {
             return;
         }
 
-        SDL_GLContext context = SDL_GL_CreateContext(_window); 
+        _context = SDL_GL_CreateContext(_window); 
         int status = gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
         AGS_ASSERT(status, "GLAD was not initialized")
         
@@ -68,7 +71,7 @@ namespace AGS {
         AGS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
         AGS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
-        SDL_GL_MakeCurrent(_window, context);
+        SDL_GL_MakeCurrent(_window, _context);
     }
 
     void SDLGLWindow::ShutDown()
@@ -80,7 +83,7 @@ namespace AGS {
     {
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
-
+            ImGui_ImplSDL2_ProcessEvent(&e);
             if (e.type == SDL_QUIT)
             {
                 WindowCloseEvent event;
@@ -144,21 +147,21 @@ namespace AGS {
             case SDL_KEYDOWN:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                MouseButtonReleasedEvent e(sdlEvent.key.keysym.sym);
+                KeyPressedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, 1);
                 _params.EventCallback(e);
                 break;
             }
             case SDL_KEYUP:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                MouseButtonReleasedEvent e(sdlEvent.key.keysym.sym);
+                KeyReleasedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode);
                 _params.EventCallback(e);
                 break;
             }
             case SDL_TEXTINPUT:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                MouseButtonReleasedEvent e(sdlEvent.key.keysym.sym);
+                KeyTypedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode);
                 _params.EventCallback(e);
                 break;
             }

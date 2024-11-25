@@ -35,4 +35,4 @@ namespace AGS {
 #define AGS_CLIENT_ERROR(...) AGS::Logger::GetClientLogger()->error(__VA_ARGS__)
 #define AGS_CLIENT_WARN(...) AGS::Logger::GetClientLogger()->warn(__VA_ARGS__)
 #define AGS_CLIENT_INFO(...) AGS::Logger::GetClientLogger()->info(__VA_ARGS__)
-#define AGS_CLIENT_TRACE(...) AGS::Logger::GetClientLogger()->error(__VA_ARGS__)
+#define AGS_CLIENT_TRACE(...) AGS::Logger::GetClientLogger()->trace(__VA_ARGS__)
