@@ -24,7 +24,7 @@ class Sandbox : public AGS::Application
 public:
     Sandbox()
     {
-        PushLayer(new ExampleLayer());
+        // PushLayer(new ExampleLayer());
         PushOverlay(new AGS::ImGuiLayer());
     }
 

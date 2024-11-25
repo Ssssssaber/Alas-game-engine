@@ -5,11 +5,6 @@
 #include <Events/ApplicationEvent.h>
 #include <Events/MouseEvent.h>
 #include <Events/KeyboardEvent.h>
-
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
-
 namespace AGS {
 
     static bool s_IsSDLInitialized = false;
@@ -83,7 +78,6 @@ namespace AGS {
     {
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&e);
             if (e.type == SDL_QUIT)
             {
                 WindowCloseEvent event;
@@ -147,21 +141,21 @@ namespace AGS {
             case SDL_KEYDOWN:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                KeyPressedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, 1);
+                KeyPressedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod, 1);
                 _params.EventCallback(e);
                 break;
             }
             case SDL_KEYUP:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                KeyReleasedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode);
+                KeyReleasedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod);
                 _params.EventCallback(e);
                 break;
             }
             case SDL_TEXTINPUT:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                KeyTypedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode);
+                KeyTypedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod, sdlEvent.text.text);
                 _params.EventCallback(e);
                 break;
             }
