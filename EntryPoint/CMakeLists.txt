@@ -9,10 +9,10 @@ target_include_directories(alas_entry_point PRIVATE ../AlasCore/vendor/spdlog/in
 target_include_directories(alas_entry_point PRIVATE ../AlasCore/src)
 
 if (SDL_VENDORED)
+    target_include_directories(alas_entry_point PUBLIC ../AlasCore/vendor/SDL/include/)
+else()
     find_package(SDL2 REQUIRED)
     target_include_directories(alas_entry_point PUBLIC ${SDL2_INCLUDE_DIRS})
-else()
-    target_include_directories(alas_entry_point PUBLIC ../AlasCore/vendor/SDL/include/)
 endif()
 
 find_package(OpenGL REQUIRED)
