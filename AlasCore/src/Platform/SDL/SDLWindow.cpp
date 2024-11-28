@@ -5,6 +5,7 @@
 #include <Events/ApplicationEvent.h>
 #include <Events/MouseEvent.h>
 #include <Events/KeyboardEvent.h>
+#include "imgui_impl_sdl2.h"
 namespace AGS {
 
     static bool s_IsSDLInitialized = false;
@@ -50,7 +51,7 @@ namespace AGS {
             s_IsSDLInitialized = true;
         }
         
-        _window = SDL_CreateWindow(_params.title.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _params.width, _params.height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+        _window = SDL_CreateWindow(_params.title.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _params.width, _params.height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
         if (_window == NULL)
         {
             AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
@@ -78,6 +79,7 @@ namespace AGS {
     {
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
+            ImGui_ImplSDL2_ProcessEvent(&e);
             if (e.type == SDL_QUIT)
             {
                 WindowCloseEvent event;
@@ -158,6 +160,10 @@ namespace AGS {
                 KeyTypedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod, sdlEvent.text.text);
                 _params.EventCallback(e);
                 break;
+            }
+            case SDL_WINDOWEVENT_RESIZED:
+            {
+                glViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
             }
         }
     }

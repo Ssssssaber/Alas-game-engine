@@ -4,7 +4,6 @@ namespace AGS {
 
     LayerStack::LayerStack() 
     {
-        _layerInsert = _layers.begin();
     }
     
     LayerStack::~LayerStack()
@@ -17,7 +16,8 @@ namespace AGS {
 
     void LayerStack::PushLayer(Layer* layer)
     {
-        _layerInsert = _layers.emplace(_layerInsert, layer);
+        _layers.emplace(_layers.begin() + _layerInsertIndex, layer);
+		_layerInsertIndex++;
     }
 
     void LayerStack::PushOverlay(Layer* overlay)
@@ -31,7 +31,7 @@ namespace AGS {
         if (iterator != _layers.end())
         {
             _layers.erase(iterator);
-            _layerInsert--;
+            _layerInsertIndex--;
         }
 
     }

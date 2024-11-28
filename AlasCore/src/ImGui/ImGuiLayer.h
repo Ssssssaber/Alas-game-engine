@@ -14,24 +14,11 @@ namespace AGS {
         ImGuiLayer();
         ~ImGuiLayer();
 
-        void OnAttach();
-        void OnDetach();
+        virtual void OnAttach() override;
+		virtual void OnDetach() override;
+		virtual void OnImGuiRender() override;
 
-        void OnUpdate();
-        void OnEvent(Event& event);
-    private:
-        // KeyPressed, KeyReleased, KeyTyped,
-        // WindowSizeChanged
-        //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-        bool OnKeyPressedEvent(KeyPressedEvent& event);
-        bool OnKeyReleasedEvent(KeyReleasedEvent& event);
-        bool OnKeyTypedEvent(KeyTypedEvent& event);
-        bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& event);
-        bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& event);
-        bool OnMouseMovedEvent(MouseMovedEvent& event);
-        bool OnMouseScrolledEvent(MouseScrolledEvent& event);
-        bool OnWindowSizeChangedEvent(WindowResizeEvent& event);
-        
-        float _time = 0.0f;
+		void Begin();
+		void End();
     };
 }

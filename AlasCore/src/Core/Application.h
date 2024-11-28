@@ -3,6 +3,7 @@
 #include "Events/ApplicationEvent.h"
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 // use pointers 
 
 namespace AGS
@@ -28,6 +29,7 @@ namespace AGS
     
     private:
         static Application* _instance;
+        ImGuiLayer* _imguiLayer;
         Window* _window;
         LayerStack _layerStack;
         bool _isRunning;

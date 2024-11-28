@@ -14,6 +14,9 @@ namespace AGS
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
+
+        _imguiLayer = new ImGuiLayer();
+        PushOverlay(_imguiLayer);
     }
 
     Application::~Application() {}
@@ -51,6 +54,13 @@ namespace AGS
             {
                 layer->OnUpdate();
             }
+
+            _imguiLayer->Begin();
+            for (Layer* layer : _layerStack)
+            {
+                layer->OnImGuiRender();
+            }
+            _imguiLayer->End();
 
             _window->OnUpdate();
         }

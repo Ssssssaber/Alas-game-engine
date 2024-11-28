@@ -6,12 +6,13 @@ namespace AGS {
     class Layer
     {
     public:
-        Layer(std::string debugName) : _debugName(debugName) {}
+        Layer(const std::string debugName) : _debugName(debugName) {}
         virtual ~Layer() {}
         
         virtual void OnAttach() {}
         virtual void OnDetach() {}
         virtual void OnUpdate() {}
+        virtual void OnImGuiRender() {}
         virtual void OnEvent(Event& event) {}
         // disable and enable layer func
     
