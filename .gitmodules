@@ -8,3 +8,4 @@
 [submodule "AlasCore/vendor/imgui"]
 	path = AlasCore/vendor/imgui
 	url = https://github.com/ocornut/imgui.git
+    branch = docking
