@@ -44,7 +44,7 @@ namespace AGS
         AGS_CORE_INFO(e.ToString());
         while (_isRunning)
         {
-            glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
+            glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             for (Layer* layer : _layerStack)

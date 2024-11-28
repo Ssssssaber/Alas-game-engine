@@ -37,7 +37,7 @@ file(GLOB_RECURSE SOURCES
     ${IMGUI_BACKEND}    
 )
 
-add_library(alas_engine_core SHARED ${SOURCES})
+add_library(alas_engine_core ${SOURCES})
 target_include_directories(alas_engine_core PUBLIC vendor/ImGui/ vendor/ImGui/backends)
 
 target_include_directories(alas_engine_core PUBLIC src)
