@@ -64,10 +64,10 @@ namespace AGS {
     class KeyTypedEvent : public KeyEvent
     {
     public:
-        KeyTypedEvent(int keyCode, int scanCode, int mod, char text[32]) 
-                : KeyEvent(keyCode, scanCode, mod) 
+        KeyTypedEvent(int keyCode, int scanCode, int mod, const char* text) 
+                : KeyEvent(keyCode, scanCode, mod), _text(text)
         {
-            strncpy(_text, text, 32);
+            
         }
         
         std::string ToString() const override
@@ -80,6 +80,6 @@ namespace AGS {
         }
 
         EVENT_CLASS_TYPE(KeyTyped)
-        char _text[32];
+        const char* _text;
     };
 }

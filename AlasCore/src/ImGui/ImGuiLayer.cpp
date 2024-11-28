@@ -1,13 +1,11 @@
 #include "ImGui/ImGuiLayer.h"
 
 #include "imgui.h"
-#include "imgui_impl_sdl2.h"
+#include "imgui_impl_sdl3.h"
 #include "imgui_impl_opengl3.h"
 #include "Core/Application.h"
-#include "SDL.h"
+#include "SDL3/SDL.h"
 #include "glad/glad.h"
-
-ImGuiKey ImGui_ImplSDL2_KeyEventToImGuiKey(SDL_Keycode keycode, SDL_Scancode scancode);
 
 namespace AGS {
 
@@ -19,7 +17,7 @@ namespace AGS {
     ImGuiLayer::~ImGuiLayer()
     {
         ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplSDL2_Shutdown();
+        ImGui_ImplSDL3_Shutdown();
         ImGui::DestroyContext();
     }
 
@@ -45,21 +43,21 @@ namespace AGS {
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
         
-        ImGui_ImplSDL2_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
+        ImGui_ImplSDL3_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
         ImGui_ImplOpenGL3_Init();
     }
 
     void ImGuiLayer::OnDetach()
     {
         ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplSDL2_Shutdown();
+		ImGui_ImplSDL3_Shutdown();
 		ImGui::DestroyContext();
     }
 
     void ImGuiLayer::Begin()
 	{
 		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame();
+		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
 	}
 

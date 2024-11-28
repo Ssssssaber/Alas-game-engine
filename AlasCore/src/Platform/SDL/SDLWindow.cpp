@@ -5,7 +5,7 @@
 #include <Events/ApplicationEvent.h>
 #include <Events/MouseEvent.h>
 #include <Events/KeyboardEvent.h>
-#include "imgui_impl_sdl2.h"
+#include "imgui_impl_sdl3.h"
 namespace AGS {
 
     static bool s_IsSDLInitialized = false;
@@ -41,7 +41,7 @@ namespace AGS {
         {
             int success = SDL_Init(SDL_INIT_VIDEO);
             // AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-            AGS_ASSERT(!success, "SDL was not initialized: {0}", SDL_GetError())
+            // AGS_ASSERT(!success, SDL_GetError())
                 
             if (success < 0)
             {
@@ -51,7 +51,7 @@ namespace AGS {
             s_IsSDLInitialized = true;
         }
         
-        _window = SDL_CreateWindow(_params.title.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _params.width, _params.height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+        _window = SDL_CreateWindow(_params.title.data(), _params.width, _params.height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
         if (_window == NULL)
         {
             AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
@@ -79,8 +79,8 @@ namespace AGS {
     {
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&e);
-            if (e.type == SDL_QUIT)
+            ImGui_ImplSDL3_ProcessEvent(&e);
+            if (e.type == SDL_EVENT_QUIT)
             {
                 WindowCloseEvent event;
                 _params.EventCallback(event);
@@ -113,55 +113,55 @@ namespace AGS {
         switch(sdlEvent.type)
         {
             //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-            case SDL_MOUSEBUTTONDOWN:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
             {
                 SDL_Keymod mods = SDL_GetModState();
                 MouseButtonPressedEvent e(sdlEvent.button.button);
                 _params.EventCallback(e);
                 break;
             }
-            case SDL_MOUSEBUTTONUP:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
             {
                 SDL_Keymod mods = SDL_GetModState();
                 MouseButtonReleasedEvent e(sdlEvent.button.button);
                 _params.EventCallback(e);
                 break;
             }
-            case SDL_MOUSEMOTION:
+            case SDL_EVENT_MOUSE_MOTION:
             {
                 MouseMovedEvent e(sdlEvent.button.x, sdlEvent.button.y);
                 _params.EventCallback(e);
                 break;
             }
-            case SDL_MOUSEWHEEL:
+            case SDL_EVENT_MOUSE_WHEEL:
             {
                 MouseScrolledEvent e(sdlEvent.wheel.y, sdlEvent.wheel.y);
                 _params.EventCallback(e);
                 break;
             }
             // KeyPressed, KeyReleased, KeyTyped,
-            case SDL_KEYDOWN:
+            case SDL_EVENT_KEY_DOWN:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                KeyPressedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod, 1);
+                KeyPressedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod, 1);
                 _params.EventCallback(e);
                 break;
             }
-            case SDL_KEYUP:
+            case SDL_EVENT_KEY_UP:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                KeyReleasedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod);
+                KeyReleasedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod);
                 _params.EventCallback(e);
                 break;
             }
-            case SDL_TEXTINPUT:
+            case SDL_EVENT_TEXT_INPUT:
             {
                 SDL_Keymod mods = SDL_GetModState();
-                KeyTypedEvent e(sdlEvent.key.keysym.sym, sdlEvent.key.keysym.scancode, sdlEvent.key.keysym.mod, sdlEvent.text.text);
+                KeyTypedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod, sdlEvent.text.text);
                 _params.EventCallback(e);
                 break;
             }
-            case SDL_WINDOWEVENT_RESIZED:
+            case SDL_EVENT_WINDOW_RESIZED:
             {
                 glViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
             }
