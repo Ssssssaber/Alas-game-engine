@@ -1,7 +1,7 @@
 #include "Application.h"
 #include "Events/ApplicationEvent.h"
 #include "Core/Logger.h"
-
+#include "Input.h"
 namespace AGS
 {
     Application* Application::_instance = nullptr;
