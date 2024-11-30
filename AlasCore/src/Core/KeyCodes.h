@@ -1,251 +1,377 @@
-#pragma once 
+#pragma once
+typedef enum AGS_Scancode
+{
+    AGS_KEY_UNKNOWN = 0,
 
-#define AGS_KEY_UNKNOWN                0x00000000u /**< 0 */
-#define AGS_KEY_RETURN                 0x0000000du /**< '\r' */
-#define AGS_KEY_ESCAPE                 0x0000001bu /**< '\x1B' */
-#define AGS_KEY_BACKSPACE              0x00000008u /**< '\b' */
-#define AGS_KEY_TAB                    0x00000009u /**< '\t' */
-#define AGS_KEY_SPACE                  0x00000020u /**< ' ' */
-#define AGS_KEY_EXCLAIM                0x00000021u /**< '!' */
-#define AGS_KEY_DBLAPOSTROPHE          0x00000022u /**< '"' */
-#define AGS_KEY_HASH                   0x00000023u /**< '#' */
-#define AGS_KEY_DOLLAR                 0x00000024u /**< '$' */
-#define AGS_KEY_PERCENT                0x00000025u /**< '%' */
-#define AGS_KEY_AMPERSAND              0x00000026u /**< '&' */
-#define AGS_KEY_APOSTROPHE             0x00000027u /**< '\'' */
-#define AGS_KEY_LEFTPAREN              0x00000028u /**< '(' */
-#define AGS_KEY_RIGHTPAREN             0x00000029u /**< ')' */
-#define AGS_KEY_ASTERISK               0x0000002au /**< '*' */
-#define AGS_KEY_PLUS                   0x0000002bu /**< '+' */
-#define AGS_KEY_COMMA                  0x0000002cu /**< ',' */
-#define AGS_KEY_MINUS                  0x0000002du /**< '-' */
-#define AGS_KEY_PERIOD                 0x0000002eu /**< '.' */
-#define AGS_KEY_SLASH                  0x0000002fu /**< '/' */
-#define AGS_KEY_0                      0x00000030u /**< '0' */
-#define AGS_KEY_1                      0x00000031u /**< '1' */
-#define AGS_KEY_2                      0x00000032u /**< '2' */
-#define AGS_KEY_3                      0x00000033u /**< '3' */
-#define AGS_KEY_4                      0x00000034u /**< '4' */
-#define AGS_KEY_5                      0x00000035u /**< '5' */
-#define AGS_KEY_6                      0x00000036u /**< '6' */
-#define AGS_KEY_7                      0x00000037u /**< '7' */
-#define AGS_KEY_8                      0x00000038u /**< '8' */
-#define AGS_KEY_9                      0x00000039u /**< '9' */
-#define AGS_KEY_COLON                  0x0000003au /**< ':' */
-#define AGS_KEY_SEMICOLON              0x0000003bu /**< ';' */
-#define AGS_KEY_LESS                   0x0000003cu /**< '<' */
-#define AGS_KEY_EQUALS                 0x0000003du /**< '=' */
-#define AGS_KEY_GREATER                0x0000003eu /**< '>' */
-#define AGS_KEY_QUESTION               0x0000003fu /**< '?' */
-#define AGS_KEY_AT                     0x00000040u /**< '@' */
-#define AGS_KEY_LEFTBRACKET            0x0000005bu /**< '[' */
-#define AGS_KEY_BACKSLASH              0x0000005cu /**< '\\' */
-#define AGS_KEY_RIGHTBRACKET           0x0000005du /**< ']' */
-#define AGS_KEY_CARET                  0x0000005eu /**< '^' */
-#define AGS_KEY_UNDERSCORE             0x0000005fu /**< '_' */
-#define AGS_KEY_GRAVE                  0x00000060u /**< '`' */
-#define AGS_KEY_A                      0x00000061u /**< 'a' */
-#define AGS_KEY_B                      0x00000062u /**< 'b' */
-#define AGS_KEY_C                      0x00000063u /**< 'c' */
-#define AGS_KEY_D                      0x00000064u /**< 'd' */
-#define AGS_KEY_E                      0x00000065u /**< 'e' */
-#define AGS_KEY_F                      0x00000066u /**< 'f' */
-#define AGS_KEY_G                      0x00000067u /**< 'g' */
-#define AGS_KEY_H                      0x00000068u /**< 'h' */
-#define AGS_KEY_I                      0x00000069u /**< 'i' */
-#define AGS_KEY_J                      0x0000006au /**< 'j' */
-#define AGS_KEY_K                      0x0000006bu /**< 'k' */
-#define AGS_KEY_L                      0x0000006cu /**< 'l' */
-#define AGS_KEY_M                      0x0000006du /**< 'm' */
-#define AGS_KEY_N                      0x0000006eu /**< 'n' */
-#define AGS_KEY_O                      0x0000006fu /**< 'o' */
-#define AGS_KEY_P                      0x00000070u /**< 'p' */
-#define AGS_KEY_Q                      0x00000071u /**< 'q' */
-#define AGS_KEY_R                      0x00000072u /**< 'r' */
-#define AGS_KEY_S                      0x00000073u /**< 's' */
-#define AGS_KEY_T                      0x00000074u /**< 't' */
-#define AGS_KEY_U                      0x00000075u /**< 'u' */
-#define AGS_KEY_V                      0x00000076u /**< 'v' */
-#define AGS_KEY_W                      0x00000077u /**< 'w' */
-#define AGS_KEY_X                      0x00000078u /**< 'x' */
-#define AGS_KEY_Y                      0x00000079u /**< 'y' */
-#define AGS_KEY_Z                      0x0000007au /**< 'z' */
-#define AGS_KEY_LEFTBRACE              0x0000007bu /**< '{' */
-#define AGS_KEY_PIPE                   0x0000007cu /**< '|' */
-#define AGS_KEY_RIGHTBRACE             0x0000007du /**< '}' */
-#define AGS_KEY_TILDE                  0x0000007eu /**< '~' */
-#define AGS_KEY_DELETE                 0x0000007fu /**< '\x7F' */
-#define AGS_KEY_PLUSMINUS              0x000000b1u /**< '\xB1' */
-#define AGS_KEY_CAPSLOCK               0x40000039u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CAPSLOCK) */
-#define AGS_KEY_F1                     0x4000003au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F1) */
-#define AGS_KEY_F2                     0x4000003bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F2) */
-#define AGS_KEY_F3                     0x4000003cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F3) */
-#define AGS_KEY_F4                     0x4000003du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F4) */
-#define AGS_KEY_F5                     0x4000003eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F5) */
-#define AGS_KEY_F6                     0x4000003fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F6) */
-#define AGS_KEY_F7                     0x40000040u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F7) */
-#define AGS_KEY_F8                     0x40000041u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F8) */
-#define AGS_KEY_F9                     0x40000042u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F9) */
-#define AGS_KEY_F10                    0x40000043u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F10) */
-#define AGS_KEY_F11                    0x40000044u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F11) */
-#define AGS_KEY_F12                    0x40000045u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F12) */
-#define AGS_KEY_PRINTSCREEN            0x40000046u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_PRINTSCREEN) */
-#define AGS_KEY_SCROLLLOCK             0x40000047u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SCROLLLOCK) */
-#define AGS_KEY_PAUSE                  0x40000048u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_PAUSE) */
-#define AGS_KEY_INSERT                 0x40000049u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_INSERT) */
-#define AGS_KEY_HOME                   0x4000004au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_HOME) */
-#define AGS_KEY_PAGEUP                 0x4000004bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_PAGEUP) */
-#define AGS_KEY_END                    0x4000004du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_END) */
-#define AGS_KEY_PAGEDOWN               0x4000004eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_PAGEDOWN) */
-#define AGS_KEY_RIGHT                  0x4000004fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_RIGHT) */
-#define AGS_KEY_LEFT                   0x40000050u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_LEFT) */
-#define AGS_KEY_DOWN                   0x40000051u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_DOWN) */
-#define AGS_KEY_UP                     0x40000052u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_UP) */
-#define AGS_KEY_NUMLOCKCLEAR           0x40000053u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_NUMLOCKCLEAR) */
-#define AGS_KEY_KP_DIVIDE              0x40000054u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_DIVIDE) */
-#define AGS_KEY_KP_MULTIPLY            0x40000055u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MULTIPLY) */
-#define AGS_KEY_KP_MINUS               0x40000056u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MINUS) */
-#define AGS_KEY_KP_PLUS                0x40000057u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_PLUS) */
-#define AGS_KEY_KP_ENTER               0x40000058u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_ENTER) */
-#define AGS_KEY_KP_1                   0x40000059u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_1) */
-#define AGS_KEY_KP_2                   0x4000005au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_2) */
-#define AGS_KEY_KP_3                   0x4000005bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_3) */
-#define AGS_KEY_KP_4                   0x4000005cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_4) */
-#define AGS_KEY_KP_5                   0x4000005du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_5) */
-#define AGS_KEY_KP_6                   0x4000005eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_6) */
-#define AGS_KEY_KP_7                   0x4000005fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_7) */
-#define AGS_KEY_KP_8                   0x40000060u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_8) */
-#define AGS_KEY_KP_9                   0x40000061u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_9) */
-#define AGS_KEY_KP_0                   0x40000062u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_0) */
-#define AGS_KEY_KP_PERIOD              0x40000063u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_PERIOD) */
-#define AGS_KEY_APPLICATION            0x40000065u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_APPLICATION) */
-#define AGS_KEY_POWER                  0x40000066u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_POWER) */
-#define AGS_KEY_KP_EQUALS              0x40000067u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_EQUALS) */
-#define AGS_KEY_F13                    0x40000068u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F13) */
-#define AGS_KEY_F14                    0x40000069u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F14) */
-#define AGS_KEY_F15                    0x4000006au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F15) */
-#define AGS_KEY_F16                    0x4000006bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F16) */
-#define AGS_KEY_F17                    0x4000006cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F17) */
-#define AGS_KEY_F18                    0x4000006du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F18) */
-#define AGS_KEY_F19                    0x4000006eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F19) */
-#define AGS_KEY_F20                    0x4000006fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F20) */
-#define AGS_KEY_F21                    0x40000070u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F21) */
-#define AGS_KEY_F22                    0x40000071u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F22) */
-#define AGS_KEY_F23                    0x40000072u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F23) */
-#define AGS_KEY_F24                    0x40000073u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F24) */
-#define AGS_KEY_EXECUTE                0x40000074u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_EXECUTE) */
-#define AGS_KEY_HELP                   0x40000075u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_HELP) */
-#define AGS_KEY_MENU                   0x40000076u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MENU) */
-#define AGS_KEY_SELECT                 0x40000077u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SELECT) */
-#define AGS_KEY_STOP                   0x40000078u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_STOP) */
-#define AGS_KEY_AGAIN                  0x40000079u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AGAIN) */
-#define AGS_KEY_UNDO                   0x4000007au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_UNDO) */
-#define AGS_KEY_CUT                    0x4000007bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CUT) */
-#define AGS_KEY_COPY                   0x4000007cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_COPY) */
-#define AGS_KEY_PASTE                  0x4000007du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_PASTE) */
-#define AGS_KEY_FIND                   0x4000007eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_FIND) */
-#define AGS_KEY_MUTE                   0x4000007fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MUTE) */
-#define AGS_KEY_VOLUMEUP               0x40000080u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_VOLUMEUP) */
-#define AGS_KEY_VOLUMEDOWN             0x40000081u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_VOLUMEDOWN) */
-#define AGS_KEY_KP_COMMA               0x40000085u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_COMMA) */
-#define AGS_KEY_KP_EQUALSAS400         0x40000086u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_EQUALSAS400) */
-#define AGS_KEY_ALTERASE               0x40000099u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_ALTERASE) */
-#define AGS_KEY_SYSREQ                 0x4000009au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SYSREQ) */
-#define AGS_KEY_CANCEL                 0x4000009bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CANCEL) */
-#define AGS_KEY_CLEAR                  0x4000009cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CLEAR) */
-#define AGS_KEY_PRIOR                  0x4000009du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_PRIOR) */
-#define AGS_KEY_RETURN2                0x4000009eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_RETURN2) */
-#define AGS_KEY_SEPARATOR              0x4000009fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SEPARATOR) */
-#define AGS_KEY_OUT                    0x400000a0u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_OUT) */
-#define AGS_KEY_OPER                   0x400000a1u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_OPER) */
-#define AGS_KEY_CLEARAGAIN             0x400000a2u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CLEARAGAIN) */
-#define AGS_KEY_CRSEL                  0x400000a3u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CRSEL) */
-#define AGS_KEY_EXSEL                  0x400000a4u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_EXSEL) */
-#define AGS_KEY_KP_00                  0x400000b0u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_00) */
-#define AGS_KEY_KP_000                 0x400000b1u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_000) */
-#define AGS_KEY_THOUSANDSSEPARATOR     0x400000b2u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_THOUSANDSSEPARATOR) */
-#define AGS_KEY_DECIMALSEPARATOR       0x400000b3u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_DECIMALSEPARATOR) */
-#define AGS_KEY_CURRENCYUNIT           0x400000b4u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CURRENCYUNIT) */
-#define AGS_KEY_CURRENCYSUBUNIT        0x400000b5u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CURRENCYSUBUNIT) */
-#define AGS_KEY_KP_LEFTPAREN           0x400000b6u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_LEFTPAREN) */
-#define AGS_KEY_KP_RIGHTPAREN          0x400000b7u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_RIGHTPAREN) */
-#define AGS_KEY_KP_LEFTBRACE           0x400000b8u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_LEFTBRACE) */
-#define AGS_KEY_KP_RIGHTBRACE          0x400000b9u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_RIGHTBRACE) */
-#define AGS_KEY_KP_TAB                 0x400000bau /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_TAB) */
-#define AGS_KEY_KP_BACKSPACE           0x400000bbu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_BACKSPACE) */
-#define AGS_KEY_KP_A                   0x400000bcu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_A) */
-#define AGS_KEY_KP_B                   0x400000bdu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_B) */
-#define AGS_KEY_KP_C                   0x400000beu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_C) */
-#define AGS_KEY_KP_D                   0x400000bfu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_D) */
-#define AGS_KEY_KP_E                   0x400000c0u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_E) */
-#define AGS_KEY_KP_F                   0x400000c1u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_F) */
-#define AGS_KEY_KP_XOR                 0x400000c2u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_XOR) */
-#define AGS_KEY_KP_POWER               0x400000c3u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_POWER) */
-#define AGS_KEY_KP_PERCENT             0x400000c4u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_PERCENT) */
-#define AGS_KEY_KP_LESS                0x400000c5u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_LESS) */
-#define AGS_KEY_KP_GREATER             0x400000c6u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_GREATER) */
-#define AGS_KEY_KP_AMPERSAND           0x400000c7u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_AMPERSAND) */
-#define AGS_KEY_KP_DBLAMPERSAND        0x400000c8u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_DBLAMPERSAND) */
-#define AGS_KEY_KP_VERTICALBAR         0x400000c9u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_VERTICALBAR) */
-#define AGS_KEY_KP_DBLVERTICALBAR      0x400000cau /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_DBLVERTICALBAR) */
-#define AGS_KEY_KP_COLON               0x400000cbu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_COLON) */
-#define AGS_KEY_KP_HASH                0x400000ccu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_HASH) */
-#define AGS_KEY_KP_SPACE               0x400000cdu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_SPACE) */
-#define AGS_KEY_KP_AT                  0x400000ceu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_AT) */
-#define AGS_KEY_KP_EXCLAM              0x400000cfu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_EXCLAM) */
-#define AGS_KEY_KP_MEMSTORE            0x400000d0u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMSTORE) */
-#define AGS_KEY_KP_MEMRECALL           0x400000d1u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMRECALL) */
-#define AGS_KEY_KP_MEMCLEAR            0x400000d2u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMCLEAR) */
-#define AGS_KEY_KP_MEMADD              0x400000d3u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMADD) */
-#define AGS_KEY_KP_MEMSUBTRACT         0x400000d4u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMSUBTRACT) */
-#define AGS_KEY_KP_MEMMULTIPLY         0x400000d5u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMMULTIPLY) */
-#define AGS_KEY_KP_MEMDIVIDE           0x400000d6u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_MEMDIVIDE) */
-#define AGS_KEY_KP_PLUSMINUS           0x400000d7u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_PLUSMINUS) */
-#define AGS_KEY_KP_CLEAR               0x400000d8u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_CLEAR) */
-#define AGS_KEY_KP_CLEARENTRY          0x400000d9u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_CLEARENTRY) */
-#define AGS_KEY_KP_BINARY              0x400000dau /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_BINARY) */
-#define AGS_KEY_KP_OCTAL               0x400000dbu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_OCTAL) */
-#define AGS_KEY_KP_DECIMAL             0x400000dcu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_DECIMAL) */
-#define AGS_KEY_KP_HEXADECIMAL         0x400000ddu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_KP_HEXADECIMAL) */
-#define AGS_KEY_LCTRL                  0x400000e0u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_LCTRL) */
-#define AGS_KEY_LSHIFT                 0x400000e1u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_LSHIFT) */
-#define AGS_KEY_LALT                   0x400000e2u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_LALT) */
-#define AGS_KEY_LGUI                   0x400000e3u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_LGUI) */
-#define AGS_KEY_RCTRL                  0x400000e4u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_RCTRL) */
-#define AGS_KEY_RSHIFT                 0x400000e5u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_RSHIFT) */
-#define AGS_KEY_RALT                   0x400000e6u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_RALT) */
-#define AGS_KEY_RGUI                   0x400000e7u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_RGUI) */
-#define AGS_KEY_MODE                   0x40000101u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MODE) */
-#define AGS_KEY_SLEEP                  0x40000102u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SLEEP) */
-#define AGS_KEY_WAKE                   0x40000103u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_WAKE) */
-#define AGS_KEY_CHANNEL_INCREMENT      0x40000104u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CHANNEL_INCREMENT) */
-#define AGS_KEY_CHANNEL_DECREMENT      0x40000105u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CHANNEL_DECREMENT) */
-#define AGS_KEY_MEDIA_PLAY             0x40000106u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_PLAY) */
-#define AGS_KEY_MEDIA_PAUSE            0x40000107u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_PAUSE) */
-#define AGS_KEY_MEDIA_RECORD           0x40000108u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_RECORD) */
-#define AGS_KEY_MEDIA_FAST_FORWARD     0x40000109u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_FAST_FORWARD) */
-#define AGS_KEY_MEDIA_REWIND           0x4000010au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_REWIND) */
-#define AGS_KEY_MEDIA_NEXT_TRACK       0x4000010bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_NEXT_TRACK) */
-#define AGS_KEY_MEDIA_PREVIOUS_TRACK   0x4000010cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_PREVIOUS_TRACK) */
-#define AGS_KEY_MEDIA_STOP             0x4000010du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_STOP) */
-#define AGS_KEY_MEDIA_EJECT            0x4000010eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_EJECT) */
-#define AGS_KEY_MEDIA_PLAY_PAUSE       0x4000010fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_PLAY_PAUSE) */
-#define AGS_KEY_MEDIA_SELECT           0x40000110u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_MEDIA_SELECT) */
-#define AGS_KEY_AC_NEW                 0x40000111u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_NEW) */
-#define AGS_KEY_AC_OPEN                0x40000112u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_OPEN) */
-#define AGS_KEY_AC_CLOSE               0x40000113u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_CLOSE) */
-#define AGS_KEY_AC_EXIT                0x40000114u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_EXIT) */
-#define AGS_KEY_AC_SAVE                0x40000115u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_SAVE) */
-#define AGS_KEY_AC_PRINT               0x40000116u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_PRINT) */
-#define AGS_KEY_AC_PROPERTIES          0x40000117u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_PROPERTIES) */
-#define AGS_KEY_AC_SEARCH              0x40000118u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_SEARCH) */
-#define AGS_KEY_AC_HOME                0x40000119u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_HOME) */
-#define AGS_KEY_AC_BACK                0x4000011au /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_BACK) */
-#define AGS_KEY_AC_FORWARD             0x4000011bu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_FORWARD) */
-#define AGS_KEY_AC_STOP                0x4000011cu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_STOP) */
-#define AGS_KEY_AC_REFRESH             0x4000011du /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_REFRESH) */
-#define AGS_KEY_AC_BOOKMARKS           0x4000011eu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AC_BOOKMARKS) */
-#define AGS_KEY_SOFTLEFT               0x4000011fu /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SOFTLEFT) */
-#define AGS_KEY_SOFTRIGHT              0x40000120u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SOFTRIGHT) */
-#define AGS_KEY_CALL                   0x40000121u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CALL) */
-#define AGS_KEY_ENDCALL                0x40000122u /**< SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_ENDCALL) */
+    /**
+     *  \name Usage page 0x07
+     *
+     *  These values are from usage page 0x07 (USB keyboard page).
+     */
+    /* @{ */
+
+    AGS_KEY_A = 4,
+    AGS_KEY_B = 5,
+    AGS_KEY_C = 6,
+    AGS_KEY_D = 7,
+    AGS_KEY_E = 8,
+    AGS_KEY_F = 9,
+    AGS_KEY_G = 10,
+    AGS_KEY_H = 11,
+    AGS_KEY_I = 12,
+    AGS_KEY_J = 13,
+    AGS_KEY_K = 14,
+    AGS_KEY_L = 15,
+    AGS_KEY_M = 16,
+    AGS_KEY_N = 17,
+    AGS_KEY_O = 18,
+    AGS_KEY_P = 19,
+    AGS_KEY_Q = 20,
+    AGS_KEY_R = 21,
+    AGS_KEY_S = 22,
+    AGS_KEY_T = 23,
+    AGS_KEY_U = 24,
+    AGS_KEY_V = 25,
+    AGS_KEY_W = 26,
+    AGS_KEY_X = 27,
+    AGS_KEY_Y = 28,
+    AGS_KEY_Z = 29,
+
+    AGS_KEY_1 = 30,
+    AGS_KEY_2 = 31,
+    AGS_KEY_3 = 32,
+    AGS_KEY_4 = 33,
+    AGS_KEY_5 = 34,
+    AGS_KEY_6 = 35,
+    AGS_KEY_7 = 36,
+    AGS_KEY_8 = 37,
+    AGS_KEY_9 = 38,
+    AGS_KEY_0 = 39,
+
+    AGS_KEY_RETURN = 40,
+    AGS_KEY_ESCAPE = 41,
+    AGS_KEY_BACKSPACE = 42,
+    AGS_KEY_TAB = 43,
+    AGS_KEY_SPACE = 44,
+
+    AGS_KEY_MINUS = 45,
+    AGS_KEY_EQUALS = 46,
+    AGS_KEY_LEFTBRACKET = 47,
+    AGS_KEY_RIGHTBRACKET = 48,
+    AGS_KEY_BACKSLASH = 49, /**< Located at the lower left of the return
+                                  *   key on ISO keyboards and at the right end
+                                  *   of the QWERTY row on ANSI keyboards.
+                                  *   Produces REVERSE SOLIDUS (backslash) and
+                                  *   VERTICAL LINE in a US layout, REVERSE
+                                  *   SOLIDUS and VERTICAL LINE in a UK Mac
+                                  *   layout, NUMBER SIGN and TILDE in a UK
+                                  *   Windows layout, DOLLAR SIGN and POUND SIGN
+                                  *   in a Swiss German layout, NUMBER SIGN and
+                                  *   APOSTROPHE in a German layout, GRAVE
+                                  *   ACCENT and POUND SIGN in a French Mac
+                                  *   layout, and ASTERISK and MICRO SIGN in a
+                                  *   French Windows layout.
+                                  */
+    AGS_KEY_NONUSHASH = 50, /**< ISO USB keyboards actually use this code
+                                  *   instead of 49 for the same key, but all
+                                  *   OSes I've seen treat the two codes
+                                  *   identically. So, as an implementor, unless
+                                  *   your keyboard generates both of those
+                                  *   codes and your OS treats them differently,
+                                  *   you should generate AGS_KEY_BACKSLASH
+                                  *   instead of this code. As a user, you
+                                  *   should not rely on this code because SDL
+                                  *   will never generate it with most (all?)
+                                  *   keyboards.
+                                  */
+    AGS_KEY_SEMICOLON = 51,
+    AGS_KEY_APOSTROPHE = 52,
+    AGS_KEY_GRAVE = 53, /**< Located in the top left corner (on both ANSI
+                              *   and ISO keyboards). Produces GRAVE ACCENT and
+                              *   TILDE in a US Windows layout and in US and UK
+                              *   Mac layouts on ANSI keyboards, GRAVE ACCENT
+                              *   and NOT SIGN in a UK Windows layout, SECTION
+                              *   SIGN and PLUS-MINUS SIGN in US and UK Mac
+                              *   layouts on ISO keyboards, SECTION SIGN and
+                              *   DEGREE SIGN in a Swiss German layout (Mac:
+                              *   only on ISO keyboards), CIRCUMFLEX ACCENT and
+                              *   DEGREE SIGN in a German layout (Mac: only on
+                              *   ISO keyboards), SUPERSCRIPT TWO and TILDE in a
+                              *   French Windows layout, COMMERCIAL AT and
+                              *   NUMBER SIGN in a French Mac layout on ISO
+                              *   keyboards, and LESS-THAN SIGN and GREATER-THAN
+                              *   SIGN in a Swiss German, German, or French Mac
+                              *   layout on ANSI keyboards.
+                              */
+    AGS_KEY_COMMA = 54,
+    AGS_KEY_PERIOD = 55,
+    AGS_KEY_SLASH = 56,
+
+    AGS_KEY_CAPSLOCK = 57,
+
+    AGS_KEY_F1 = 58,
+    AGS_KEY_F2 = 59,
+    AGS_KEY_F3 = 60,
+    AGS_KEY_F4 = 61,
+    AGS_KEY_F5 = 62,
+    AGS_KEY_F6 = 63,
+    AGS_KEY_F7 = 64,
+    AGS_KEY_F8 = 65,
+    AGS_KEY_F9 = 66,
+    AGS_KEY_F10 = 67,
+    AGS_KEY_F11 = 68,
+    AGS_KEY_F12 = 69,
+
+    AGS_KEY_PRINTSCREEN = 70,
+    AGS_KEY_SCROLLLOCK = 71,
+    AGS_KEY_PAUSE = 72,
+    AGS_KEY_INSERT = 73, /**< insert on PC, help on some Mac keyboards (but
+                                   does send code 73, not 117) */
+    AGS_KEY_HOME = 74,
+    AGS_KEY_PAGEUP = 75,
+    AGS_KEY_DELETE = 76,
+    AGS_KEY_END = 77,
+    AGS_KEY_PAGEDOWN = 78,
+    AGS_KEY_RIGHT = 79,
+    AGS_KEY_LEFT = 80,
+    AGS_KEY_DOWN = 81,
+    AGS_KEY_UP = 82,
+
+    AGS_KEY_NUMLOCKCLEAR = 83, /**< num lock on PC, clear on Mac keyboards
+                                     */
+    AGS_KEY_KP_DIVIDE = 84,
+    AGS_KEY_KP_MULTIPLY = 85,
+    AGS_KEY_KP_MINUS = 86,
+    AGS_KEY_KP_PLUS = 87,
+    AGS_KEY_KP_ENTER = 88,
+    AGS_KEY_KP_1 = 89,
+    AGS_KEY_KP_2 = 90,
+    AGS_KEY_KP_3 = 91,
+    AGS_KEY_KP_4 = 92,
+    AGS_KEY_KP_5 = 93,
+    AGS_KEY_KP_6 = 94,
+    AGS_KEY_KP_7 = 95,
+    AGS_KEY_KP_8 = 96,
+    AGS_KEY_KP_9 = 97,
+    AGS_KEY_KP_0 = 98,
+    AGS_KEY_KP_PERIOD = 99,
+
+    AGS_KEY_NONUSBACKSLASH = 100, /**< This is the additional key that ISO
+                                        *   keyboards have over ANSI ones,
+                                        *   located between left shift and Y.
+                                        *   Produces GRAVE ACCENT and TILDE in a
+                                        *   US or UK Mac layout, REVERSE SOLIDUS
+                                        *   (backslash) and VERTICAL LINE in a
+                                        *   US or UK Windows layout, and
+                                        *   LESS-THAN SIGN and GREATER-THAN SIGN
+                                        *   in a Swiss German, German, or French
+                                        *   layout. */
+    AGS_KEY_APPLICATION = 101, /**< windows contextual menu, compose */
+    AGS_KEY_POWER = 102, /**< The USB document says this is a status flag,
+                               *   not a physical key - but some Mac keyboards
+                               *   do have a power key. */
+    AGS_KEY_KP_EQUALS = 103,
+    AGS_KEY_F13 = 104,
+    AGS_KEY_F14 = 105,
+    AGS_KEY_F15 = 106,
+    AGS_KEY_F16 = 107,
+    AGS_KEY_F17 = 108,
+    AGS_KEY_F18 = 109,
+    AGS_KEY_F19 = 110,
+    AGS_KEY_F20 = 111,
+    AGS_KEY_F21 = 112,
+    AGS_KEY_F22 = 113,
+    AGS_KEY_F23 = 114,
+    AGS_KEY_F24 = 115,
+    AGS_KEY_EXECUTE = 116,
+    AGS_KEY_HELP = 117,    /**< AL Integrated Help Center */
+    AGS_KEY_MENU = 118,    /**< Menu (show menu) */
+    AGS_KEY_SELECT = 119,
+    AGS_KEY_STOP = 120,    /**< AC Stop */
+    AGS_KEY_AGAIN = 121,   /**< AC Redo/Repeat */
+    AGS_KEY_UNDO = 122,    /**< AC Undo */
+    AGS_KEY_CUT = 123,     /**< AC Cut */
+    AGS_KEY_COPY = 124,    /**< AC Copy */
+    AGS_KEY_PASTE = 125,   /**< AC Paste */
+    AGS_KEY_FIND = 126,    /**< AC Find */
+    AGS_KEY_MUTE = 127,
+    AGS_KEY_VOLUMEUP = 128,
+    AGS_KEY_VOLUMEDOWN = 129,
+/* not sure whether there's a reason to enable these */
+/*     AGS_KEY_LOCKINGCAPSLOCK = 130,  */
+/*     AGS_KEY_LOCKINGNUMLOCK = 131, */
+/*     AGS_KEY_LOCKINGSCROLLLOCK = 132, */
+    AGS_KEY_KP_COMMA = 133,
+    AGS_KEY_KP_EQUALSAS400 = 134,
+
+    AGS_KEY_INTERNATIONAL1 = 135, /**< used on Asian keyboards, see
+                                            footnotes in USB doc */
+    AGS_KEY_INTERNATIONAL2 = 136,
+    AGS_KEY_INTERNATIONAL3 = 137, /**< Yen */
+    AGS_KEY_INTERNATIONAL4 = 138,
+    AGS_KEY_INTERNATIONAL5 = 139,
+    AGS_KEY_INTERNATIONAL6 = 140,
+    AGS_KEY_INTERNATIONAL7 = 141,
+    AGS_KEY_INTERNATIONAL8 = 142,
+    AGS_KEY_INTERNATIONAL9 = 143,
+    AGS_KEY_LANG1 = 144, /**< Hangul/English toggle */
+    AGS_KEY_LANG2 = 145, /**< Hanja conversion */
+    AGS_KEY_LANG3 = 146, /**< Katakana */
+    AGS_KEY_LANG4 = 147, /**< Hiragana */
+    AGS_KEY_LANG5 = 148, /**< Zenkaku/Hankaku */
+    AGS_KEY_LANG6 = 149, /**< reserved */
+    AGS_KEY_LANG7 = 150, /**< reserved */
+    AGS_KEY_LANG8 = 151, /**< reserved */
+    AGS_KEY_LANG9 = 152, /**< reserved */
+
+    AGS_KEY_ALTERASE = 153,    /**< Erase-Eaze */
+    AGS_KEY_SYSREQ = 154,
+    AGS_KEY_CANCEL = 155,      /**< AC Cancel */
+    AGS_KEY_CLEAR = 156,
+    AGS_KEY_PRIOR = 157,
+    AGS_KEY_RETURN2 = 158,
+    AGS_KEY_SEPARATOR = 159,
+    AGS_KEY_OUT = 160,
+    AGS_KEY_OPER = 161,
+    AGS_KEY_CLEARAGAIN = 162,
+    AGS_KEY_CRSEL = 163,
+    AGS_KEY_EXSEL = 164,
+
+    AGS_KEY_KP_00 = 176,
+    AGS_KEY_KP_000 = 177,
+    AGS_KEY_THOUSANDSSEPARATOR = 178,
+    AGS_KEY_DECIMALSEPARATOR = 179,
+    AGS_KEY_CURRENCYUNIT = 180,
+    AGS_KEY_CURRENCYSUBUNIT = 181,
+    AGS_KEY_KP_LEFTPAREN = 182,
+    AGS_KEY_KP_RIGHTPAREN = 183,
+    AGS_KEY_KP_LEFTBRACE = 184,
+    AGS_KEY_KP_RIGHTBRACE = 185,
+    AGS_KEY_KP_TAB = 186,
+    AGS_KEY_KP_BACKSPACE = 187,
+    AGS_KEY_KP_A = 188,
+    AGS_KEY_KP_B = 189,
+    AGS_KEY_KP_C = 190,
+    AGS_KEY_KP_D = 191,
+    AGS_KEY_KP_E = 192,
+    AGS_KEY_KP_F = 193,
+    AGS_KEY_KP_XOR = 194,
+    AGS_KEY_KP_POWER = 195,
+    AGS_KEY_KP_PERCENT = 196,
+    AGS_KEY_KP_LESS = 197,
+    AGS_KEY_KP_GREATER = 198,
+    AGS_KEY_KP_AMPERSAND = 199,
+    AGS_KEY_KP_DBLAMPERSAND = 200,
+    AGS_KEY_KP_VERTICALBAR = 201,
+    AGS_KEY_KP_DBLVERTICALBAR = 202,
+    AGS_KEY_KP_COLON = 203,
+    AGS_KEY_KP_HASH = 204,
+    AGS_KEY_KP_SPACE = 205,
+    AGS_KEY_KP_AT = 206,
+    AGS_KEY_KP_EXCLAM = 207,
+    AGS_KEY_KP_MEMSTORE = 208,
+    AGS_KEY_KP_MEMRECALL = 209,
+    AGS_KEY_KP_MEMCLEAR = 210,
+    AGS_KEY_KP_MEMADD = 211,
+    AGS_KEY_KP_MEMSUBTRACT = 212,
+    AGS_KEY_KP_MEMMULTIPLY = 213,
+    AGS_KEY_KP_MEMDIVIDE = 214,
+    AGS_KEY_KP_PLUSMINUS = 215,
+    AGS_KEY_KP_CLEAR = 216,
+    AGS_KEY_KP_CLEARENTRY = 217,
+    AGS_KEY_KP_BINARY = 218,
+    AGS_KEY_KP_OCTAL = 219,
+    AGS_KEY_KP_DECIMAL = 220,
+    AGS_KEY_KP_HEXADECIMAL = 221,
+
+    AGS_KEY_LCTRL = 224,
+    AGS_KEY_LSHIFT = 225,
+    AGS_KEY_LALT = 226, /**< alt, option */
+    AGS_KEY_LGUI = 227, /**< windows, command (apple), meta */
+    AGS_KEY_RCTRL = 228,
+    AGS_KEY_RSHIFT = 229,
+    AGS_KEY_RALT = 230, /**< alt gr, option */
+    AGS_KEY_RGUI = 231, /**< windows, command (apple), meta */
+
+    AGS_KEY_MODE = 257,    /**< I'm not sure if this is really not covered
+                                 *   by any of the above, but since there's a
+                                 *   special SDL_KMOD_MODE for it I'm adding it here
+                                 */
+
+    /* @} *//* Usage page 0x07 */
+
+    /**
+     *  \name Usage page 0x0C
+     *
+     *  These values are mapped from usage page 0x0C (USB consumer page).
+     *
+     *  There are way more keys in the spec than we can represent in the
+     *  current scancode range, so pick the ones that commonly come up in
+     *  real world usage.
+     */
+    /* @{ */
+
+    AGS_KEY_SLEEP = 258,                   /**< Sleep */
+    AGS_KEY_WAKE = 259,                    /**< Wake */
+
+    AGS_KEY_CHANNEL_INCREMENT = 260,       /**< Channel Increment */
+    AGS_KEY_CHANNEL_DECREMENT = 261,       /**< Channel Decrement */
+
+    AGS_KEY_MEDIA_PLAY = 262,          /**< Play */
+    AGS_KEY_MEDIA_PAUSE = 263,         /**< Pause */
+    AGS_KEY_MEDIA_RECORD = 264,        /**< Record */
+    AGS_KEY_MEDIA_FAST_FORWARD = 265,  /**< Fast Forward */
+    AGS_KEY_MEDIA_REWIND = 266,        /**< Rewind */
+    AGS_KEY_MEDIA_NEXT_TRACK = 267,    /**< Next Track */
+    AGS_KEY_MEDIA_PREVIOUS_TRACK = 268, /**< Previous Track */
+    AGS_KEY_MEDIA_STOP = 269,          /**< Stop */
+    AGS_KEY_MEDIA_EJECT = 270,         /**< Eject */
+    AGS_KEY_MEDIA_PLAY_PAUSE = 271,    /**< Play / Pause */
+    AGS_KEY_MEDIA_SELECT = 272,        /* Media Select */
+
+    AGS_KEY_AC_NEW = 273,              /**< AC New */
+    AGS_KEY_AC_OPEN = 274,             /**< AC Open */
+    AGS_KEY_AC_CLOSE = 275,            /**< AC Close */
+    AGS_KEY_AC_EXIT = 276,             /**< AC Exit */
+    AGS_KEY_AC_SAVE = 277,             /**< AC Save */
+    AGS_KEY_AC_PRINT = 278,            /**< AC Print */
+    AGS_KEY_AC_PROPERTIES = 279,       /**< AC Properties */
+
+    AGS_KEY_AC_SEARCH = 280,           /**< AC Search */
+    AGS_KEY_AC_HOME = 281,             /**< AC Home */
+    AGS_KEY_AC_BACK = 282,             /**< AC Back */
+    AGS_KEY_AC_FORWARD = 283,          /**< AC Forward */
+    AGS_KEY_AC_STOP = 284,             /**< AC Stop */
+    AGS_KEY_AC_REFRESH = 285,          /**< AC Refresh */
+    AGS_KEY_AC_BOOKMARKS = 286,        /**< AC Bookmarks */
+
+    /* @} *//* Usage page 0x0C */
+
+
+    /**
+     *  \name Mobile keys
+     *
+     *  These are values that are often used on mobile phones.
+     */
+    /* @{ */
+
+    AGS_KEY_SOFTLEFT = 287, /**< Usually situated below the display on phones and
+                                      used as a multi-function feature key for selecting
+                                      a software defined function shown on the bottom left
+                                      of the display. */
+    AGS_KEY_SOFTRIGHT = 288, /**< Usually situated below the display on phones and
+                                       used as a multi-function feature key for selecting
+                                       a software defined function shown on the bottom right
+                                       of the display. */
+    AGS_KEY_CALL = 289, /**< Used for accepting phone calls. */
+    AGS_KEY_ENDCALL = 290, /**< Used for rejecting phone calls. */
+
+    /* @} *//* Mobile keys */
+
+    /* Add any other keys here. */
+
+    AGS_KEY_RESERVED = 400,    /**< 400-500 reserved for dynamic keycodes */
+
+    AGS_KEY_COUNT = 512 /**< not a key, just marks the number of scancodes for array bounds */
+
+} AGS_KEY;

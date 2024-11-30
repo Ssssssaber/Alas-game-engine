@@ -6,6 +6,8 @@
 #include <Events/MouseEvent.h>
 #include <Events/KeyboardEvent.h>
 #include "imgui_impl_sdl3.h"
+
+#include "Core/KeyCodes.h"
 namespace AGS {
 
     static bool s_IsSDLInitialized = false;
@@ -92,6 +94,7 @@ namespace AGS {
                 ProcessEvents(e);
             }
         }
+        SDL_PumpEvents();
         SDL_GL_SwapWindow(_window);
     }
 

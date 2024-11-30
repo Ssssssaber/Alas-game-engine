@@ -17,6 +17,9 @@ namespace AGS
 
         _imguiLayer = new ImGuiLayer();
         PushOverlay(_imguiLayer);
+
+        _input = new SDLInput();
+        Input::Init();
     }
 
     Application::~Application() {}
@@ -28,7 +31,7 @@ namespace AGS
            std::bind(&Application::OnWindowClose, this, std::placeholders::_1)
         );
 
-        AGS_CORE_INFO("Event {0}: ", e.ToString());
+        // AGS_CORE_INFO("Event {0}: ", e.ToString());
 
         for (auto it = _layerStack.end(); it != _layerStack.begin();)
         {

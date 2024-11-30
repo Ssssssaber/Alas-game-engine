@@ -1,5 +1,7 @@
 #pragma once
 #include "Platform/SDL/SDLWindow.h"
+#include "Platform/SDL/SDLInput.h"
+
 #include "Events/ApplicationEvent.h"
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
@@ -31,6 +33,7 @@ namespace AGS
         static Application* _instance;
         ImGuiLayer* _imguiLayer;
         Window* _window;
+        SDLInput* _input;
         LayerStack _layerStack;
         bool _isRunning;
     };

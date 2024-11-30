@@ -9,13 +9,27 @@ public:
     }
 
     void OnUpdate() override
-    {
-        // AGS_CLIENT_INFO("ExampleLayer::Update");
+    {           
+        if (AGS::Input::IsMouseButtonPressed(AGS_MOUSE_BUTTON_LEFT))
+        {
+            AGS_CLIENT_INFO("ExampleLayer:: LEFT mouse button key pressed");    
+        }
+
+        if (AGS::Input::IsKeyPressed(AGS_KEY_TAB))
+        {
+            AGS_CLIENT_INFO("ExampleLayer:: TAB key pressed");    
+        }
+        
+        
     }
 
     void OnEvent(AGS::Event& event) override
     {
-        // AGS_CLIENT_TRACE("{0}", event.ToString());
+        if (event.GetEventType() == AGS::EventType::MouseMoved)
+        {
+            AGS_CLIENT_INFO("{0} {1}", AGS::Input::GetMousePosition().first, AGS::Input::GetMousePosition().second);   
+        }
+        
     }
 };
 
