@@ -9,3 +9,6 @@
 	path = AlasCore/vendor/imgui
 	url = https://github.com/ocornut/imgui.git
     branch = docking
+[submodule "AlasCore/vendor/glm"]
+	path = AlasCore/vendor/glm
+	url = https://github.com/g-truc/glm.git
