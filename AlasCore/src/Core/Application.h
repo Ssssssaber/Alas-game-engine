@@ -6,6 +6,8 @@
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+
+#include "Core/Renderer/Shader.h"
 // use pointers 
 
 namespace AGS
@@ -31,10 +33,17 @@ namespace AGS
     
     private:
         static Application* _instance;
+
         ImGuiLayer* _imguiLayer;
+        
         Window* _window;
         SDLInput* _input;
         LayerStack _layerStack;
+        
+        unsigned int _vertexArray, _vertexBuffer, _indexBuffer;
+        std::unique_ptr<Shader> _shader;
+
+
         bool _isRunning;
     };
 
