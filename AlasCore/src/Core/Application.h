@@ -8,8 +8,9 @@
 #include "ImGui/ImGuiLayer.h"
 
 #include "Core/Renderer/Shader.h"
+#include "Core/Renderer/VertexBuffer.h"
+#include "Core/Renderer/IndexBuffer.h"
 // use pointers 
-
 namespace AGS
 {
     class Application 
@@ -40,10 +41,11 @@ namespace AGS
         SDLInput* _input;
         LayerStack _layerStack;
         
-        unsigned int _vertexArray, _vertexBuffer, _indexBuffer;
+        unsigned int _vertexArray;
+
         std::unique_ptr<Shader> _shader;
-
-
+        std::unique_ptr<VertexBuffer> _vertexBuffer; 
+        std::unique_ptr<IndexBuffer> _indexBuffer;
         bool _isRunning;
     };
 
