@@ -4,6 +4,12 @@
 #include <algorithm>
 #include <functional>
 
+
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
 #include <string>
 #include <sstream>
 #include <array>

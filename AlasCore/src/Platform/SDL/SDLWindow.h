@@ -12,8 +12,8 @@ namespace AGS{
 
         void OnUpdate() override;
 
-        uint32_t GetWidth() const override { return _params.width; }
-        uint32_t GetHeight() const override { return _params.height; }
+        virtual uint32_t GetWidth() const override { return _params.width; }
+        virtual uint32_t GetHeight() const override { return _params.height; }
         
         void SetEventCallback(const EventCallbackFunction& callback) override { _params.EventCallback = callback; }
         void SetVSync(bool enabled) override;
