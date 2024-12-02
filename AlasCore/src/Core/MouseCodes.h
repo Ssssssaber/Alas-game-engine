@@ -1,0 +1,5 @@
+#define AGS_MOUSE_BUTTON_LEFT     1
+#define AGS_MOUSE_BUTTON_MIDDLE   2
+#define AGS_MOUSE_BUTTON_RIGHT    3
+#define AGS_MOUSE_BUTTON_X1       4
+#define AGS_MOUSE_BUTTON_X2       5

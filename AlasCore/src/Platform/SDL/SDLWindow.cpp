@@ -1,6 +1,13 @@
+
+
 #include "SDLWindow.h"
 #include "Events/Event.h"
 #include <Events/ApplicationEvent.h>
+#include <Events/MouseEvent.h>
+#include <Events/KeyboardEvent.h>
+#include "imgui_impl_sdl3.h"
+
+#include "Core/KeyCodes.h"
 namespace AGS {
 
     static bool s_IsSDLInitialized = false;
@@ -23,30 +30,72 @@ namespace AGS {
     {
         ShutDown();
     }
+    
+    void SDLGLWindow::Init()
+    {
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+        if (!s_IsSDLInitialized)
+        {
+            int success = SDL_Init(SDL_INIT_VIDEO);
+            // AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
+            // AGS_ASSERT(!success, SDL_GetError())
+                
+            if (success < 0)
+            {
+                AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
+                return;
+            }
+            s_IsSDLInitialized = true;
+        }
+        
+        _window = SDL_CreateWindow(_params.title.data(), _params.width, _params.height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+        if (_window == NULL)
+        {
+            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
+            return;
+        }
+
+        _context = SDL_GL_CreateContext(_window); 
+        int status = gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
+        AGS_ASSERT(status, "GLAD was not initialized")
+        
+        AGS_CORE_INFO("OpenGL {0}.{1}", GLVersion.major, GLVersion.minor);
+        AGS_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+        AGS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+        AGS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+
+        SDL_GL_MakeCurrent(_window, _context);
+    }
+
+    void SDLGLWindow::ShutDown()
+    {
+        SDL_DestroyWindow(_window);
+    }
 
     void SDLGLWindow::OnUpdate()
     {
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
-            switch (e.type)
-            {
-            case SDL_QUIT:
+            ImGui_ImplSDL3_ProcessEvent(&e);
+            if (e.type == SDL_EVENT_QUIT)
             {
                 WindowCloseEvent event;
                 _params.EventCallback(event);
                 ShutDown();
                 break;
             }
-            case SDL_MOUSEMOTION:
-                // AGS_CORE_INFO("Mouse event");
-                break;
-            default:
-                break;
+            else 
+            {
+                ProcessEvents(e);
             }
         }
-        SDL_UpdateWindowSurface(_window);
-    
-        SDL_RenderPresent(_renderer);
+        SDL_PumpEvents();
+        SDL_GL_SwapWindow(_window);
     }
 
     void SDLGLWindow::SetVSync(bool enabled)
@@ -62,45 +111,63 @@ namespace AGS {
         return _params.isVsync;
     }
 
-    void SDLGLWindow::Init()
+    void SDLGLWindow::ProcessEvents(SDL_Event& sdlEvent) 
     {
-        if (!s_IsSDLInitialized)
+        switch(sdlEvent.type)
         {
-            int success = SDL_Init(SDL_INIT_VIDEO);
-            AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-            if (success < 0)
+            //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
             {
-                AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-                return;
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonPressedEvent e(sdlEvent.button.button);
+                _params.EventCallback(e);
+                break;
             }
-            s_IsSDLInitialized = true;
+            case SDL_EVENT_MOUSE_BUTTON_UP:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                MouseButtonReleasedEvent e(sdlEvent.button.button);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_EVENT_MOUSE_MOTION:
+            {
+                MouseMovedEvent e(sdlEvent.button.x, sdlEvent.button.y);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_EVENT_MOUSE_WHEEL:
+            {
+                MouseScrolledEvent e(sdlEvent.wheel.y, sdlEvent.wheel.y);
+                _params.EventCallback(e);
+                break;
+            }
+            // KeyPressed, KeyReleased, KeyTyped,
+            case SDL_EVENT_KEY_DOWN:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                KeyPressedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod, 1);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_EVENT_KEY_UP:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                KeyReleasedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_EVENT_TEXT_INPUT:
+            {
+                SDL_Keymod mods = SDL_GetModState();
+                KeyTypedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod, sdlEvent.text.text);
+                _params.EventCallback(e);
+                break;
+            }
+            case SDL_EVENT_WINDOW_RESIZED:
+            {
+                glViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
+            }
         }
-        
-        _window = SDL_CreateWindow(_params.title.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _params.width, _params.height, SDL_WINDOW_SHOWN);
-        AGS_CORE_ERROR("keke {0} {1}", "is", "you");
-        AGS_CORE_ERROR(SDL_GetError());
-        AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-        if (_window == NULL)
-        {
-            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
-            return;
-        }
-        _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
-        AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
-        if (_renderer == NULL)
-        {
-            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
-            return;
-        }
-        _context = SDL_GL_CreateContext(_window); 
-        SDL_GL_MakeCurrent(_window, _context);
-
-        SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-        SDL_RenderClear(_renderer);
-    }
-
-    void SDLGLWindow::ShutDown()
-    {
-        SDL_DestroyWindow(_window);
     }
 }

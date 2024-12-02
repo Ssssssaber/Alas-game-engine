@@ -24,15 +24,15 @@ namespace AGS {
 
 }
 
-#define AGS_CORE_FATAL(...) ::AGS::Logger::GetCoreLogger()->critical(_VA_ARGS__)
-#define AGS_CORE_ERROR(...) ::AGS::Logger::GetCoreLogger()->error(__VA_ARGS__)
-#define AGS_CORE_WARN(...) ::AGS::Logger::GetCoreLogger()->warn(__VA_ARGS__)
-#define AGS_CORE_INFO(...) ::AGS::Logger::GetCoreLogger()->info(__VA_ARGS__)
-#define AGS_CORE_TRACE(...) ::AGS::Logger::GetCoreLogger()->error(__VA_ARGS__)
+#define AGS_CORE_FATAL(...) AGS::Logger::GetCoreLogger()->critical(_VA_ARGS__)
+#define AGS_CORE_ERROR(...) AGS::Logger::GetCoreLogger()->error(__VA_ARGS__)
+#define AGS_CORE_WARN(...) AGS::Logger::GetCoreLogger()->warn(__VA_ARGS__)
+#define AGS_CORE_INFO(...) AGS::Logger::GetCoreLogger()->info(__VA_ARGS__)
+#define AGS_CORE_TRACE(...) AGS::Logger::GetCoreLogger()->trace(__VA_ARGS__)
 
 
-#define AGS_CLIENT_FATAL(...) ::AGS::Logger::GetClientLogger()->critical(__VA_ARGS__)
-#define AGS_CLIENT_ERROR(...) ::AGS::Logger::GetClientLogger()->error(__VA_ARGS__)
-#define AGS_CLIENT_WARN(...) ::AGS::Logger::GetClientLogger()->warn(__VA_ARGS__)
-#define AGS_CLIENT_INFO(...) ::AGS::Logger::GetClientLogger()->info(__VA_ARGS__)
-#define AGS_CLIENT_TRACE(...) ::AGS::Logger::GetClientLogger()->error(__VA_ARGS__)
+#define AGS_CLIENT_FATAL(...) AGS::Logger::GetClientLogger()->critical(__VA_ARGS__)
+#define AGS_CLIENT_ERROR(...) AGS::Logger::GetClientLogger()->error(__VA_ARGS__)
+#define AGS_CLIENT_WARN(...) AGS::Logger::GetClientLogger()->warn(__VA_ARGS__)
+#define AGS_CLIENT_INFO(...) AGS::Logger::GetClientLogger()->info(__VA_ARGS__)
+#define AGS_CLIENT_TRACE(...) AGS::Logger::GetClientLogger()->trace(__VA_ARGS__)

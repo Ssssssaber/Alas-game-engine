@@ -3,7 +3,7 @@
 #include "Event.h"
 
 #include <sstream>
-
+// unique namespace for each system
 namespace AGS {
 
     class WindowResizeEvent : public Event
@@ -12,10 +12,10 @@ namespace AGS {
             WindowResizeEvent(unsigned int width, unsigned int height) : _width(width), _height(height)
             {
             }
-
+            // force inline       
             inline unsigned int GetWidth() const { return _width; }
-            inline unsigned int GetHeight() const {return _height; }
-
+            inline unsigned int GetHeight() const { return _height; }
+            // to sting interface
             std::string ToString() const override
             {
                 std::stringstream ss;
@@ -40,4 +40,33 @@ namespace AGS {
         EVENT_CLASS_TYPE(WindowClose)
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
+
+    // AppTick, AppUpdate, AppRender,
+    class AppTickEvent : public Event
+    {
+    public:
+        AppTickEvent() {}
+
+        EVENT_CLASS_TYPE(AppTick)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+    
+    class AppUpdateEvent : public Event
+    {
+    public:
+        AppUpdateEvent() {}
+
+        EVENT_CLASS_TYPE(AppUpdate)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+    
+    class AppRenderEvent : public Event
+    {
+    public:
+        AppRenderEvent() {}
+
+        EVENT_CLASS_TYPE(AppRender)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
 }

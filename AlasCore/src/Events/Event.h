@@ -35,6 +35,7 @@ namespace AGS {
         virtual EventType GetEventType() const = 0;
         virtual const char* GetName() const = 0;
         virtual int GetCategoryFlags() const = 0;
+        virtual bool Handled() const { return _handled; }
         virtual std::string ToString() const { return GetName(); }
 
         inline bool isInCategory(EventCategory category)

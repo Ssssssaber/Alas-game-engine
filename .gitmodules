@@ -4,3 +4,11 @@
 [submodule "AlasCore/vendor/SDL"]
 	path = AlasCore/vendor/SDL
 	url = https://github.com/libsdl-org/SDL.git
+    branch = main
+[submodule "AlasCore/vendor/imgui"]
+	path = AlasCore/vendor/imgui
+	url = https://github.com/ocornut/imgui.git
+    branch = docking
+[submodule "AlasCore/vendor/glm"]
+	path = AlasCore/vendor/glm
+	url = https://github.com/g-truc/glm.git
