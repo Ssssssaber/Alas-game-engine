@@ -11,6 +11,7 @@ target_include_directories(alas_engine_core PRIVATE
     ${PROJECT_SOURCE_DIR}/AlasCore/src
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/OpenGL/GLAD/include/
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/backends
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/glm/glm/
 )
 

@@ -46,7 +46,7 @@ namespace AGS
         std::unique_ptr<Shader> _shader;
         std::unique_ptr<VertexBuffer> _vertexBuffer; 
         std::unique_ptr<IndexBuffer> _indexBuffer;
-        bool _isRunning;
+        bool _isRunning = true;
     };
 
     Application* CreateApplication();
