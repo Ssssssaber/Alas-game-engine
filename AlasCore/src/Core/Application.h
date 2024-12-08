@@ -45,7 +45,6 @@ namespace AGS
 
         std::shared_ptr<Shader> _shader;
         std::shared_ptr<VertexArray> _vertexArray;
-        std::shared_ptr<VertexBuffer> _vertexBuffer; 
         bool _isRunning = true;
     };
 

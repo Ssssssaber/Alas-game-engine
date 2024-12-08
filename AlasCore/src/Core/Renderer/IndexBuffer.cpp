@@ -8,8 +8,8 @@ namespace AGS {
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:    AGS_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::OpenGL:  return new OpenGLIndexBuffer(indices, size);
+			case RendererAPI::API::None:    AGS_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL:  return new OpenGLIndexBuffer(indices, size);
 		}
 
 		AGS_ASSERT(false, "Unknown RendererAPI!");

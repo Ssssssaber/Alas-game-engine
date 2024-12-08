@@ -1,17 +1,19 @@
 #pragma once
 
+#include "Core/Renderer/RendererAPI.h"
+
 namespace AGS {
-
-    enum class RendererAPI
-	{
-		None = 0, OpenGL = 1
-	};
-
 	class Renderer
 	{
 	public:
-		inline static RendererAPI GetAPI() { return _rendererAPI; }
-	private:
-		static RendererAPI _rendererAPI;
+        static void BeginScene();
+        static void EndScene();
+
+        static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+
+		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+
+    private:
+		static RendererAPI::API _rendererAPI;
 	};
 }

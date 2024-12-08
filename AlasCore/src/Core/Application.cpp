@@ -5,6 +5,9 @@
 #include <glad/glad.h>
 #include "Core/Renderer/BufferLayout.h"
 
+#include "Core/Renderer/Renderer.h"
+#include "Core/Renderer/RendererCommand.h"
+
 #define GlCall(x) { GLClearError();\
     x;\
     AGS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); }
@@ -54,18 +57,19 @@ namespace AGS
             0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
             0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f
 		};
-
-		_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        
+        std::shared_ptr<VertexBuffer> vertexBuffer; 
+		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
         
         {
             BufferLayout layout {
                 {ShaderElementType::Float3, "a_Position"},
                 {ShaderElementType::Float4, "a_Color"}
             };
-            _vertexBuffer->SetLayout(layout);
+            vertexBuffer->SetLayout(layout);
         }
 
-        _vertexArray->AddVertexBuffer(_vertexBuffer);
+        _vertexArray->AddVertexBuffer(vertexBuffer);
 		
 		uint32_t indices[3] = { 0, 1, 2 };        
         std::shared_ptr<IndexBuffer> indexBuffer;
@@ -135,12 +139,17 @@ namespace AGS
         AGS_CORE_INFO(e.ToString());
         while (_isRunning)
         {
-            glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+			RenderCommand::Clear();
 
+			Renderer::BeginScene();
+            
             _shader->Bind();
             _vertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, _vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            
+            Renderer::Submit(_vertexArray);
+			
+            Renderer::EndScene();
 
             for (Layer* layer : _layerStack)
             {
