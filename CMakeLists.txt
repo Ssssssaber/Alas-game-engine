@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 set (CMAKE_CXX_STANDARD 17)
 project(alas_game_engine VERSION 0.1.0 LANGUAGES C CXX)
 
@@ -10,8 +10,6 @@ option(SDL_VENDORED "Use vendored SDL library" ON)
 option(SDL_WINDOWS "Use SDL2 for window creation" ON)
 option(AGS_ENABLE_ASSERTS "Use assertions during app running" ON)
 
-
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/library)
 set(OSBitness 32)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(OSBitness 64)

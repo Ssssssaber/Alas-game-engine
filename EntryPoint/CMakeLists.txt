@@ -1,9 +1,7 @@
 add_executable(alas_entry_point SandboxApp.cpp)
 
-
 target_include_directories(alas_entry_point PRIVATE ${PROJECT_SOURCE_DIR}/AlasCore/)
 
-# target_link_libraries(alas_entry_point PRIVATE alas_engine_core)
 target_link_libraries(alas_entry_point PRIVATE alas_engine_core)
 
 target_include_directories(alas_engine_core PRIVATE 
