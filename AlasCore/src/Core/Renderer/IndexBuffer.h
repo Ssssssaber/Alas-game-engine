@@ -5,6 +5,7 @@ namespace AGS {
     class IndexBuffer
 	{
 	public:
+        IndexBuffer() {}
 		virtual ~IndexBuffer() {}
 
 		virtual void Bind() const = 0;

@@ -13,14 +13,14 @@ namespace AGS {
 		glShaderSource(vertexShader, 1, &source, 0);
 		// Compile the vertex shader
 		glCompileShader(vertexShader);
-		GLint isCompiled = 0;
+		int isCompiled = 0;
 		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
 		if (isCompiled == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			int maxLength = 0;
 			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
 			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
+			std::vector<char> infoLog(maxLength);
 			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
 			// We don't need the shader anymore.
 			glDeleteShader(vertexShader);
@@ -39,10 +39,10 @@ namespace AGS {
 		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
 		if (isCompiled == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			int maxLength = 0;
 			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
 			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
+			std::vector<char> infoLog(maxLength);
 			glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
 			// We don't need the shader anymore.
 			glDeleteShader(fragmentShader);
@@ -63,14 +63,14 @@ namespace AGS {
 		// Link our program
 		glLinkProgram(program);
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
-		GLint isLinked = 0;
+		int isLinked = 0;
 		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			int maxLength = 0;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
+			std::vector<char> infoLog(maxLength);
 			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 			// We don't need the program anymore.
 			glDeleteProgram(program);

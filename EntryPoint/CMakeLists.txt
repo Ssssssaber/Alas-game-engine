@@ -4,17 +4,6 @@ target_include_directories(alas_entry_point PRIVATE ${PROJECT_SOURCE_DIR}/AlasCo
 
 target_link_libraries(alas_entry_point PRIVATE alas_engine_core)
 
-target_include_directories(alas_engine_core PRIVATE 
-    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/spdlog/include
-    ${PROJECT_SOURCE_DIR}/AlasCore/src
-    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/OpenGL/GLAD/include/
-    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/
-    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/backends
-    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/glm/glm/
-)
-
-target_precompile_headers(alas_engine_core PUBLIC ${PROJECT_SOURCE_DIR}/AlasCore/src/Core/precompiled.h)
-
 if (SDL_VENDORED)
     target_include_directories(alas_entry_point PRIVATE ${PROJECT_SOURCE_DIR}/AlasCore/vendor/SDL/include/)
 else()

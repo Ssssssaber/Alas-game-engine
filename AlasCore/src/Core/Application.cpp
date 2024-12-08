@@ -3,10 +3,35 @@
 #include "Core/Logger.h"
 #include "Input.h"
 #include <glad/glad.h>
+#include "Core/Renderer/BufferLayout.h"
+
+#define GlCall(x) { GLClearError();\
+    x;\
+    AGS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); }
 namespace AGS
 {
+
+
+    
+
+    static void GLClearError()
+    {
+        while(glGetError() != GL_NO_ERROR);
+    }
+
+    static bool GLLogCall(const char* function, const char* file, int line)
+    {
+        while (GLenum error = glGetError())
+        {
+            AGS_CORE_ERROR("[OPENGL ERROR]: (code: {0}) {1}; {2}; {3}", error, function, file, line);
+            return false;
+        }
+        return true;
+    }
+
+
     Application* Application::_instance = nullptr;
-    Application::Application() 
+    Application::Application()
     {
         AGS_ASSERT(!_instance, "Application already exists");
         _instance = this;
@@ -22,33 +47,45 @@ namespace AGS
         _input = new SDLInput();
         Input::Init();
 
-        glGenVertexArrays(1, &_vertexArray);
-		glBindVertexArray(_vertexArray);
+        _vertexArray.reset(VertexArray::Create());
 
-		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
+		float vertices[3 * 7] = {
+			-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f
 		};
 
 		_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        
+        {
+            BufferLayout layout {
+                {ShaderElementType::Float3, "a_Position"},
+                {ShaderElementType::Float4, "a_Color"}
+            };
+            _vertexBuffer->SetLayout(layout);
+        }
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
-		uint32_t indices[3] = { 0, 1, 2 };
-		_indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        _vertexArray->AddVertexBuffer(_vertexBuffer);
+		
+		uint32_t indices[3] = { 0, 1, 2 };        
+        std::shared_ptr<IndexBuffer> indexBuffer;
+		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        
+        _vertexArray->SetIndexBuffer(indexBuffer);
 
 		std::string vertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec4 a_Color;
 
 			out vec3 v_Position;
+            out vec4 v_Color;
 
 			void main()
 			{
 				v_Position = a_Position;
+                v_Color = a_Color;
 				gl_Position = vec4(a_Position, 1.0);	
 			}
 		)";
@@ -59,10 +96,11 @@ namespace AGS
 			layout(location = 0) out vec4 color;
 
 			in vec3 v_Position;
+            in vec4 v_Color;
 
 			void main()
 			{
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				color = v_Color;
 			}
 		)";
 
@@ -101,8 +139,8 @@ namespace AGS
             glClear(GL_COLOR_BUFFER_BIT);
 
             _shader->Bind();
-            glBindVertexArray(_vertexArray);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+            _vertexArray->Bind();
+            glDrawElements(GL_TRIANGLES, _vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             for (Layer* layer : _layerStack)
             {

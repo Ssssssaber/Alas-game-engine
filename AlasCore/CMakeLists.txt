@@ -28,12 +28,16 @@ file(GLOB_RECURSE SOURCES
 
 add_library(alas_engine_core ${SOURCES})
 
-target_include_directories(alas_engine_core PUBLIC 
-    src 
-    vendor/ImGui/
-    vendor/ImGui/backends
-    vendor/glm/glm/
+target_include_directories(alas_engine_core PUBLIC
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/spdlog/include
+    ${PROJECT_SOURCE_DIR}/AlasCore/src
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/OpenGL/GLAD/include/
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/backends
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/glm/glm/
 )
+
+target_precompile_headers(alas_engine_core PUBLIC ${PROJECT_SOURCE_DIR}/AlasCore/src/Core/precompiled.h)
 
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/OpenGL/GLAD/)
