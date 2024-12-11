@@ -1,5 +1,5 @@
 #pragma once 
-#include "Core/Renderer/VertexArray.h"
+#include "Renderer/VertexArray.h"
 
 
 namespace AGS

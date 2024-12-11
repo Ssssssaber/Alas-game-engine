@@ -1,4 +1,4 @@
-#include "Core/Renderer/VertexBuffer.h"
+#include "Renderer/VertexBuffer.h"
 
 namespace AGS {
 

@@ -3,10 +3,10 @@
 #include "Core/Logger.h"
 #include "Input.h"
 #include <glad/glad.h>
-#include "Core/Renderer/BufferLayout.h"
+#include "Renderer/BufferLayout.h"
 
-#include "Core/Renderer/Renderer.h"
-#include "Core/Renderer/RendererCommand.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/RendererCommand.h"
 
 #define GlCall(x) { GLClearError();\
     x;\

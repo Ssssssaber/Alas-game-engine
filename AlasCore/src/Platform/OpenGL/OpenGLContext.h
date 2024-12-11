@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Renderer/GraphicsContext.h"
+#include "Renderer/GraphicsContext.h"
 
 struct SDL_Window;
 

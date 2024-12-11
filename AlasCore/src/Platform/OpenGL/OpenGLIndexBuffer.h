@@ -1,4 +1,4 @@
-#include "Core/Renderer/IndexBuffer.h"
+#include "Renderer/IndexBuffer.h"
 
 namespace AGS {
 

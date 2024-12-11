@@ -7,10 +7,10 @@
 #include "Core/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 
-#include "Core/Renderer/Shader.h"
-#include "Core/Renderer/VertexArray.h"
-#include "Core/Renderer/VertexBuffer.h"
-#include "Core/Renderer/IndexBuffer.h"
+#include "Renderer/Shader.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/IndexBuffer.h"
 
 // use pointers 
 namespace AGS
