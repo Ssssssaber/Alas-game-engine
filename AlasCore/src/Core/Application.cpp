@@ -7,6 +7,8 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
+#include "gtc/matrix_transform.hpp"
+
 namespace AGS
 {
     Application* Application::_instance = nullptr;
@@ -61,31 +63,24 @@ namespace AGS
 			layout(location = 0) in vec3 a_Position;
             layout(location = 1) in vec4 a_Color;
 
-
-            uniform vec4 u_Color;
-
-			out vec3 v_Position;
-            out vec4 v_Color;
+            uniform mat4 u_translation;
 
 			void main()
 			{
-				v_Position = a_Position;
-                v_Color = u_Color;
-				gl_Position = vec4(a_Position, 1.0);	
+				gl_Position = u_translation * vec4(a_Position, 1.0);	
 			}
 		)";
 
 		std::string fragmentSrc = R"(
 			#version 330 core
-			
-			layout(location = 0) out vec4 color;
 
-			in vec3 v_Position;
-            in vec4 v_Color;
+            layout(location = 0) out vec4 color;
+
+            uniform vec4 u_Color;
 
 			void main()
 			{
-				color = v_Color;
+				color = u_Color;
 			}
 		)";
 
@@ -125,9 +120,17 @@ namespace AGS
 			RenderCommand::Clear();
 
 			Renderer::BeginScene();
+
             float time = SDL_GetTicks();
             float color = glm::sin(1 / 2) + 0.5f;
             _shader->setVec4("u_Color", color, 0.0f, 0.0f, 1.0f);
+
+            glm::mat4 translation = glm::mat4(1.0f);
+            translation = glm::translate(translation, glm::vec3(0.25, 0.25, 0.25));
+            translation = glm::rotate(translation, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            translation = glm::scale(translation, glm::vec3(0.5, 0.5, 0.5));
+            _shader->setMat4("u_translation", translation);
+
             _shader->Bind();
             _vertexArray->Bind();
             
