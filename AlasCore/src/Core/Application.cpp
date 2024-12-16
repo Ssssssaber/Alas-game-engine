@@ -3,11 +3,8 @@
 #include "Core/Logger.h"
 #include "Input.h"
 #include "Renderer/BufferLayout.h"
-#include "SDL3/SDL.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
-
-#include "gtc/matrix_transform.hpp"
 
 namespace AGS
 {
@@ -22,70 +19,11 @@ namespace AGS
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
 
-        _window->SetVSync(true);
-
         _imguiLayer = new ImGuiLayer();
         PushOverlay(_imguiLayer);
 
         _input = new SDLInput();
         Input::Init();
-
-        _vertexArray.reset(VertexArray::Create());
-
-		float vertices[3 * 7] = {
-			-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
-            0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
-            0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f
-		};
-        
-        std::shared_ptr<VertexBuffer> vertexBuffer; 
-		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-        
-        {
-            BufferLayout layout {
-                {ShaderElementType::Float3, "a_Position"},
-                {ShaderElementType::Float4, "a_Color"}
-            };
-            vertexBuffer->SetLayout(layout);
-        }
-
-        _vertexArray->AddVertexBuffer(vertexBuffer);
-		
-		uint32_t indices[3] = { 0, 1, 2 };        
-        std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-        
-        _vertexArray->SetIndexBuffer(indexBuffer);
-
-		std::string vertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-            layout(location = 1) in vec4 a_Color;
-
-            uniform mat4 u_translation;
-
-			void main()
-			{
-				gl_Position = u_translation * vec4(a_Position, 1.0);	
-			}
-		)";
-
-		std::string fragmentSrc = R"(
-			#version 330 core
-
-            layout(location = 0) out vec4 color;
-
-            uniform vec4 u_Color;
-
-			void main()
-			{
-				color = u_Color;
-			}
-		)";
-
-		_shader.reset(new Shader(vertexSrc, fragmentSrc));
-        _shader->Bind();
     }
 
     Application::~Application() {}
@@ -96,8 +34,6 @@ namespace AGS
         manager.Dispatch<WindowCloseEvent>(
            std::bind(&Application::OnWindowClose, this, std::placeholders::_1)
         );
-
-        // AGS_CORE_INFO("Event {0}: ", e.ToString());
 
         for (auto it = _layerStack.end(); it != _layerStack.begin();)
         {
@@ -116,28 +52,6 @@ namespace AGS
         AGS_CORE_INFO(e.ToString());
         while (_isRunning)
         {
-            RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-			RenderCommand::Clear();
-
-			Renderer::BeginScene();
-
-            float time = SDL_GetTicks();
-            float color = glm::sin(1 / 2) + 0.5f;
-            _shader->setVec4("u_Color", color, 0.0f, 0.0f, 1.0f);
-
-            glm::mat4 translation = glm::mat4(1.0f);
-            translation = glm::translate(translation, glm::vec3(0.25, 0.25, 0.25));
-            translation = glm::rotate(translation, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-            translation = glm::scale(translation, glm::vec3(0.5, 0.5, 0.5));
-            _shader->setMat4("u_translation", translation);
-
-            _shader->Bind();
-            _vertexArray->Bind();
-            
-            Renderer::Submit(_vertexArray);
-			
-            Renderer::EndScene();
-
             for (Layer* layer : _layerStack)
             {
                 layer->OnUpdate();
@@ -152,7 +66,6 @@ namespace AGS
 
             _window->OnUpdate();
         }
-        SDL_Delay(2000);
     }
 
     bool Application::OnWindowClose(WindowCloseEvent& event)

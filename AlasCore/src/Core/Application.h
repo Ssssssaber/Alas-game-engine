@@ -42,9 +42,7 @@ namespace AGS
         Window* _window;
         SDLInput* _input;
         LayerStack _layerStack;
-
-        std::shared_ptr<Shader> _shader;
-        std::shared_ptr<VertexArray> _vertexArray;
+        
         bool _isRunning = true;
     };
 
