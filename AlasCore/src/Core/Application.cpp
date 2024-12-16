@@ -24,6 +24,8 @@ namespace Alas
 
         _input = new SDLInput();
         Input::Init();
+
+        _time = new Time();
     }
 
     Application::~Application() {}
@@ -50,8 +52,15 @@ namespace Alas
     {
         WindowResizeEvent e(1280, 720);
         ALAS_CORE_INFO(e.ToString());
+        
+        float lastTime = 0.0f;
+        
         while (_isRunning)
         {
+            float currentTime = Time::GetTimeInSeconds();
+            _time->updateDeltaTime(currentTime - lastTime);
+            lastTime = currentTime;
+            
             for (Layer* layer : _layerStack)
             {
                 layer->OnUpdate();

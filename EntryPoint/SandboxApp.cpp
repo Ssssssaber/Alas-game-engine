@@ -73,35 +73,36 @@ public:
 
         Alas::Renderer::BeginScene();
 
-        float time = SDL_GetTicks();
+        float deltaTime = Alas::Time::getDeltaTime();
         float color = glm::sin(1 / 2) + 0.5f;
         _shader->setVec4("u_Color", color, 0.0f, 0.0f, 1.0f);
 
-    
+        ALAS_CLIENT_TRACE("{0}", deltaTime);
 
         if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
         {
             ALAS_CLIENT_TRACE("w pressed");
-            tri_speed.y += 0.1f;
+            tri_speed.y += speed * deltaTime;
         }
         else if (Alas::Input::IsKeyPressed(ALAS_KEY_S))
         {
             
             ALAS_CLIENT_TRACE("s pressed");
-            tri_speed.y -= 0.1f;
+            tri_speed.y -= speed * deltaTime;
         }
         else if (Alas::Input::IsKeyPressed(ALAS_KEY_A))
         {
             
             ALAS_CLIENT_TRACE("a pressed");
-            tri_speed.x -= 0.1f;
+            tri_speed.x -= speed * deltaTime;
         }
         else if (Alas::Input::IsKeyPressed(ALAS_KEY_D))
         {
             
             ALAS_CLIENT_TRACE("d pressed");
-            tri_speed.x += 0.1f;
+            tri_speed.x += speed * deltaTime;
         }
+
 
         glm::mat4 translation = glm::mat4(1.0f);
         translation = glm::translate(translation, tri_speed);
@@ -126,7 +127,7 @@ public:
         std::shared_ptr<Alas::Shader> _shader;
         std::shared_ptr<Alas::VertexArray> _vertexArray;
         glm::vec3 tri_speed = glm::vec3(0.0f);
-        float speed = 0.1f;
+        float speed = 7.0f;
 };
 
 class Sandbox : public Alas::Application

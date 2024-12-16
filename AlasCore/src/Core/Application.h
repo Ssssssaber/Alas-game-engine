@@ -12,6 +12,8 @@
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
 
+#include "Time.h"
+
 // use pointers 
 namespace Alas
 {
@@ -42,6 +44,8 @@ namespace Alas
         Window* _window;
         SDLInput* _input;
         LayerStack _layerStack;
+
+        Time* _time;
 
         bool _isRunning = true;
     };

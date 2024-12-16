@@ -7,6 +7,8 @@
 #include "src/Core/Layer.h"
 #include "src/ImGui/ImGuiLayer.h"
 
+#include "src/Core/Time.h"
+
 // Events
 #include "src/Core/KeyCodes.h"
 #include "src/Core/MouseCodes.h"
