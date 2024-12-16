@@ -2,37 +2,13 @@
 #include "Events/ApplicationEvent.h"
 #include "Core/Logger.h"
 #include "Input.h"
-#include <glad/glad.h>
 #include "Renderer/BufferLayout.h"
 
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
-#define GlCall(x) { GLClearError();\
-    x;\
-    AGS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); }
 namespace AGS
 {
-
-
-    
-
-    static void GLClearError()
-    {
-        while(glGetError() != GL_NO_ERROR);
-    }
-
-    static bool GLLogCall(const char* function, const char* file, int line)
-    {
-        while (GLenum error = glGetError())
-        {
-            AGS_CORE_ERROR("[OPENGL ERROR]: (code: {0}) {1}; {2}; {3}", error, function, file, line);
-            return false;
-        }
-        return true;
-    }
-
-
     Application* Application::_instance = nullptr;
     Application::Application()
     {
