@@ -1,6 +1,6 @@
 #pragma once
 #include "BufferLayout.h"
-namespace AGS {
+namespace Alas {
    class VertexBuffer 
     {
     public:

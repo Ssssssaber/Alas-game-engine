@@ -1,6 +1,6 @@
 #include "Renderer.h"
 #include "RendererCommand.h"
-namespace AGS
+namespace Alas
 {
     void Renderer::BeginScene()
 	{

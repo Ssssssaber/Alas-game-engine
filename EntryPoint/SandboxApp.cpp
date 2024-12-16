@@ -1,12 +1,12 @@
 #include <Alas.h>
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-class ExampleLayer : public AGS::Layer
+class ExampleLayer : public Alas::Layer
 {
 public:
     ExampleLayer() : Layer("Example")
     {
-        _vertexArray.reset(AGS::VertexArray::Create());
+        _vertexArray.reset(Alas::VertexArray::Create());
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
@@ -14,13 +14,13 @@ public:
             0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f
 		};
         
-        std::shared_ptr<AGS::VertexBuffer> vertexBuffer; 
-		vertexBuffer.reset(AGS::VertexBuffer::Create(vertices, sizeof(vertices)));
+        std::shared_ptr<Alas::VertexBuffer> vertexBuffer; 
+		vertexBuffer.reset(Alas::VertexBuffer::Create(vertices, sizeof(vertices)));
         
         {
-            AGS::BufferLayout layout {
-                {AGS::ShaderElementType::Float3, "a_Position"},
-                {AGS::ShaderElementType::Float4, "a_Color"}
+            Alas::BufferLayout layout {
+                {Alas::ShaderElementType::Float3, "a_Position"},
+                {Alas::ShaderElementType::Float4, "a_Color"}
             };
             vertexBuffer->SetLayout(layout);
         }
@@ -28,8 +28,8 @@ public:
         _vertexArray->AddVertexBuffer(vertexBuffer);
 		
 		uint32_t indices[3] = { 0, 1, 2 };        
-        std::shared_ptr<AGS::IndexBuffer> indexBuffer;
-		indexBuffer.reset(AGS::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        std::shared_ptr<Alas::IndexBuffer> indexBuffer;
+		indexBuffer.reset(Alas::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         
         _vertexArray->SetIndexBuffer(indexBuffer);
 
@@ -60,18 +60,18 @@ public:
 			}
 		)";
 
-		_shader.reset(new AGS::Shader(vertexSrc, fragmentSrc));
+		_shader.reset(new Alas::Shader(vertexSrc, fragmentSrc));
         _shader->Bind();
 
-        AGS::Application::Get().GetWindow().SetVSync(false);
+        Alas::Application::Get().GetWindow().SetVSync(false);
     }
 
     void OnUpdate() override
     {           
-        AGS::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-        AGS::RenderCommand::Clear();
+        Alas::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        Alas::RenderCommand::Clear();
 
-        AGS::Renderer::BeginScene();
+        Alas::Renderer::BeginScene();
 
         float time = SDL_GetTicks();
         float color = glm::sin(1 / 2) + 0.5f;
@@ -79,27 +79,27 @@ public:
 
     
 
-        if (AGS::Input::IsKeyPressed(AGS_KEY_W))
+        if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
         {
-            AGS_CLIENT_TRACE("w pressed");
+            ALAS_CLIENT_TRACE("w pressed");
             tri_speed.y += 0.1f;
         }
-        else if (AGS::Input::IsKeyPressed(AGS_KEY_S))
+        else if (Alas::Input::IsKeyPressed(ALAS_KEY_S))
         {
             
-            AGS_CLIENT_TRACE("s pressed");
+            ALAS_CLIENT_TRACE("s pressed");
             tri_speed.y -= 0.1f;
         }
-        else if (AGS::Input::IsKeyPressed(AGS_KEY_A))
+        else if (Alas::Input::IsKeyPressed(ALAS_KEY_A))
         {
             
-            AGS_CLIENT_TRACE("a pressed");
+            ALAS_CLIENT_TRACE("a pressed");
             tri_speed.x -= 0.1f;
         }
-        else if (AGS::Input::IsKeyPressed(AGS_KEY_D))
+        else if (Alas::Input::IsKeyPressed(ALAS_KEY_D))
         {
             
-            AGS_CLIENT_TRACE("d pressed");
+            ALAS_CLIENT_TRACE("d pressed");
             tri_speed.x += 0.1f;
         }
 
@@ -112,24 +112,24 @@ public:
         _shader->Bind();
         _vertexArray->Bind();
         
-        AGS::Renderer::Submit(_vertexArray);
+        Alas::Renderer::Submit(_vertexArray);
         
-        AGS::Renderer::EndScene();
+        Alas::Renderer::EndScene();
     }
 
-    void OnEvent(AGS::Event& event) override
+    void OnEvent(Alas::Event& event) override
     {
     
     }
 
     private:
-        std::shared_ptr<AGS::Shader> _shader;
-        std::shared_ptr<AGS::VertexArray> _vertexArray;
+        std::shared_ptr<Alas::Shader> _shader;
+        std::shared_ptr<Alas::VertexArray> _vertexArray;
         glm::vec3 tri_speed = glm::vec3(0.0f);
         float speed = 0.1f;
 };
 
-class Sandbox : public AGS::Application
+class Sandbox : public Alas::Application
 {
 public:
     Sandbox()
@@ -145,7 +145,7 @@ public:
 };
 
 
-AGS::Application* AGS::CreateApplication()
+Alas::Application* Alas::CreateApplication()
 {
     return new Sandbox();
 }

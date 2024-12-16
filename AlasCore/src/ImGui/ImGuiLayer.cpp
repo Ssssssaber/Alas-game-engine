@@ -7,7 +7,7 @@
 #include "SDL3/SDL.h"
 #include "glad/glad.h"
 
-namespace AGS {
+namespace Alas {
 
     ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
     {

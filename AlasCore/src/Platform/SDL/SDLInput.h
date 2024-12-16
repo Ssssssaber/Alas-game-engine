@@ -2,7 +2,7 @@
 
 #include "Core/Input.h"
 #include <SDL3/SDL.h>
-namespace AGS {
+namespace Alas {
 
     class SDLInput : public Input
     {

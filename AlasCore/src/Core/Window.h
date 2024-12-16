@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-namespace AGS
+namespace Alas
 {
 
     struct WindowParams

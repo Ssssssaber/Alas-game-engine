@@ -1,7 +1,7 @@
 #include "Platform/SDL/SDLInput.h"
 
 
-namespace AGS
+namespace Alas
 {
     void SDLInput::InitImpl()
     {

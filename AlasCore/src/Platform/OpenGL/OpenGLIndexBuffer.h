@@ -1,6 +1,6 @@
 #include "Renderer/IndexBuffer.h"
 
-namespace AGS {
+namespace Alas {
 
     class OpenGLIndexBuffer : public IndexBuffer
 	{

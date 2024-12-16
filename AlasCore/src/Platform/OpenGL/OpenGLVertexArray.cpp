@@ -1,7 +1,7 @@
 #include "OpenGLVertexArray.h"
 #include "OpenGLCore.h"
 
-namespace AGS
+namespace Alas
 {
     static GLenum GetShaderElementGLType(ShaderElementType type)
     {
@@ -20,7 +20,7 @@ namespace AGS
             case ShaderElementType::Bool:   return GL_BOOL;
         }
 
-        AGS_ASSERT(false, "Wrong shader type");
+        ALAS_ASSERT(false, "Wrong shader type");
         return 0;
     }
     
@@ -46,7 +46,7 @@ namespace AGS
 
     void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
     {
-        AGS_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+        ALAS_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
         glBindVertexArray(_rendererId);
 		vertexBuffer->Bind();

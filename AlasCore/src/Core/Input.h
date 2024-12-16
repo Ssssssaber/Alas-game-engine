@@ -1,6 +1,6 @@
 #pragma once
 
-namespace AGS {
+namespace Alas {
 
     class Input
     {

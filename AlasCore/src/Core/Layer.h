@@ -2,7 +2,7 @@
 
 #include "Events/Event.h"
 
-namespace AGS {
+namespace Alas {
     class Layer
     {
     public:

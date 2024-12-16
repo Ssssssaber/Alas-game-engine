@@ -4,7 +4,7 @@
 
 struct SDL_Window;
 
-namespace AGS {
+namespace Alas {
 
 	class OpenGLContext : public GraphicsContext
 	{

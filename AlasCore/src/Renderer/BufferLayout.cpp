@@ -1,6 +1,6 @@
 #include "BufferLayout.h"
 
-namespace AGS {
+namespace Alas {
 
     void BufferLayout::CalculateStrideAndOffset()
     {

@@ -2,7 +2,7 @@
 #include "Renderer/VertexArray.h"
 
 
-namespace AGS
+namespace Alas
 {
     class OpenGLVertexArray : public VertexArray
     {

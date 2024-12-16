@@ -1,6 +1,6 @@
 #include "Renderer/VertexBuffer.h"
 
-namespace AGS {
+namespace Alas {
 
     class OpenGLVertexBuffer : public VertexBuffer
 	{

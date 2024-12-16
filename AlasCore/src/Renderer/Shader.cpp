@@ -1,7 +1,7 @@
 #include "Shader.h"
 #include "Platform/OpenGL/OpenGLCore.h"
 
-namespace AGS {
+namespace Alas {
 
     Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
     {
@@ -24,8 +24,8 @@ namespace AGS {
 			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
 			// We don't need the shader anymore.
 			glDeleteShader(vertexShader);
-			AGS_CORE_ERROR("{0}", infoLog.data());
-			AGS_ASSERT(false, "Vertex shader compilation failure!");
+			ALAS_CORE_ERROR("{0}", infoLog.data());
+			ALAS_ASSERT(false, "Vertex shader compilation failure!");
 			return;
 		}
 		// Create an empty fragment shader handle
@@ -48,8 +48,8 @@ namespace AGS {
 			glDeleteShader(fragmentShader);
 			// Either of them. Don't leak shaders.
 			glDeleteShader(vertexShader);
-			AGS_CORE_ERROR("{0}", infoLog.data());
-			AGS_ASSERT(false, "Fragment shader compilation failure!");
+			ALAS_CORE_ERROR("{0}", infoLog.data());
+			ALAS_ASSERT(false, "Fragment shader compilation failure!");
 			return;
 		}
 		// Vertex and fragment shaders are successfully compiled.
@@ -77,8 +77,8 @@ namespace AGS {
 			// Don't leak shaders either.
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
-			AGS_CORE_ERROR("{0}", infoLog.data());
-			AGS_ASSERT(false, "Shader link failure!");
+			ALAS_CORE_ERROR("{0}", infoLog.data());
+			ALAS_ASSERT(false, "Shader link failure!");
 			return;
 		}
 		// Always detach shaders after a successful link.

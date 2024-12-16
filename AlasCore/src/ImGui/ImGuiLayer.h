@@ -6,7 +6,7 @@
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
 
-namespace AGS {
+namespace Alas {
 
     class ImGuiLayer : public Layer
     {

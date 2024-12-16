@@ -1,5 +1,5 @@
-if (AGS_ENABLE_ASSERTS)
-    add_definitions(-DAGS_ENABLE_ASSERTS)
+if (ALAS_ENABLE_ASSERTS)
+    add_definitions(-DALAS_ENABLE_ASSERTS)
 endif()
 
 if (SDL_WINDOWS)

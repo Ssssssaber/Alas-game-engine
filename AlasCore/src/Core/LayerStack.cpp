@@ -1,6 +1,6 @@
 #include "Core/LayerStack.h"
 
-namespace AGS {
+namespace Alas {
 
     LayerStack::LayerStack() 
     {

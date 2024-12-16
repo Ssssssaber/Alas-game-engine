@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include "VertexArray.h"
 
-namespace AGS {
+namespace Alas {
 	class RendererAPI
 	{
 	public:

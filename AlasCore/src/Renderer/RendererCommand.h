@@ -2,7 +2,7 @@
 
 #include "RendererAPI.h"
 
-namespace AGS {
+namespace Alas {
 
 	class RenderCommand
 	{

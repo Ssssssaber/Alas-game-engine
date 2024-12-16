@@ -1,6 +1,6 @@
 #pragma once 
 
-namespace AGS {
+namespace Alas {
 
     enum class ShaderElementType 
     {
@@ -24,7 +24,7 @@ namespace AGS {
             case ShaderElementType::Bool:   return 1;
         }
 
-        AGS_ASSERT(false, "Wrong shader type");
+        ALAS_ASSERT(false, "Wrong shader type");
         return 0;
     }
 
@@ -56,7 +56,7 @@ namespace AGS {
                 case ShaderElementType::Bool: return 1;
             }
 
-            AGS_ASSERT(false, "Wrong shader type");
+            ALAS_ASSERT(false, "Wrong shader type");
             return 0;
         }
     };

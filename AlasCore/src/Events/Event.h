@@ -5,7 +5,7 @@
 
 #include "Core/Core.h"
 
-namespace AGS {
+namespace Alas {
 
     enum class EventType
     {

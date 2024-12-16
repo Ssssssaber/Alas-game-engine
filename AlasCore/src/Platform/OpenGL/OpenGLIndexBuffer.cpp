@@ -1,7 +1,7 @@
 #include "OpenGLIndexBuffer.h"
 #include "OpenGLCore.h"
 
-namespace AGS
+namespace Alas
 {
     OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
     : _count(count)

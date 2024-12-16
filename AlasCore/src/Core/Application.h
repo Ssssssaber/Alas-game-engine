@@ -13,7 +13,7 @@
 #include "Renderer/IndexBuffer.h"
 
 // use pointers 
-namespace AGS
+namespace Alas
 {
     class Application 
     {
@@ -42,7 +42,7 @@ namespace AGS
         Window* _window;
         SDLInput* _input;
         LayerStack _layerStack;
-        
+
         bool _isRunning = true;
     };
 

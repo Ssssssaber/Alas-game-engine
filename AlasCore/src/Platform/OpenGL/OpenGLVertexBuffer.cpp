@@ -1,7 +1,7 @@
 #include "OpenGLVertexBuffer.h"
 #include "OpenGLCore.h"
 
-namespace AGS {
+namespace Alas {
 
     OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
 	{

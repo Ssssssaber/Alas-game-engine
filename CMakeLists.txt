@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 option(SDL_VENDORED "Use vendored SDL library" ON)
 option(SDL_WINDOWS "Use SDL2 for window creation" ON)
-option(AGS_ENABLE_ASSERTS "Use assertions during app running" ON)
+option(ALAS_ENABLE_ASSERTS "Use assertions during app running" ON)
 
 set(OSBitness 32)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)

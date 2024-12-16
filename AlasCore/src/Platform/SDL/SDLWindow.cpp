@@ -8,7 +8,7 @@
 #include "imgui_impl_sdl3.h"
 
 #include "Core/KeyCodes.h"
-namespace AGS {
+namespace Alas {
 
     static bool s_IsSDLInitialized = false;
 
@@ -42,12 +42,12 @@ namespace AGS {
         if (!s_IsSDLInitialized)
         {
             int success = SDL_Init(SDL_INIT_VIDEO);
-            // AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
-            // AGS_ASSERT(!success, SDL_GetError())
+            // ALAS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
+            // ALAS_ASSERT(!success, SDL_GetError())
                 
             if (success < 0)
             {
-                AGS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
+                ALAS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
                 return;
             }
             s_IsSDLInitialized = true;
@@ -56,18 +56,18 @@ namespace AGS {
         _window = SDL_CreateWindow(_params.title.data(), _params.width, _params.height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
         if (_window == NULL)
         {
-            AGS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
+            ALAS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
             return;
         }
 
         _context = SDL_GL_CreateContext(_window); 
         int status = gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
-        AGS_ASSERT(status, "GLAD was not initialized")
+        ALAS_ASSERT(status, "GLAD was not initialized")
         
-        AGS_CORE_INFO("OpenGL {0}.{1}", GLVersion.major, GLVersion.minor);
-        AGS_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-        AGS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-        AGS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+        ALAS_CORE_INFO("OpenGL {0}.{1}", GLVersion.major, GLVersion.minor);
+        ALAS_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+        ALAS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+        ALAS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
         SDL_GL_MakeCurrent(_window, _context);
     }

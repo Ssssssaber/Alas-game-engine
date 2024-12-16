@@ -1,6 +1,6 @@
 #include "RendererAPI.h"
 
-namespace AGS {
+namespace Alas {
 
 	RendererAPI::API RendererAPI::_API = RendererAPI::API::OpenGL;
 

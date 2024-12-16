@@ -2,7 +2,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
-namespace AGS {
+namespace Alas {
 
     class VertexArray
     {

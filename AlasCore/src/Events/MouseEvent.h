@@ -3,7 +3,7 @@
 #include "Event.h"
 
 //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-namespace AGS {
+namespace Alas {
     
     class MouseButtonPressedEvent : public Event
     {

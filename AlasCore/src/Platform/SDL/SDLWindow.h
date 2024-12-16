@@ -6,7 +6,7 @@
 #include "Core/Window.h"
 struct SDL_Window;
 
-namespace AGS{
+namespace Alas{
 
     class SDLGLWindow : public Window 
     {

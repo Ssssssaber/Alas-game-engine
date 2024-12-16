@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-namespace AGS
+namespace Alas
 {
     Camera::Camera()
     {

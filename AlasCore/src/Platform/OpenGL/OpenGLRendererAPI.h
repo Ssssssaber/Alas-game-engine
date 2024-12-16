@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererAPI.h"
 
-namespace AGS {
+namespace Alas {
 
 	class OpenGLRendererAPI : public RendererAPI
 	{

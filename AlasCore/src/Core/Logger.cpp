@@ -1,6 +1,6 @@
 #include "Logger.h"
 
-namespace AGS {
+namespace Alas {
     
     std::shared_ptr<spdlog::logger> Logger::_spdClientLogger;
     std::shared_ptr<spdlog::logger> Logger::_spdCoreLogger;

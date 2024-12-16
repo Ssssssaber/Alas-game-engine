@@ -1,7 +1,7 @@
 #include "OpenGLRendererAPI.h"
 #include "OpenGLCore.h"
 
-namespace AGS {
+namespace Alas {
 
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
 	{

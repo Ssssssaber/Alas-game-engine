@@ -1,4 +1,4 @@
 #include "Input.h"
-namespace AGS {
+namespace Alas {
     Input* Input::_instance;
 }

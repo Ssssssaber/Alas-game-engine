@@ -6,15 +6,15 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
-namespace AGS
+namespace Alas
 {
     Application* Application::_instance = nullptr;
     Application::Application()
     {
-        AGS_ASSERT(!_instance, "Application already exists");
+        ALAS_ASSERT(!_instance, "Application already exists");
         _instance = this;
 
-        _window = AGS::Window::Create();
+        _window = Alas::Window::Create();
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
@@ -49,7 +49,7 @@ namespace AGS
     void Application::Run()
     {
         WindowResizeEvent e(1280, 720);
-        AGS_CORE_INFO(e.ToString());
+        ALAS_CORE_INFO(e.ToString());
         while (_isRunning)
         {
             for (Layer* layer : _layerStack)

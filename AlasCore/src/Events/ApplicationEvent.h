@@ -4,7 +4,7 @@
 
 #include <sstream>
 // unique namespace for each system
-namespace AGS {
+namespace Alas {
 
     class WindowResizeEvent : public Event
     {

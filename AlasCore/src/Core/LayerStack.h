@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Core/Layer.h"
 
-namespace AGS {
+namespace Alas {
 
     class LayerStack 
     {

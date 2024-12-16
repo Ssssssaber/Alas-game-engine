@@ -1,9 +1,9 @@
 #include <glad/glad.h>
 
-#ifdef AGS_ENABLE_ASSERTS
+#ifdef ALAS_ENABLE_ASSERTS
     #define GlCall(x)  GLClearError();\
         x;\
-        AGS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); 
+        ALAS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); 
 
     static void GLClearError()
     {
@@ -14,7 +14,7 @@
     {
         while (GLenum error = glGetError())
         {
-            AGS_CORE_ERROR("[OPENGL ERROR]: (code: {0}) {1}; {2}; {3}", error, function, file, line);
+            ALAS_CORE_ERROR("[OPENGL ERROR]: (code: {0}) {1}; {2}; {3}", error, function, file, line);
             return false;
         }
         return true;

@@ -4,7 +4,7 @@
 
 // KeyPressed, KeyReleased, KeyTyped,
 
-namespace AGS {
+namespace Alas {
 
     class KeyEvent : public Event
     {

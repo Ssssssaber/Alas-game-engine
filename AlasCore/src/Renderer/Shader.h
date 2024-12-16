@@ -1,6 +1,6 @@
 #pragma once 
 #include "glm.hpp"
-namespace AGS {
+namespace Alas {
 
     class Shader 
     {

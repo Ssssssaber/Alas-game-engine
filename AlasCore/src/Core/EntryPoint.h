@@ -2,12 +2,12 @@
 
 #include "Application.h"
 
-extern AGS::Application* AGS::CreateApplication();
+extern Alas::Application* Alas::CreateApplication();
 
 int main(int argv, char** argc)
 {
-    AGS::Logger::Init();
-    auto app = AGS::CreateApplication();
+    Alas::Logger::Init();
+    auto app = Alas::CreateApplication();
     app->Run();
     delete app;
 
