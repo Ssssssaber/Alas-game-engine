@@ -3,7 +3,7 @@
 #include "Core/Logger.h"
 #include "Input.h"
 #include "Renderer/BufferLayout.h"
-
+#include "SDL3/SDL.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
@@ -19,6 +19,8 @@ namespace AGS
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
+
+        _window->SetVSync(true);
 
         _imguiLayer = new ImGuiLayer();
         PushOverlay(_imguiLayer);
@@ -59,13 +61,16 @@ namespace AGS
 			layout(location = 0) in vec3 a_Position;
             layout(location = 1) in vec4 a_Color;
 
+
+            uniform vec4 u_Color;
+
 			out vec3 v_Position;
             out vec4 v_Color;
 
 			void main()
 			{
 				v_Position = a_Position;
-                v_Color = a_Color;
+                v_Color = u_Color;
 				gl_Position = vec4(a_Position, 1.0);	
 			}
 		)";
@@ -85,6 +90,7 @@ namespace AGS
 		)";
 
 		_shader.reset(new Shader(vertexSrc, fragmentSrc));
+        _shader->Bind();
     }
 
     Application::~Application() {}
@@ -119,7 +125,9 @@ namespace AGS
 			RenderCommand::Clear();
 
 			Renderer::BeginScene();
-            
+            float time = SDL_GetTicks();
+            float color = glm::sin(1 / 2) + 0.5f;
+            _shader->setVec4("u_Color", color, 0.0f, 0.0f, 1.0f);
             _shader->Bind();
             _vertexArray->Bind();
             

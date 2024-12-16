@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 
-#define GlCall(x) { GLClearError();\
+#define GlCall(x)  GLClearError();\
     x;\
-    AGS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); }
+    AGS_CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__), "OPEN GL ERROR"); 
 
 static void GLClearError()
 {
