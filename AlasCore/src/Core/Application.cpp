@@ -22,8 +22,7 @@ namespace Alas
         _imguiLayer = new ImGuiLayer();
         PushOverlay(_imguiLayer);
 
-        _input = new SDLInput();
-        Input::Init();
+        _input = Input::Init();
 
         _time = new Time();
     }

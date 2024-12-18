@@ -8,6 +8,7 @@
 #include "src/ImGui/ImGuiLayer.h"
 
 #include "src/Core/Time.h"
+#include "src/Core/OrthCamera.h"
 
 // Events
 #include "src/Core/KeyCodes.h"

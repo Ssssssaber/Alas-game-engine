@@ -6,7 +6,7 @@
 #include <Events/MouseEvent.h>
 #include <Events/KeyboardEvent.h>
 #include "imgui_impl_sdl3.h"
-
+#include "Core/Input.h"
 #include "Core/KeyCodes.h"
 namespace Alas {
 
@@ -145,21 +145,18 @@ namespace Alas {
             // KeyPressed, KeyReleased, KeyTyped,
             case SDL_EVENT_KEY_DOWN:
             {
-                SDL_Keymod mods = SDL_GetModState();
                 KeyPressedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod, 1);
                 _params.EventCallback(e);
                 break;
             }
             case SDL_EVENT_KEY_UP:
             {
-                SDL_Keymod mods = SDL_GetModState();
                 KeyReleasedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod);
                 _params.EventCallback(e);
                 break;
             }
             case SDL_EVENT_TEXT_INPUT:
             {
-                SDL_Keymod mods = SDL_GetModState();
                 KeyTypedEvent e(sdlEvent.key.key, sdlEvent.key.scancode, sdlEvent.key.mod, sdlEvent.text.text);
                 _params.EventCallback(e);
                 break;

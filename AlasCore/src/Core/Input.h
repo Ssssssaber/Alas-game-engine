@@ -6,7 +6,7 @@ namespace Alas {
     {
     public:
         Input() { _instance = this; }
-        static void Init() { _instance->InitImpl(); }
+        static Input* Init();
         inline static bool IsKeyPressed(int keycode) { return _instance->IsKeyPressedImpl(keycode); }
         inline static bool IsMouseButtonPressed(int mouseCode) { return _instance->IsMouseButtonPressedImpl(mouseCode); }
         inline static std::pair<float, float> GetMousePosition() { return _instance->GetMousePositionImpl(); }

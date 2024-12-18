@@ -1,6 +1,6 @@
 #pragma once
-#include "Platform/SDL/SDLWindow.h"
-#include "Platform/SDL/SDLInput.h"
+#include "Window.h"
+#include "Input.h"
 
 #include "Events/ApplicationEvent.h"
 #include "Core/Layer.h"
@@ -42,7 +42,7 @@ namespace Alas
         ImGuiLayer* _imguiLayer;
         
         Window* _window;
-        SDLInput* _input;
+        Input* _input;
         LayerStack _layerStack;
 
         Time* _time;

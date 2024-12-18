@@ -3,6 +3,14 @@
 
 namespace Alas
 {
+    Input* Input::Init()
+    {
+        _instance = new SDLInput();
+        _instance->InitImpl();
+        
+        return _instance;
+    }
+    
     void SDLInput::InitImpl()
     {
         keys = SDL_GetKeyboardState(NULL); 
