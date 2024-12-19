@@ -1,15 +1,14 @@
 #pragma once
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
-
+#include "SDL3/SDL.h"
 namespace Alas {
 
     class VertexArray
     {
     public:
-        VertexArray() {}
+        VertexArray() { }
         virtual ~VertexArray() {};
-
         virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
         
@@ -19,7 +18,7 @@ namespace Alas {
 		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const = 0;
 
 		static VertexArray* Create();
-
+        uint32_t _rendererId;
     private:
 
     };

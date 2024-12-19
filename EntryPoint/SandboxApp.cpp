@@ -1,44 +1,92 @@
 #include <Alas.h>
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "gtx/string_cast.hpp"
 class ExampleLayer : public Alas::Layer
 {
 public:
     ExampleLayer() : Layer("Example")
     {
-        _vertexArray.reset(Alas::VertexArray::Create());
+        Alas::Application::Get().GetWindow().SetVSync(false);
+
+        float height = Alas::Application::Get().GetWindow().GetHeight();
+        float width = Alas::Application::Get().GetWindow().GetWidth();
+        
+        camera = new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+                /*
+            TRIANGLE GAMEOBJECT
+        */
+        Alas::VertexArray* triVertexArray = Alas::VertexArray::Create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
-            0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
-            0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 1.0f
+            0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.5f, 1.0f,
+            0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 0.5f
 		};
         
-        std::shared_ptr<Alas::VertexBuffer> vertexBuffer; 
-		vertexBuffer.reset(Alas::VertexBuffer::Create(vertices, sizeof(vertices)));
+        std::shared_ptr<Alas::VertexBuffer> triVertexBuffer; 
+		triVertexBuffer.reset(Alas::VertexBuffer::Create(vertices, sizeof(vertices)));
         
         {
             Alas::BufferLayout layout {
                 {Alas::ShaderElementType::Float3, "a_Position"},
                 {Alas::ShaderElementType::Float4, "a_Color"}
             };
-            vertexBuffer->SetLayout(layout);
+            triVertexBuffer->SetLayout(layout);
         }
 
-        _vertexArray->AddVertexBuffer(vertexBuffer);
+        triVertexArray->AddVertexBuffer(triVertexBuffer);
 		
-		uint32_t indices[3] = { 0, 1, 2 };        
-        std::shared_ptr<Alas::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Alas::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		uint32_t triIndices[3] = { 0, 1, 2 };        
+        std::shared_ptr<Alas::IndexBuffer> triIndexBuffer;
+		triIndexBuffer.reset(Alas::IndexBuffer::Create(triIndices, sizeof(triIndices) / sizeof(uint32_t)));
         
-        _vertexArray->SetIndexBuffer(indexBuffer);
+        triVertexArray->SetIndexBuffer(triIndexBuffer);
 
-		std::string vertexSrc = R"(
+        
+
+        /*
+            QUAD GAMEOBJECT
+        */
+        Alas::VertexArray* quadVertexArray = Alas::VertexArray::Create();
+
+		float quadVertices[3 * 4] = {
+			-1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f
+        };
+        
+        std::shared_ptr<Alas::VertexBuffer> quadVertexBuffer; 
+		quadVertexBuffer.reset(Alas::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
+        
+        {
+            Alas::BufferLayout layout {
+                {Alas::ShaderElementType::Float3, "a_Position"}
+            };
+            quadVertexBuffer->SetLayout(layout);
+        }
+
+        quadVertexArray->AddVertexBuffer(quadVertexBuffer);
+		
+		uint32_t quadIndices[6] = { 0, 1, 2, 2, 3, 0 };        
+        std::shared_ptr<Alas::IndexBuffer> quadIndexBuffer;
+		quadIndexBuffer.reset(Alas::IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(uint32_t)));
+        
+        quadVertexArray->SetIndexBuffer(quadIndexBuffer);
+
+        /*
+            SHADERS
+        */
+
+		std::string baseVertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
             layout(location = 1) in vec4 a_Color;
-
+            
+            out vec3 o_Position;
             out vec4 o_Color;
 
             uniform mat4 u_viewProjectionMatrix;
@@ -46,83 +94,161 @@ public:
 
 			void main()
 			{
+                o_Position = a_Position;
                 o_Color = a_Color;
 				gl_Position = u_viewProjectionMatrix * u_model * vec4(a_Position, 1.0);	
 			}
 		)";
 
-		std::string fragmentSrc = R"(
+		std::string baseFragmentSrc = R"(
 			#version 330 core
 
             layout(location = 0) out vec4 color;
 
+            in vec3 o_Position;
             in vec4 o_Color;
+
+            uniform vec4 u_Color;
 
 			void main()
 			{
-				color = o_Color;
+				color = u_Color;
+			}
+		)";     
+
+		std::string quadVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+
+            out vec3 o_Position;
+
+            uniform mat4 u_viewProjectionMatrix;
+            uniform mat4 u_model;
+
+			void main()
+			{
+                o_Position = a_Position;
+				gl_Position = u_viewProjectionMatrix * u_model * vec4(a_Position, 1.0);	
 			}
 		)";
 
-		_shader.reset(new Alas::Shader(vertexSrc, fragmentSrc));
-        _shader->Bind();
+            // uniform vec4 u_Color;
+		std::string quadFragmentSrc = R"(
+			#version 330 core
 
-        Alas::Application::Get().GetWindow().SetVSync(false);
+            layout(location = 0) out vec4 color;
 
-        float height = Alas::Application::Get().GetWindow().GetHeight();
-        float width = Alas::Application::Get().GetWindow().GetWidth();
-        
-        camera = new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+            in vec3 o_Position;
+
+			void main()
+			{
+				color = vec4(0.1, 0.3, 0.6, 1.0);
+			}
+		)";
+
+		
+
+        /*
+            GAMEOBJECTS
+        */
+        Alas::Shader* triangleShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);   
+        triangle = new Alas::GameObject(triVertexArray, triangleShader);
+        triangle->GetShader()->setVec4("u_Color", 0.5f, 0.1f, 0.3f, 1.0f);
+                
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                Alas::Shader* goShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);
+                auto go = new Alas::GameObject(quadVertexArray, goShader);
+                glm::vec4 color = glm::normalize(glm::vec4(i, j, glm::abs(i - j), i + j));
+                go->GetShader()->setVec4("u_Color", color.x, color.y, color.z, color.w);
+                go->SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+                go->SetPosition(glm::vec3(i * 0.3f, j * 0.3f, 0.0f));
+                gameObjects.push_back(go);
+            }
+        }
+
+        Alas::Shader* quadShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);
+        go = new Alas::GameObject(quadVertexArray, quadShader);
+        go->GetShader()->setVec4("u_Color", 0.2f, 0.6f, 0.8f, 1.0f);
+
+        Alas::Shader* trShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);
+        auto tr = new Alas::GameObject(triVertexArray, trShader);
+        tr->SetRotation(glm::vec3(0.0f, 0.0f, 45.0f));
+        tr->GetShader()->setVec4("u_Color", 1.0f, 0.3f, 0.4f, 1.0f);
+
+        gameObjects.push_back(go); gameObjects.push_back(triangle); gameObjects.push_back(tr);  
     }
 
     void OnUpdate() override
     {           
         Alas::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         Alas::RenderCommand::Clear();
-
         
-
         float deltaTime = Alas::Time::getDeltaTime();
-        float color = glm::sin(1 / 2) + 0.5f;
+
+        if (Alas::Input::IsKeyPressed(ALAS_KEY_I))
+        {
+            _tri_pos.y += triangleSpeed * deltaTime;
+        }
+        if (Alas::Input::IsKeyPressed(ALAS_KEY_K))
+        {
+            _tri_pos.y -= triangleSpeed * deltaTime;
+        }
+        if (Alas::Input::IsKeyPressed(ALAS_KEY_J))
+        {
+            _tri_pos.x -= triangleSpeed * deltaTime;
+        }
+        if (Alas::Input::IsKeyPressed(ALAS_KEY_L))
+        {
+            _tri_pos.x += triangleSpeed * deltaTime;
+        }
+
+        triangle->SetPosition(_tri_pos);
 
         if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
         {
-            _cameraPos.y += speed * deltaTime;
+            _cameraPos.y += cameraSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_S))
         {
-            _cameraPos.y -= speed * deltaTime;
+            _cameraPos.y -= cameraSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_A))
         {
-            _cameraPos.x -= speed * deltaTime;
+            _cameraPos.x -= cameraSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_D))
         {
-            _cameraPos.x += speed * deltaTime;
+            _cameraPos.x += cameraSpeed * deltaTime;
         }
 
         if (Alas::Input::IsKeyPressed(ALAS_KEY_Q))
         {
-            _cameraRotation -= rotation_speed * deltaTime;
+            _cameraRotation -= cameraRotationSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_E))
         {
-            _cameraRotation += rotation_speed * deltaTime;
+            _cameraRotation += cameraRotationSpeed * deltaTime;
         }
 
         camera->SetPosition(_cameraPos);
         camera->SetRotation(_cameraRotation);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, tri_pos);
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(0.5, 0.5, 0));
-        _shader->setMat4("u_model", model);
-
         Alas::Renderer::BeginScene(camera);
-        
-        Alas::Renderer::Submit(_vertexArray, _shader);
+
+        // ALAS_CLIENT_INFO("{0}; {1}", glm::to_string(triangle->GetPosition()), glm::to_string(go->GetPosition()));
+
+        std::vector<Alas::GameObject*>::iterator it;
+        for (it = gameObjects.begin(); it != gameObjects.end(); it++)
+        {
+            Alas::GameObject *go = (*it);
+            Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
+        }
+        // Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
+        // Alas::Renderer::Submit(triangle->GetVertexArray(), triangle->GetShader(), triangle->GetModelMatrix());
         
         Alas::Renderer::EndScene();
     }
@@ -133,17 +259,22 @@ public:
     }
 
     private:
-        std::shared_ptr<Alas::Shader> _shader;
-        std::shared_ptr<Alas::VertexArray> _vertexArray;
-        glm::vec3 tri_pos = glm::vec3(0.0f);
+        Alas::GameObject* go;
+        Alas::GameObject* triangle;
 
-        glm::vec3 _cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
+        std::vector<Alas::GameObject*> gameObjects;
+
+        glm::vec3 _tri_pos = glm::vec3(0.0f);
+
+        float triangleSpeed = 5.0f;
+        float triangleRotationSpeed = 1.0f;
 
         Alas::OrthCamera* camera;
+        glm::vec3 _cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
         float _cameraRotation = 0;
-        glm::vec3 _cameraPosition;
-        float speed = 7.0f;
-        float rotation_speed = 30.0f;
+
+        float cameraSpeed = 7.0f;
+        float cameraRotationSpeed = 30.0f;
 };
 
 class Sandbox : public Alas::Application

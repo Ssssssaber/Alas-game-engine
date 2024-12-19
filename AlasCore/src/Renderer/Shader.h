@@ -7,7 +7,6 @@ namespace Alas {
     public:
         Shader (const std::string& vertexSrc, const std::string& fragmentSrc);
         ~Shader();
-
         void Bind() const;
         void Unbind() const;
 
@@ -24,8 +23,8 @@ namespace Alas {
         void setMat2(const std::string &name, const glm::mat2 &mat) const;
         void setMat3(const std::string &name, const glm::mat3 &mat) const;
         void setMat4(const std::string &name, const glm::mat4 &mat) const;
-
-    private:
+        
         uint32_t _rendererId;
+    private:
     };
 }

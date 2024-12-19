@@ -18,7 +18,7 @@ namespace Alas
 		virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const { return _vertexBuffers; }
 		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const { return _indexBuffer; }
 	private:
-		uint32_t _rendererId;
+		
 		std::vector<std::shared_ptr<VertexBuffer>> _vertexBuffers;
 		std::shared_ptr<IndexBuffer> _indexBuffer;
     };

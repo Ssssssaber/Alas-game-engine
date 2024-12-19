@@ -10,6 +10,8 @@
 #include "src/Core/Time.h"
 #include "src/Core/OrthCamera.h"
 
+#include "src/GameObject/GameObject.h"
+
 // Events
 #include "src/Core/KeyCodes.h"
 #include "src/Core/MouseCodes.h"
