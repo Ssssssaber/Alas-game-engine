@@ -10,7 +10,7 @@ namespace Alas
         ~Time() {}
 
         void updateDeltaTime(float deltaTime) { _deltaTime = deltaTime; }
-        static float GetTimeInSeconds() { return SDL_GetTicksNS() / 10e9; }
+        static float GetTimeInSeconds() { return SDL_GetTicksNS() / 10e8; }
         static float getDeltaTime() { return _deltaTime; }
 
     private:
