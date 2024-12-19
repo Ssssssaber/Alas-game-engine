@@ -3,6 +3,9 @@
 #include "gtc/matrix_transform.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "gtx/string_cast.hpp"
+#include <gtc/type_ptr.hpp>
+#include "imgui.h"
+
 class ExampleLayer : public Alas::Layer
 {
 public:
@@ -154,7 +157,7 @@ public:
         */
         Alas::Shader* triangleShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);   
         triangle = new Alas::GameObject(triVertexArray, triangleShader);
-        triangle->GetShader()->setVec4("u_Color", 0.5f, 0.1f, 0.3f, 1.0f);
+        
                 
         for (int i = 0; i < 20; i++)
         {
@@ -172,14 +175,13 @@ public:
 
         Alas::Shader* quadShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);
         go = new Alas::GameObject(quadVertexArray, quadShader);
-        go->GetShader()->setVec4("u_Color", 0.2f, 0.6f, 0.8f, 1.0f);
 
         Alas::Shader* trShader = new Alas::Shader(baseVertexSrc, baseFragmentSrc);
         auto tr = new Alas::GameObject(triVertexArray, trShader);
         tr->SetRotation(glm::vec3(0.0f, 0.0f, 45.0f));
         tr->GetShader()->setVec4("u_Color", 1.0f, 0.3f, 0.4f, 1.0f);
 
-        gameObjects.push_back(go); gameObjects.push_back(triangle); gameObjects.push_back(tr);  
+        // gameObjects.push_back(go); gameObjects.push_back(triangle); gameObjects.push_back(tr);  
     }
 
     void OnUpdate() override
@@ -247,10 +249,21 @@ public:
             Alas::GameObject *go = (*it);
             Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
         }
-        // Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
-        // Alas::Renderer::Submit(triangle->GetVertexArray(), triangle->GetShader(), triangle->GetModelMatrix());
+        
+        go->GetShader()->setVec4("u_Color", _quadColor.x, _quadColor.y, _quadColor.z, 1.0f);
+        Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
+        triangle->GetShader()->setVec4("u_Color", _triColor.x, _triColor.y, _triColor.z, 1.0f);
+        Alas::Renderer::Submit(triangle->GetVertexArray(), triangle->GetShader(), triangle->GetModelMatrix());
         
         Alas::Renderer::EndScene();
+    }
+
+    void OnImGuiRender()
+    {
+        ImGui::Begin("Color picker");
+        ImGui::ColorEdit3("Triangle color", glm::value_ptr(_triColor));
+        ImGui::ColorEdit3("Square color", glm::value_ptr(_quadColor));
+        ImGui::End();
     }
 
     void OnEvent(Alas::Event& event) override
@@ -265,6 +278,9 @@ public:
         std::vector<Alas::GameObject*> gameObjects;
 
         glm::vec3 _tri_pos = glm::vec3(0.0f);
+
+        glm::vec3 _quadColor = { 0.5f, 0.1f, 0.3f};
+        glm::vec3 _triColor = { 0.2f, 0.6f, 0.8f};
 
         float triangleSpeed = 5.0f;
         float triangleRotationSpeed = 1.0f;
