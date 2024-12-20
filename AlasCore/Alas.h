@@ -11,6 +11,7 @@
 #include "src/Core/OrthCamera.h"
 
 #include "src/GameObject/GameObject.h"
+#include "src/GameObject/Scene.h"
 
 // Events
 #include "src/Core/KeyCodes.h"

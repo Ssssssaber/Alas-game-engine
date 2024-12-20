@@ -11,15 +11,25 @@ namespace Alas
     class GameObject
     {
     public:
-        GameObject(VertexArray* vertexArray, Shader* shader);
+        GameObject(VertexArray* vertexArray, Shader* shader, std::string name = "GameObject");
 
-        const glm::vec3& GetPosition() { return _position; }
+        void Update() { SetColor(_color);  CalculateModelMatrix(); }
+
+        glm::vec3& GetColor() { return _color; }
+        void SetColor(const glm::vec3 color) { _color = color; ImplementSetColor(_color); }
+
+        int GetId() { return _id; }
+
+        std::string* GetName() { return &_name; }
+        void SetName(std::string name) { _name = name; }
+
+        glm::vec3& GetPosition() { return _position; }
         void SetPosition(const glm::vec3& position) { _position = position;  CalculateModelMatrix(); }
         
-        const glm::vec3 GetRotation() { return _rotation; }
+        glm::vec3& GetRotation() { return _rotation; }
         void SetRotation(glm::vec3 rotation) { _rotation = rotation;  CalculateModelMatrix(); }
 
-        const glm::vec3 GetScale() {return _scale; }
+        glm::vec3& GetScale() {return _scale; }
         void SetScale(glm::vec3 scale) { _scale = scale;  CalculateModelMatrix(); }
 
         const glm::mat4& GetModelMatrix() { return _modelMatrix; }
@@ -28,12 +38,18 @@ namespace Alas
         const std::shared_ptr<VertexArray> GetVertexArray() { return _vertexArray; }
 
     private:
+        void ImplementSetColor(const glm::vec3& color) { _shader->Bind(); _shader->setVec4("u_Color", color.x, color.y, color.z, 1.0f);}
         void CalculateModelMatrix();
 
     private:
+        static uint64_t _ID;
+
+        int _id;
+        std::string _name;
         std::shared_ptr<Shader> _shader;
         std::shared_ptr<VertexArray> _vertexArray;
 
+        glm::vec3 _color = glm::vec3(0.5f, 0.5f, 0.5f);
         glm::vec3 _position = glm::vec3(0.0f);
         glm::vec3 _rotation = glm::vec3(0.0f);
         glm::vec3 _scale = glm::vec3(1.0f);

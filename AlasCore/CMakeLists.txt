@@ -12,6 +12,7 @@ set(IMGUI_SOURCES
     vendor/imgui/imgui_draw.cpp
     vendor/imgui/imgui_tables.cpp
     vendor/imgui/imgui_widgets.cpp
+    vendor/imgui/misc/cpp/imgui_stdlib.cpp
 )
 
 set(IMGUI_BACKEND
