@@ -4,7 +4,7 @@ Small 2d engine using OpenGL for rendering
 # Requirements
 * GCC > version 8
 * CMake > version 3.10
-Windows MinGW64 link: https://sourceforge.net/projects/mingw-w64/
+* Windows MinGW64 link: https://sourceforge.net/projects/mingw-w64/
 
 # Build from source
 #### Windows
