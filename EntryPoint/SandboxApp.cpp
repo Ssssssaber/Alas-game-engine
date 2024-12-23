@@ -6,6 +6,7 @@
 #include <gtc/type_ptr.hpp>
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include <imgui_internal.h>
 
 Alas::VertexArray* GenerateTriangleVertexArray()
 {
@@ -175,9 +176,9 @@ public:
         camera = new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f);
         _scene = new Alas::Scene();
 
-        // for (int i = 0; i < 20; i++)
+        // for (int i = 0; i < 40; i++)
         // {
-        //     for (int j = 0; j < 20; j++)
+        //     for (int j = 0; j < 40; j++)
         //     {
         //         auto go = new Alas::GameObject(GenerateQuadVertexArray(), GenerateQuadShader(), "quad " + char(1));
         //         glm::vec4 color = glm::normalize(glm::vec4(i, j, glm::abs(i - j), i + j));
@@ -286,7 +287,33 @@ public:
 
     void OnImGuiRender()
     {
-        ImGui::Begin("Settings");
+        bool open = true;
+
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+        window_flags |=  ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground;
+
+        ImGui::Begin("DockSpace Demo", &open, window_flags);
+        ImGui::PopStyleVar(2);
+
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+        {
+            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+        }
+
+        ImGui::End();
+
+        ImGui::Begin("Scene");
         if (ImGui::Button("Create triangle", ImVec2(200, 50)))
         {
             OnCreateObjectButton(GenerateTriangleVertexArray(), GenerateBaseShader());   
@@ -303,9 +330,7 @@ public:
         for (it = objects.begin(); it != objects.end(); it++)
         {
             Alas::GameObject* go = it->second;
-            // ImGui
             std::string str = "ID: " + std::to_string(go->GetId()) + " " + *go->GetName();
-            // ImGui::Begin(str.c_str());
             if (ImGui::TreeNode(str.c_str()))
             {
                 ImGui::InputText("Name", go->GetName());
@@ -315,7 +340,6 @@ public:
                 ImGui::ColorEdit3("Color", glm::value_ptr(go->GetColor()));
                 ImGui::TreePop();
             }
-            // ImGui::End();
         }
 
         ImGui::End();
