@@ -22,3 +22,13 @@
 	#define ALAS_ASSERT(x, ...)
 	#define ALAS_CORE_ASSERT(x, ...)
 #endif
+
+#include <memory>
+
+namespace Alas {
+    template <typename T>
+    using Shared = std::shared_ptr<T>;
+
+    template <typename T>
+    using Unique = std::unique_ptr<T>; 
+};

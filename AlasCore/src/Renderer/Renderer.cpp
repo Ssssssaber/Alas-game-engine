@@ -14,8 +14,8 @@ namespace Alas
 
 	}
 
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, 
-        const std::shared_ptr<Shader>& shader, const glm::mat4& modelMatrix = glm::mat4(1.0f))
+	void Renderer::Submit(const Shared<VertexArray>& vertexArray, 
+        const Shared<Shader>& shader, const glm::mat4& modelMatrix = glm::mat4(1.0f))
 	{
         shader->Bind();
         shader->setMat4("u_viewProjectionMatrix", _Data.ViewProjectionMatrix);

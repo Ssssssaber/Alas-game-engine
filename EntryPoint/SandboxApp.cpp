@@ -21,7 +21,7 @@ Alas::VertexArray* GenerateTriangleVertexArray()
         0.0f,  0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 0.5f
     };
     
-    std::shared_ptr<Alas::VertexBuffer> triVertexBuffer; 
+    Alas::Shared<Alas::VertexBuffer> triVertexBuffer; 
     triVertexBuffer.reset(Alas::VertexBuffer::Create(vertices, sizeof(vertices)));
     
     {
@@ -35,7 +35,7 @@ Alas::VertexArray* GenerateTriangleVertexArray()
     triVertexArray->AddVertexBuffer(triVertexBuffer);
     
     uint32_t triIndices[3] = { 0, 1, 2 };        
-    std::shared_ptr<Alas::IndexBuffer> triIndexBuffer;
+    Alas::Shared<Alas::IndexBuffer> triIndexBuffer;
     triIndexBuffer.reset(Alas::IndexBuffer::Create(triIndices, sizeof(triIndices) / sizeof(uint32_t)));
     
     triVertexArray->SetIndexBuffer(triIndexBuffer);
@@ -57,7 +57,7 @@ Alas::VertexArray* GenerateQuadVertexArray()
         -1.0f, 1.0f, 0.0f
     };
     
-    std::shared_ptr<Alas::VertexBuffer> quadVertexBuffer; 
+    Alas::Shared<Alas::VertexBuffer> quadVertexBuffer; 
     quadVertexBuffer.reset(Alas::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
     
     {
@@ -70,7 +70,7 @@ Alas::VertexArray* GenerateQuadVertexArray()
     quadVertexArray->AddVertexBuffer(quadVertexBuffer);
     
     uint32_t quadIndices[6] = { 0, 1, 2, 2, 3, 0 };        
-    std::shared_ptr<Alas::IndexBuffer> quadIndexBuffer;
+    Alas::Shared<Alas::IndexBuffer> quadIndexBuffer;
     quadIndexBuffer.reset(Alas::IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(uint32_t)));
     
     quadVertexArray->SetIndexBuffer(quadIndexBuffer);

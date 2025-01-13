@@ -2,8 +2,8 @@
 
 namespace Alas {
     
-    std::shared_ptr<spdlog::logger> Logger::_spdClientLogger;
-    std::shared_ptr<spdlog::logger> Logger::_spdCoreLogger;
+    Shared<spdlog::logger> Logger::_spdClientLogger;
+    Shared<spdlog::logger> Logger::_spdCoreLogger;
     
     void Logger::Init()
     {

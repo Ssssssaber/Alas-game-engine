@@ -34,8 +34,8 @@ namespace Alas
 
         const glm::mat4& GetModelMatrix() { return _modelMatrix; }
         
-        const std::shared_ptr<Shader> GetShader() { return _shader; }
-        const std::shared_ptr<VertexArray> GetVertexArray() { return _vertexArray; }
+        const Shared<Shader> GetShader() { return _shader; }
+        const Shared<VertexArray> GetVertexArray() { return _vertexArray; }
 
     private:
         void ImplementSetColor(const glm::vec3& color) { _shader->Bind(); _shader->setVec4("u_Color", color.x, color.y, color.z, 1.0f);}
@@ -46,8 +46,8 @@ namespace Alas
 
         int _id;
         std::string _name;
-        std::shared_ptr<Shader> _shader;
-        std::shared_ptr<VertexArray> _vertexArray;
+        Shared<Shader> _shader;
+        Shared<VertexArray> _vertexArray;
 
         glm::vec3 _color = glm::vec3(0.5f, 0.5f, 0.5f);
         glm::vec3 _position = glm::vec3(0.0f);

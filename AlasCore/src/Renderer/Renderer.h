@@ -11,7 +11,7 @@ namespace Alas {
         static void BeginScene(OrthCamera* camera);
         static void EndScene();
 
-        static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4& modelMatrix);
+        static void Submit(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, const glm::mat4& modelMatrix);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 

@@ -15,7 +15,7 @@ namespace Alas {
 		{
 			_rendererAPI->Clear();
 		}
-		inline static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+		inline static void DrawIndexed(const Shared<VertexArray>& vertexArray)
 		{
 			_rendererAPI->DrawIndexed(vertexArray);
 		}

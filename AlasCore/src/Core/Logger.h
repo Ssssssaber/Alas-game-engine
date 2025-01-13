@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-
+#include "core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/fmt/ostr.h"
@@ -14,12 +13,12 @@ namespace Alas {
     public:
         static void Init();
 
-        static std::shared_ptr<spdlog::logger> GetClientLogger() {return _spdClientLogger; }
-        static std::shared_ptr<spdlog::logger> GetCoreLogger() {return _spdCoreLogger; }
+        static Shared<spdlog::logger> GetClientLogger() {return _spdClientLogger; }
+        static Shared<spdlog::logger> GetCoreLogger() {return _spdCoreLogger; }
 
     private:
-        static std::shared_ptr<spdlog::logger> _spdClientLogger;
-        static std::shared_ptr<spdlog::logger> _spdCoreLogger;
+        static Shared<spdlog::logger> _spdClientLogger;
+        static Shared<spdlog::logger> _spdCoreLogger;
     };
 
 }
