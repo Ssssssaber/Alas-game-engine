@@ -2,10 +2,16 @@
 #include "glm.hpp"
 namespace Alas {
 
+    struct ShaderSourceCode {
+        std::string vertexShaderSource;
+        std::string fragmentShaderSource;
+    }; 
+
     class Shader 
     {
     public:
         static Shared<Shader> Create(std::string& vertexShaderSource, std::string& fragmentShaderSource);
+        static Shared<Shader> Create(const std::string& filepath);
 
         virtual ~Shader() = default;
         virtual void Bind() const = 0;
@@ -25,6 +31,9 @@ namespace Alas {
         virtual void setMat3(const std::string &name, const glm::mat3 &mat) const = 0;
         virtual void setMat4(const std::string &name, const glm::mat4 &mat) const = 0;
         
+    private:
+        static ShaderSourceCode* ParseShaderFile(const std::string& filepath);
+
     private:
         uint32_t _rendererId;
     };

@@ -139,7 +139,8 @@ public:
         _triangleVertexArray.reset(GenerateTriangleVertexArray());
         _quadVertexArray.reset(GenerateQuadVertexArray());
 
-        _baseShader = GenerateBaseShader();
+        _baseShader = Alas::Shader::Create("Assets/Shaders/BaseShader.shader");
+        // _baseShader = GenerateBaseShader();
 
         _triangle.reset(new Alas::GameObject(_triangleVertexArray, _baseShader, "main triangle"));
         _triangle->SetColor(glm::vec3(0.3f, 0.9f, 0.6f));

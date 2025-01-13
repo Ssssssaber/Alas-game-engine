@@ -13,3 +13,26 @@ if(WIN32)
     VERBATIM
   )
 endif()
+
+message(${CMAKE_CURRENT_SOURCE_DIR}/Assets)
+message(${FullOutputDir}/Assets)
+
+# add_custom_command(
+#     TARGET alas_entry_point POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E make_directory"${FullOutputDir}/Assets"
+# )
+
+# add_custom_command(
+#     TARGET alas_entry_point POST_BUILD 
+#     COMMAND "${CMAKE_COMMMAND}" -E copy_directory_if_different
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
+#     "${FullOutputDir}/Assets"
+# )
+
+add_custom_command(
+  TARGET alas_entry_point
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND}
+  ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets" "${FullOutputDir}/Assets"
+  COMMENT "---- Copying Assets folder from EntryPoint -----"
+)
