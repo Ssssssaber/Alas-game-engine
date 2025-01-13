@@ -133,28 +133,35 @@ public:
         float height = Alas::Application::Get().GetWindow().GetHeight();
         float width = Alas::Application::Get().GetWindow().GetWidth();
         
-        camera = new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f);
-        _scene = new Alas::Scene();
+        _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
+        _scene.reset(new Alas::Scene());
 
-        // for (int i = 0; i < 40; i++)
-        // {
-        //     for (int j = 0; j < 40; j++)
-        //     {
-        //         auto go = new Alas::GameObject(GenerateQuadVertexArray(), GenerateQuadShader(), "quad " + char(1));
-        //         glm::vec4 color = glm::normalize(glm::vec4(i, j, glm::abs(i - j), i + j));
-        //         go->SetColor(color);
-        //         go->SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
-        //         go->SetPosition(glm::vec3(i * 0.3f, j * 0.3f, 0.0f));
+        _triangleVertexArray.reset(GenerateTriangleVertexArray());
+        _quadVertexArray.reset(GenerateQuadVertexArray());
+
+        _baseShader = GenerateBaseShader();
+
+        _triangle.reset(new Alas::GameObject(_triangleVertexArray, _baseShader, "main triangle"));
+        _triangle->SetColor(glm::vec3(0.3f, 0.9f, 0.6f));
+
+        for (int i = 0; i < 40; i++)
+        {
+            for (int j = 0; j < 40; j++)
+            {
+                Alas::Shared<Alas::GameObject> go;
+                go.reset(new Alas::GameObject(_quadVertexArray, _baseShader, "quad " + char(1)));
+                glm::vec4 color = glm::normalize(glm::vec4(i, j, glm::abs(i - j), i + j));
+                go->SetColor(color);
+                go->SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+                go->SetPosition(glm::vec3(i * 0.3f, j * 0.3f, 0.0f));
                 
-        //         _scene->AddGameObject(go);
-        //         // _scene->_sceneDict.insert(std::make_pair(i + j, go));
-        //     }
-        // }
+                _scene->AddGameObject(go);
+                // _scene->_sceneDict.insert(std::make_pair(i + j, go));
+            }
+        }
 
-        triangle = new Alas::GameObject(GenerateTriangleVertexArray(), GenerateBaseShader(), "main triangle");
-        triangle->SetColor(glm::vec3(0.3f, 0.9f, 0.6f));
 
-        _scene->AddGameObject(triangle);
+        _scene->AddGameObject(_triangle);
         
     }
 
@@ -186,53 +193,55 @@ public:
 
         if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
         {
-            _cameraPos.y += cameraSpeed * deltaTime;
+            _cameraPos.y += _cameraSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_S))
         {
-            _cameraPos.y -= cameraSpeed * deltaTime;
+            _cameraPos.y -= _cameraSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_A))
         {
-            _cameraPos.x -= cameraSpeed * deltaTime;
+            _cameraPos.x -= _cameraSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_D))
         {
-            _cameraPos.x += cameraSpeed * deltaTime;
+            _cameraPos.x += _cameraSpeed * deltaTime;
         }
 
         if (Alas::Input::IsKeyPressed(ALAS_KEY_Q))
         {
-            _cameraRotation -= cameraRotationSpeed * deltaTime;
+            _cameraRotation -= _cameraRotationSpeed * deltaTime;
         }
         if (Alas::Input::IsKeyPressed(ALAS_KEY_E))
         {
-            _cameraRotation += cameraRotationSpeed * deltaTime;
+            _cameraRotation += _cameraRotationSpeed * deltaTime;
         }
 
-        camera->SetPosition(_cameraPos);
-        camera->SetRotation(_cameraRotation);
+        _camera->SetPosition(_cameraPos);
+        _camera->SetRotation(_cameraRotation);
 
-        Alas::Renderer::BeginScene(camera);
+        Alas::Renderer::BeginScene(_camera);
 
         // ALAS_CLIENT_INFO("{0}; {1}", glm::to_string(triangle->GetPosition()), glm::to_string(go->GetPosition()));
-        std::map<uint64_t, Alas::GameObject*> objects = _scene->getGameObjectList();
-        std::map<uint64_t, Alas::GameObject*>::iterator it;
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>> objects = _scene->getGameObjectList();
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>>::iterator it;
         
         for (it = objects.begin(); it != objects.end(); it++)
         {
             // TODO :: SORTING GAMEOBJECTS BY Z COORDINATE
-            Alas::GameObject* go = it->second;
+            Alas::Shared<Alas::GameObject> go = it->second;
             go->Update();
-            Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
+            Alas::Renderer::Submit(go);
+            // Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
         }
         
         Alas::Renderer::EndScene();
     }
 
-    Alas::GameObject* OnCreateObjectButton(Alas::VertexArray* vertexArray, Alas::Shared<Alas::Shader> shader)
+    Alas::Shared<Alas::GameObject> OnCreateObjectButton(const Alas::Shared<Alas::VertexArray>& vertexArray, const Alas::Shared<Alas::Shader>& shader)
     {
-        Alas::GameObject* go = new Alas::GameObject(vertexArray, shader);
+        Alas::Shared<Alas::GameObject> go;
+        go.reset(new Alas::GameObject(vertexArray, shader));
         float delta = Alas::Time::getDeltaTime();
         float time = Alas::Time::GetTimeInSeconds();
         ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
@@ -276,20 +285,20 @@ public:
         ImGui::Begin("Scene");
         if (ImGui::Button("Create triangle", ImVec2(200, 50)))
         {
-            OnCreateObjectButton(GenerateTriangleVertexArray(), GenerateBaseShader());   
+            OnCreateObjectButton(_triangleVertexArray, _baseShader);   
         }
         if (ImGui::Button("Create quad", ImVec2(200, 50)))
         {
-            OnCreateObjectButton(GenerateQuadVertexArray(), GenerateBaseShader());
+            OnCreateObjectButton(_quadVertexArray, _baseShader);
         }
 
         ImGui::SeparatorText("Game objects");
 
-        std::map<uint64_t, Alas::GameObject*> objects = _scene->getGameObjectList();
-        std::map<uint64_t, Alas::GameObject*>::iterator it;       
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>> objects = _scene->getGameObjectList();
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>>::iterator it;      
         for (it = objects.begin(); it != objects.end(); it++)
         {
-            Alas::GameObject* go = it->second;
+            Alas::Shared<Alas::GameObject> go = it->second;
             std::string str = "ID: " + std::to_string(go->GetId()) + " " + *go->GetName();
             if (ImGui::TreeNode(str.c_str()))
             {
@@ -311,24 +320,27 @@ public:
     }
 
     private:
-        Alas::Scene* _scene;
+        Alas::Shared<Alas::Scene> _scene;
 
-        Alas::GameObject* triangle;
+        Alas::Shared<Alas::GameObject> _triangle;
 
-        // glm::vec3 _tri_pos = glm::vec3(0.0f);
+        Alas::Shared<Alas::VertexArray> _triangleVertexArray;
+        Alas::Shared<Alas::VertexArray> _quadVertexArray;
+        
+        Alas::Shared<Alas::Shader> _baseShader;
 
         glm::vec3 _quadColor = { 0.5f, 0.1f, 0.3f};
         glm::vec3 _triColor = { 0.2f, 0.6f, 0.8f};
 
-        float triangleSpeed = 2.0f;
-        float triangleRotationSpeed = 1.0f;
+        float _triangleSpeed = 2.0f;
+        float _triangleRotationSpeed = 1.0f;
 
-        Alas::OrthCamera* camera;
+        Alas::Shared<Alas::OrthCamera> _camera;
         glm::vec3 _cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
         float _cameraRotation = 0;
 
-        float cameraSpeed = 2.0f;
-        float cameraRotationSpeed = 15.0f;
+        float _cameraSpeed = 2.0f;
+        float _cameraRotationSpeed = 15.0f;
 };
 
 class Sandbox : public Alas::Application

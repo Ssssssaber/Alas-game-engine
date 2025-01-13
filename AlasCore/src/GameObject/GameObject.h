@@ -11,7 +11,7 @@ namespace Alas
     class GameObject
     {
     public:
-        GameObject(VertexArray* vertexArray, Shared<Shader> shader, std::string name = "GameObject");
+        GameObject(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, std::string name = "GameObject");
 
         void Update() { SetColor(_color);  CalculateModelMatrix(); }
 

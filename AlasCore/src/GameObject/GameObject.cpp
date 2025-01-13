@@ -4,13 +4,13 @@ namespace Alas
 {
     uint64_t GameObject::_ID = 0;
 
-    GameObject::GameObject(VertexArray* vertexArray, Shared<Shader> shader, std::string name)
+    GameObject::GameObject(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, std::string name)
         : _name(name)
     {
         _id = _ID;
         _ID++;
 
-        _vertexArray.reset(vertexArray);
+        _vertexArray = vertexArray;
         _shader = shader;
 
         _shader->Bind();

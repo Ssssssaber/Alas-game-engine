@@ -6,7 +6,7 @@ namespace Alas {
     class Layer
     {
     public:
-        Layer(const std::string debugName) : _debugName(debugName) {}
+        Layer(const std::string& debugName) : _debugName(debugName) {}
         virtual ~Layer() {}
         
         virtual void OnAttach() {}
