@@ -150,7 +150,8 @@ public:
             {
                 Alas::Shared<Alas::GameObject> go;
                 go.reset(new Alas::GameObject(_quadVertexArray, _baseShader, "quad " + char(1)));
-                glm::vec4 color = glm::normalize(glm::vec4(i, j, glm::abs(i - j), i + j));
+                int a = i + 1, b = j + 1;
+                glm::vec4 color = glm::normalize(glm::vec4(a, b, glm::abs(a - b), a + b));
                 go->SetColor(color);
                 go->SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
                 go->SetPosition(glm::vec3(i * 0.3f, j * 0.3f, 0.0f));
@@ -171,6 +172,15 @@ public:
         Alas::RenderCommand::Clear();
         
         float deltaTime = Alas::Time::getDeltaTime();
+        _timeElapsed += deltaTime;
+        _framesElapsed += 1;
+
+        if (_timeElapsed > 1.0)
+        {
+            _frameRate = _framesElapsed / _timeElapsed;
+            _framesElapsed = 0;
+            _timeElapsed = 0;
+        }
 
         // if (Alas::Input::IsKeyPressed(ALAS_KEY_I))
         // {
@@ -283,6 +293,7 @@ public:
         ImGui::End();
 
         ImGui::Begin("Scene");
+        ImGui::InputFloat("FPS", &_frameRate);
         if (ImGui::Button("Create triangle", ImVec2(200, 50)))
         {
             OnCreateObjectButton(_triangleVertexArray, _baseShader);   
@@ -320,6 +331,10 @@ public:
     }
 
     private:
+        float _timeElapsed = 0;
+        float _framesElapsed = 0;
+        float _frameRate = 0;
+
         Alas::Shared<Alas::Scene> _scene;
 
         Alas::Shared<Alas::GameObject> _triangle;
