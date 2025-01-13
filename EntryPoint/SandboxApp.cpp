@@ -78,7 +78,7 @@ Alas::VertexArray* GenerateQuadVertexArray()
     return quadVertexArray;
 }
 
-Alas::Shader* GenerateBaseShader()
+Alas::Shared<Alas::Shader> GenerateBaseShader()
 {
     /*
         BASE SHADER
@@ -120,47 +120,7 @@ Alas::Shader* GenerateBaseShader()
         }
     )";     
 
-    return new Alas::Shader(baseVertexSrc, baseFragmentSrc);   
-}
-
-Alas::Shader* GenerateQuadShader()
-{
-    /*
-        QUAD SHADER
-    */
-
-    std::string quadVertexSrc = R"(
-        #version 330 core
-        
-        layout(location = 0) in vec3 a_Position;
-
-        out vec3 o_Position;
-
-        uniform mat4 u_viewProjectionMatrix;
-        uniform mat4 u_model;
-
-        void main()
-        {
-            o_Position = a_Position;
-            gl_Position = u_viewProjectionMatrix * u_model * vec4(a_Position, 1.0);	
-        }
-    )";
-
-        // uniform vec4 u_Color;
-    std::string quadFragmentSrc = R"(
-        #version 330 core
-
-        layout(location = 0) out vec4 color;
-
-        in vec3 o_Position;
-
-        void main()
-        {
-            color = vec4(0.1, 0.3, 0.6, 1.0);
-        }
-    )";
-
-    return new Alas::Shader(quadVertexSrc, quadFragmentSrc);
+    return Alas::Shader::Create(baseVertexSrc, baseFragmentSrc);
 }
 
 class ExampleLayer : public Alas::Layer
@@ -270,7 +230,7 @@ public:
         Alas::Renderer::EndScene();
     }
 
-    Alas::GameObject* OnCreateObjectButton(Alas::VertexArray* vertexArray, Alas::Shader* shader)
+    Alas::GameObject* OnCreateObjectButton(Alas::VertexArray* vertexArray, Alas::Shared<Alas::Shader> shader)
     {
         Alas::GameObject* go = new Alas::GameObject(vertexArray, shader);
         float delta = Alas::Time::getDeltaTime();
