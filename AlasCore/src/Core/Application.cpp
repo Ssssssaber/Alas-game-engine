@@ -62,6 +62,7 @@ namespace Alas
             
             for (Layer* layer : _layerStack)
             {
+                ALAS_CORE_INFO("{}", layer->GetDebugName());
                 layer->OnUpdate();
             }
 

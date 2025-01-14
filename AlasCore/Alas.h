@@ -8,7 +8,7 @@
 #include "src/ImGui/ImGuiLayer.h"
 
 #include "src/Core/Time.h"
-#include "src/Core/OrthCamera.h"
+#include "src/Renderer/OrthCamera.h"
 
 #include "src/GameObject/GameObject.h"
 #include "src/GameObject/Scene.h"

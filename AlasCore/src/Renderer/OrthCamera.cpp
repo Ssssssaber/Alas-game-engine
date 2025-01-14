@@ -1,4 +1,4 @@
-#include "Core/OrthCamera.h"
+#include "Renderer/OrthCamera.h"
 #include "gtc/matrix_transform.hpp"
 
 namespace Alas

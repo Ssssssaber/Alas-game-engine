@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/OrthCamera.h"
+#include "Renderer/OrthCamera.h"
 #include "GameObject/GameObject.h"
 #include "Renderer/Shader.h"
 #include "Renderer/RendererAPI.h"
