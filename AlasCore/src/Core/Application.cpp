@@ -18,7 +18,7 @@ namespace Alas
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
-
+        
         _imguiLayer = new ImGuiLayer();
         PushOverlay(_imguiLayer);
 
@@ -44,7 +44,12 @@ namespace Alas
                 break;
             }
         }
+    }
 
+    void Application::StartGameLoop(const Shared<Scene>& scene)
+    {
+        _gameLoop.reset(new GameLoop(scene));
+        _gameLoop->Init();
     }
     
     void Application::Run()
@@ -62,7 +67,6 @@ namespace Alas
             
             for (Layer* layer : _layerStack)
             {
-                ALAS_CORE_INFO("{}", layer->GetDebugName());
                 layer->OnUpdate();
             }
 
@@ -74,6 +78,11 @@ namespace Alas
             _imguiLayer->End();
 
             _window->OnUpdate();
+
+            if (_gameLoop)
+            {
+                _gameLoop->Update();
+            }
         }
     }
 

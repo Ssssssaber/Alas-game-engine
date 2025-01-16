@@ -11,6 +11,9 @@
 namespace Alas {
 
     static bool s_IsSDLInitialized = false;
+    static bool s_IsGLADInitialized = false;
+
+    SDL_GLContext SDLGLWindow::_context = nullptr;
 
     Window* Window::Create(const WindowParams& params)
     {
@@ -33,14 +36,14 @@ namespace Alas {
     
     void SDLGLWindow::Init()
     {
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
         if (!s_IsSDLInitialized)
         {
+            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
             int success = SDL_Init(SDL_INIT_VIDEO);
             // ALAS_CORE_ERROR("SDL was not initialized: {0}", SDL_GetError());
             // ALAS_ASSERT(!success, SDL_GetError())
@@ -60,14 +63,24 @@ namespace Alas {
             return;
         }
 
-        _context = SDL_GL_CreateContext(_window); 
-        int status = gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
-        ALAS_ASSERT(status, "GLAD was not initialized")
-        
-        ALAS_CORE_INFO("OpenGL {0}.{1}", GLVersion.major, GLVersion.minor);
-        ALAS_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-        ALAS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-        ALAS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+        if (!s_IsGLADInitialized)
+        {
+            _context = SDL_GL_CreateContext(_window);
+            
+            int status = gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
+            if (status < 0) 
+            {
+                ALAS_ASSERT(status, "GLAD was not initialized")
+                return;
+            }
+            
+            ALAS_CORE_INFO("OpenGL {0}.{1}", GLVersion.major, GLVersion.minor);
+            ALAS_CORE_INFO("Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+            ALAS_CORE_INFO("Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+            ALAS_CORE_INFO("Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+
+            s_IsGLADInitialized = true;
+        }
 
         SDL_GL_MakeCurrent(_window, _context);
     }
@@ -96,6 +109,11 @@ namespace Alas {
         }
         SDL_PumpEvents();
         SDL_GL_SwapWindow(_window);
+    }
+
+    void SDLGLWindow::SetAsCurrent() const
+    {
+        SDL_GL_MakeCurrent(_window, _context);
     }
 
     void SDLGLWindow::SetVSync(bool enabled)

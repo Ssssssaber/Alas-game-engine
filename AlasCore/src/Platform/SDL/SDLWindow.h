@@ -19,6 +19,8 @@ namespace Alas{
         virtual uint32_t GetWidth() const override { return _params.width; }
         virtual uint32_t GetHeight() const override { return _params.height; }
         
+        virtual void SetAsCurrent() const override;
+
         void SetEventCallback(const EventCallbackFunction& callback) override { _params.EventCallback = callback; }
         void SetVSync(bool enabled) override;
         bool IsVSync() override;    
@@ -41,6 +43,6 @@ namespace Alas{
         
 
         SDL_Window* _window;
-        SDL_GLContext  _context;
+        static SDL_GLContext  _context;
     };
 }

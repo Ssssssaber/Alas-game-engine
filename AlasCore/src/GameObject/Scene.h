@@ -13,12 +13,12 @@ namespace Alas
 
         ~Scene() { }
 
-        void AddGameObject(Shared<GameObject> gameObject) { _sceneDict.insert(std::make_pair(gameObject->GetId(), gameObject)); }
+        void AddGameObject(GameObject& gameObject) { _sceneDict.insert(std::make_pair(gameObject.GetId(), &gameObject)); }
         void DeleteGameObject(uint64_t id) { _sceneDict.erase(id); }
-        const std::map<uint64_t, Shared<GameObject>>& getGameObjectList() { return _sceneDict; }
+        const std::map<uint64_t, GameObject*>& GetGameObjectList() { return _sceneDict; }
         
     private:
-        std::map<uint64_t, Shared<GameObject>> _sceneDict = {};
+        std::map<uint64_t, GameObject*> _sceneDict = {};
     };
 
 } // namespace Alas

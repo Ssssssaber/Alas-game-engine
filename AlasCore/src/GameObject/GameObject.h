@@ -13,7 +13,8 @@ namespace Alas
     public:
         GameObject(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, std::string name = "GameObject");
 
-        void Update() { SetColor(_color);  CalculateModelMatrix(); }
+        virtual void Update() {}
+        void InnerUpdate() { SetColor(_color);  CalculateModelMatrix(); }
 
         glm::vec3& GetColor() { return _color; }
         void SetColor(const glm::vec3 color) { _color = color; ImplementSetColor(_color); }
@@ -38,7 +39,10 @@ namespace Alas
         const Shared<VertexArray> GetVertexArray() { return _vertexArray; }
 
     private:
-        void ImplementSetColor(const glm::vec3& color) { _shader->Bind(); _shader->setVec4("u_Color", color.x, color.y, color.z, 1.0f);}
+        void ImplementSetColor(const glm::vec3& color) 
+        {
+            _shader->setVec4("u_Color", color.x, color.y, color.z, 1.0f);
+        }
         void CalculateModelMatrix();
 
     private:

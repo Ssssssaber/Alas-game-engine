@@ -13,7 +13,7 @@ namespace Alas {
         static void EndScene();
 
         static void Submit(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, const glm::mat4& modelMatrix);
-        static void Submit(const Shared<GameObject>& gameObject);
+        static void Submit(GameObject& gameObject);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 

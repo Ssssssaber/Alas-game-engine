@@ -2,9 +2,11 @@
 #include "Window.h"
 #include "Input.h"
 
-#include "Events/ApplicationEvent.h"
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
+#include "Core/GameLoop.h"
+
+#include "Events/ApplicationEvent.h"
 #include "ImGui/ImGuiLayer.h"
 
 #include "Renderer/Shader.h"
@@ -26,6 +28,8 @@ namespace Alas
         
         void Run();
 
+        void StartGameLoop(const Shared<Scene>& scene);
+
         void OnEvent(Event& e);
 
         bool OnWindowClose(WindowCloseEvent& event);
@@ -38,6 +42,8 @@ namespace Alas
     
     private:
         static Application* _instance;
+
+        Alas::Shared<Alas::GameLoop> _gameLoop;
 
         ImGuiLayer* _imguiLayer;
         

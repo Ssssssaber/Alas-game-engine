@@ -1,15 +1,19 @@
 #pragma once
 
 #include "RendererAPI.h"
-
+#include "Core/Window.h"
 namespace Alas {
 
 	class RenderCommand
 	{
 	public:
+        inline static void SetActiveWindow(const Window& window)
+        {
+            window.SetAsCurrent();
+        }
 		inline static void SetClearColor(const glm::vec4& color)
 		{
-			_rendererAPI->SetClearColor(color);
+            _rendererAPI->SetClearColor(color);
 		}
 		inline static void Clear()
 		{

@@ -26,15 +26,15 @@ namespace Alas
 		RenderCommand::DrawIndexed(vertexArray);
 	}
 
-    void Renderer::Submit(const Shared<GameObject>& gameObject)
+    void Renderer::Submit(GameObject& gameObject)
     {
-        Shared<Shader> shader = gameObject->GetShader();
+        Shared<Shader> shader = gameObject.GetShader();
         
         shader->setMat4("u_viewProjectionMatrix", _Data.ViewProjectionMatrix);
-        shader->setMat4("u_model", gameObject->GetModelMatrix());
-        shader->setVec3("u_color", gameObject->GetColor());
+        shader->setMat4("u_model", gameObject.GetModelMatrix());
+        shader->setVec3("u_color", gameObject.GetColor());
 
-		Shared<VertexArray> vertexArray = gameObject->GetVertexArray();
+		Shared<VertexArray> vertexArray = gameObject.GetVertexArray();
         vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
 	}

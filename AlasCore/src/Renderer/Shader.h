@@ -31,10 +31,10 @@ namespace Alas {
         virtual void setMat3(const std::string &name, const glm::mat3 &mat) const = 0;
         virtual void setMat4(const std::string &name, const glm::mat4 &mat) const = 0;
         
+        uint32_t _rendererId;
     private:
         static ShaderSourceCode* ParseShaderFile(const std::string& filepath);
 
     private:
-        uint32_t _rendererId;
     };
 }
