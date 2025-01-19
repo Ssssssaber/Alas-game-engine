@@ -24,15 +24,16 @@ file(GLOB_RECURSE SOURCES
     src/*.cpp
     src/*.h
     ${IMGUI_SOURCES}
-    ${IMGUI_BACKEND}    
+    ${IMGUI_BACKEND}
 )
 
 add_library(alas_engine_core ${SOURCES})
 
 target_include_directories(alas_engine_core PUBLIC
-    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/spdlog/include
+    ${PROJECT_SOURCE_DIR}/AlasCore/
     ${PROJECT_SOURCE_DIR}/AlasCore/src
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/OpenGL/GLAD/include/
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/spdlog/include
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/backends
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/glm/glm/

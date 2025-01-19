@@ -1,4 +1,10 @@
-add_executable(alas_entry_point SandboxApp.cpp)
+file(GLOB_RECURSE SOURCES
+    CustomScripts/*.cpp
+    CustomScripts/*.h
+    SandboxApp.cpp
+)
+
+add_executable(alas_entry_point ${SOURCES})
 
 target_include_directories(alas_entry_point PRIVATE ${PROJECT_SOURCE_DIR}/AlasCore/)
 
@@ -13,21 +19,6 @@ if(WIN32)
     VERBATIM
   )
 endif()
-
-message(${CMAKE_CURRENT_SOURCE_DIR}/Assets)
-message(${FullOutputDir}/Assets)
-
-# add_custom_command(
-#     TARGET alas_entry_point POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E make_directory"${FullOutputDir}/Assets"
-# )
-
-# add_custom_command(
-#     TARGET alas_entry_point POST_BUILD 
-#     COMMAND "${CMAKE_COMMMAND}" -E copy_directory_if_different
-#     "${CMAKE_CURRENT_SOURCE_DIR}/Assets"
-#     "${FullOutputDir}/Assets"
-# )
 
 add_custom_command(
   TARGET alas_entry_point

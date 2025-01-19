@@ -2,6 +2,7 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
+#include "../../EntryPoint/CustomScripts/Triangle.h"
 namespace Alas
 {
     GameLoop::GameLoop(const Shared<Scene> sceneRef)
@@ -10,8 +11,18 @@ namespace Alas
 
         for (auto IdGameObject : _scene->GetGameObjectList())
         {
-            auto goPtr = IdGameObject.second;
-            _gameObjects.push_back(goPtr);
+            Shared<GameObject> goPtr = IdGameObject.second;
+            Triangle* tr = dynamic_cast<Triangle*>(goPtr.get());
+            Shared<GameObject> loopGo; 
+            if (!tr)
+            {   
+                loopGo = std::make_shared<GameObject>(*goPtr);
+            }
+            else
+            {
+                loopGo = std::make_shared<Triangle>(*goPtr);
+            }
+            _gameObjects.push_back(loopGo);
         }
     }
 

@@ -1,12 +1,17 @@
 #include <Alas.h>
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
+
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+
 #define GLM_ENABLE_EXPERIMENTAL
-#include "gtx/string_cast.hpp"
+#include <gtx/string_cast.hpp>
 #include <gtc/type_ptr.hpp>
-#include "imgui.h"
-#include "misc/cpp/imgui_stdlib.h"
+
+#include <imgui.h>
+#include <misc/cpp/imgui_stdlib.h>
 #include <imgui_internal.h>
+
+#include "CustomScripts/Triangle.h"
 
 Alas::VertexArray* GenerateTriangleVertexArray()
 {
@@ -123,45 +128,6 @@ Alas::Shared<Alas::Shader> GenerateBaseShader()
     return Alas::Shader::Create(baseVertexSrc, baseFragmentSrc);
 }
 
-class TriangleGameObject : public Alas::GameObject
-{
-public:
-    TriangleGameObject(const Alas::Shared<Alas::VertexArray>& vertexArray, const Alas::Shared<Alas::Shader>& shader, std::string name = "GameObject") :
-        GameObject(vertexArray, shader, name)
-    {
-
-    }
-    virtual void Update() override 
-    {
-        float deltaTime = Alas::Time::getDeltaTime();
-
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_I))
-        {
-            _triPos.y += _triangleSpeed * deltaTime;
-        }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_K))
-        {
-            _triPos.y -= _triangleSpeed * deltaTime;
-        }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_J))
-        {
-            _triPos.x -= _triangleSpeed * deltaTime;
-        }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_L))
-        {
-            _triPos.x += _triangleSpeed * deltaTime;
-        }
-
-        this->SetPosition(_triPos);
-    }
-
-    private:
-        glm::vec3 _triPos = glm::vec3(0);
-        float _triangleSpeed = 2.0f;
-        float _triangleRotationSpeed = 1.0f;
-
-};
-
 class ExampleLayer : public Alas::Layer
 {
 public:
@@ -180,30 +146,28 @@ public:
         _quadVertexArray.reset(GenerateQuadVertexArray());
 
         _baseShader = Alas::Shader::Create("Assets/Shaders/BaseShader.shader");
-        // _baseShader = GenerateBaseShader();
 
-        _triangle = new TriangleGameObject(_triangleVertexArray, _baseShader, "main triangle");
+        _triangle.reset(new Triangle(_triangleVertexArray, _baseShader, "main triangle"));
         _triangle->SetColor(glm::vec3(0.3f, 0.9f, 0.6f));
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                Alas::GameObject* go;
-                go = new Alas::GameObject(_quadVertexArray, _baseShader, "quad " + char(1));
+                Alas::Shared<Alas::GameObject> go;
+                go.reset(new Alas::GameObject(_quadVertexArray, _baseShader, "quad " + char(1)));
                 int a = i + 1, b = j + 1;
                 glm::vec4 color = glm::normalize(glm::vec4(a, b, glm::abs(a - b), a + b));
                 go->SetColor(color);
                 go->SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
                 go->SetPosition(glm::vec3(i * 0.3f, j * 0.3f, 0.0f));
                 
-                _scene->AddGameObject(*go);
-                // _scene->_sceneDict.insert(std::make_pair(i + j, go));
+                _scene->AddGameObject(go);
             }
         }
 
 
-        _scene->AddGameObject(*_triangle);
+        _scene->AddGameObject(_triangle);
         
     }
 
@@ -256,13 +220,13 @@ public:
         Alas::Renderer::BeginScene(_camera);
 
         // ALAS_CLIENT_INFO("{0}; {1}", glm::to_string(triangle->GetPosition()), glm::to_string(go->GetPosition()));
-        std::map<uint64_t, Alas::GameObject*> objects = _scene->GetGameObjectList();
-        std::map<uint64_t, Alas::GameObject*>::iterator it;
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>> objects = _scene->GetGameObjectList();
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>>::iterator it;
         
         for (it = objects.begin(); it != objects.end(); it++)
         {
             // TODO :: SORTING GAMEOBJECTS BY Z COORDINATE
-            Alas::GameObject* go = it->second;
+            Alas::Shared<Alas::GameObject> go = it->second;
             go->InnerUpdate();
             Alas::Renderer::Submit(*go);
             // Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
@@ -273,8 +237,8 @@ public:
 
     Alas::GameObject& OnCreateObjectButton(const Alas::Shared<Alas::VertexArray>& vertexArray, const Alas::Shared<Alas::Shader>& shader)
     {
-        Alas::GameObject* go;
-        go = new Alas::GameObject(vertexArray, shader);
+        Alas::Shared<Alas::GameObject> go;
+        go.reset(new Alas::GameObject(vertexArray, shader));
         float delta = Alas::Time::getDeltaTime();
         float time = Alas::Time::GetTimeInSeconds();
         ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
@@ -283,7 +247,7 @@ public:
         glm::vec3 color = glm::vec3(abs(glm::sin(time)));
         go->GetShader()->setVec4("u_Color", color.x, color.y, color.z, 1.0f);
         ALAS_CLIENT_INFO("{0}", glm::to_string(color));
-        _scene->AddGameObject(*go);
+        _scene->AddGameObject(go);
         return *go;
     }
 
@@ -335,11 +299,11 @@ public:
 
         ImGui::SeparatorText("Game objects");
 
-        std::map<uint64_t, Alas::GameObject*> objects = _scene->GetGameObjectList();
-        std::map<uint64_t, Alas::GameObject*>::iterator it;      
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>> objects = _scene->GetGameObjectList();
+        std::map<uint64_t, Alas::Shared<Alas::GameObject>>::iterator it;      
         for (it = objects.begin(); it != objects.end(); it++)
         {
-            Alas::GameObject* go = it->second;
+            Alas::Shared<Alas::GameObject> go = it->second;
             std::string str = "ID: " + std::to_string(go->GetId()) + " " + *go->GetName();
             if (ImGui::TreeNode(str.c_str()))
             {
@@ -372,7 +336,7 @@ public:
         bool _gameLoopStarted = false;
         std::thread _gameLoopThread;
 
-        Alas::GameObject* _triangle;
+        Alas::Shared<Alas::GameObject> _triangle;
 
         Alas::Shared<Alas::VertexArray> _triangleVertexArray;
         Alas::Shared<Alas::VertexArray> _quadVertexArray;

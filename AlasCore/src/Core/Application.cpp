@@ -1,7 +1,9 @@
 #include "Application.h"
-#include "Events/ApplicationEvent.h"
+
 #include "Core/Logger.h"
-#include "Input.h"
+
+#include "Events/ApplicationEvent.h"
+
 #include "Renderer/BufferLayout.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"

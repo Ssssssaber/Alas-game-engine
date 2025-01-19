@@ -1,11 +1,10 @@
-#include "GameObject/Scene.h"
-
 #include "Core/Window.h"
-#include "Core/Input.h"
-#include "Events/ApplicationEvent.h"
+#include "GameObject/Scene.h"
 #include "Core/Time.h"
 #include "Core/LayerStack.h"
+#include "Core/Input.h"
 
+#include "Events/ApplicationEvent.h"
 namespace Alas
 {
     class GameLoop
@@ -25,7 +24,7 @@ namespace Alas
         bool OnWindowClose(WindowCloseEvent& event);
     private:        
         Shared<Scene> _scene;
-        std::vector<GameObject*> _gameObjects;
+        std::vector<Shared<GameObject>> _gameObjects;
         Window* _window;
         Input* _input;
         Time* _time;

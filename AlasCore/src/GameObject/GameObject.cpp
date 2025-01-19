@@ -19,6 +19,20 @@ namespace Alas
         _modelMatrix = glm::mat4(1.0f);
     }
 
+    GameObject::GameObject(GameObject& reference)
+    {
+        _vertexArray = reference.GetVertexArray();
+        _shader = reference.GetShader();
+
+        _shader->Bind();
+        SetColor(reference.GetColor());
+        
+        _modelMatrix = glm::mat4(1.0f);
+        SetPosition(reference.GetPosition());
+        SetRotation(reference.GetRotation());
+        SetScale(reference.GetScale());    
+    }
+
     void GameObject::CalculateModelMatrix()
     {
         _modelMatrix = glm::translate(glm::mat4(1.0f), _position) *
