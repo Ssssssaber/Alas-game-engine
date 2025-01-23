@@ -1,10 +1,15 @@
+
 #include "Core/Window.h"
-#include "GameObject/Scene.h"
 #include "Core/Time.h"
 #include "Core/LayerStack.h"
 #include "Core/Input.h"
 
+#include "Renderer/OrthCamera.h"
+
 #include "Events/ApplicationEvent.h"
+
+#include "GameObject/Scene.h"
+
 namespace Alas
 {
     class GameLoop
@@ -25,6 +30,8 @@ namespace Alas
     private:        
         Shared<Scene> _scene;
         std::vector<Shared<GameObject>> _gameObjects;
+        
+        Shared<OrthCamera> _camera;
         Window* _window;
         Input* _input;
         Time* _time;

@@ -173,7 +173,8 @@ public:
 
     void OnUpdate() override
     {
-        Alas::RenderCommand::SetActiveWindow(*_editorWindow);
+        Alas::WindowManager::SetActiveWindow(*_editorWindow);
+        // Alas::RenderCommand::SetActiveWindow(*_editorWindow);
         Alas::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         Alas::RenderCommand::Clear();
         

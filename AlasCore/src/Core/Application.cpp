@@ -4,10 +4,6 @@
 
 #include "Events/ApplicationEvent.h"
 
-#include "Renderer/BufferLayout.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/RendererCommand.h"
-
 namespace Alas
 {
     Application* Application::_instance = nullptr;

@@ -1,4 +1,7 @@
 #include "GameLoop.h"
+
+#include "Core/WindowManager.h"
+
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
@@ -33,13 +36,18 @@ namespace Alas
             std::bind(&GameLoop::OnEvent, this, std::placeholders::_1)
         );
         _window->SetVSync(false);
+
+        _camera.reset(new OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
     }
 
     void GameLoop::Update()
     {
-        RenderCommand::SetActiveWindow(*_window);
+        WindowManager::SetActiveWindow(*_window);
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
+
+        Alas::Renderer::BeginScene(_camera);
+        
         for (auto go : _gameObjects)
         {
             go->Update();
@@ -48,6 +56,8 @@ namespace Alas
         }
         
         _window->OnUpdate();
+
+        Renderer::EndScene();
     }
 
     void GameLoop::Stop()

@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/Window.h"
 #include <utility>
 namespace Alas {
 
@@ -7,8 +8,9 @@ namespace Alas {
     public:
         Input() { _instance = this; }
         static Input* Init();
-        inline static bool IsKeyPressed(int keycode) { return _instance->IsKeyPressedImpl(keycode); }
-        inline static bool IsMouseButtonPressed(int mouseCode) { return _instance->IsMouseButtonPressedImpl(mouseCode); }
+        inline static void SetActiveWindow(Window& window) { _window = &window; }
+        inline static bool IsKeyPressed(int keycode) { return _instance->IsKeyPressedImpl(keycode) && _window == Window::GetFocusedWindow(); }
+        inline static bool IsMouseButtonPressed(int mouseCode) { return _instance->IsMouseButtonPressedImpl(mouseCode) && _window == Window::GetFocusedWindow(); }
         inline static std::pair<float, float> GetMousePosition() { return _instance->GetMousePositionImpl(); }
         inline static float GetMousePosX() { return _instance->GetMousePosXImpl(); }
         inline static float GetMousePosY() { return _instance->GetMousePosYImpl(); }
@@ -19,8 +21,9 @@ namespace Alas {
         virtual std::pair<float, float> GetMousePositionImpl() = 0;
         virtual float GetMousePosXImpl() = 0;
         virtual float GetMousePosYImpl() = 0;
-    // private:
+    private:
         static Input* _instance;
+        static Window* _window;
 
     };
 }
