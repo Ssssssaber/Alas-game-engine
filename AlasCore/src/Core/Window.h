@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Events/Event.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
 
 namespace Alas
 {
@@ -26,9 +23,12 @@ namespace Alas
     {
     public:
         using EventCallbackFunction = std::function<void(Event&)>;
+        
+        static void SetCurrentWindow(Window& window);
+        static const Window& GetCurrentWindow();
 
-        static Window* GetFocusedWindow() { return _focusedWindow; }
-
+        static const Window& GetFocusedWindow();
+        
         virtual void OnUpdate() = 0;
 
         virtual uint32_t GetWidth() const = 0;
@@ -43,8 +43,12 @@ namespace Alas
         // virtual void* GetNativeWindow() const = 0;
 
         static Window* Create(const WindowParams& params = WindowParams());
+
     protected:
         static Window* _focusedWindow;
+        
+    private:
+        static Window* _currentWindow;
     };
 
 }

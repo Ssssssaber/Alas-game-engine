@@ -1,6 +1,6 @@
 #pragma once
-#include "Window.h"
-#include "Input.h"
+#include "Core/Window.h"
+#include "Core/Input.h"
 
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
@@ -47,7 +47,7 @@ namespace Alas
 
         ImGuiLayer* _imguiLayer;
         
-        Window* _window;
+        Shared<Window> _window;
         Input* _input;
         LayerStack _layerStack;
 

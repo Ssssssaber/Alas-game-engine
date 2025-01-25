@@ -1,7 +1,5 @@
 #include "GameLoop.h"
 
-#include "Core/WindowManager.h"
-
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
@@ -31,7 +29,7 @@ namespace Alas
 
     void GameLoop::Init()
     {
-        _window = Alas::Window::Create();
+        _window.reset(Alas::Window::Create());
         _window->SetEventCallback(
             std::bind(&GameLoop::OnEvent, this, std::placeholders::_1)
         );
@@ -42,7 +40,7 @@ namespace Alas
 
     void GameLoop::Update()
     {
-        WindowManager::SetActiveWindow(*_window);
+        Window::SetCurrentWindow(*_window);
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
 

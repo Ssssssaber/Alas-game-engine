@@ -32,9 +32,9 @@ namespace Alas {
     
     public:
         
-        virtual EventType GetEventType() const = 0;
-        virtual const char* GetName() const = 0;
-        virtual int GetCategoryFlags() const = 0;
+        virtual EventType GetEventType() const { return EventType::None; }
+        virtual const char* GetName() const { return "Event"; };
+        virtual int GetCategoryFlags() const { return EventCategory::None; };
         virtual bool Handled() const { return _handled; }
         virtual std::string ToString() const { return GetName(); }
 

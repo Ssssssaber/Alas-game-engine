@@ -1,8 +1,6 @@
 
 #include "Core/Window.h"
-#include "Core/Time.h"
 #include "Core/LayerStack.h"
-#include "Core/Input.h"
 
 #include "Renderer/OrthCamera.h"
 
@@ -32,9 +30,7 @@ namespace Alas
         std::vector<Shared<GameObject>> _gameObjects;
         
         Shared<OrthCamera> _camera;
-        Window* _window;
-        Input* _input;
-        Time* _time;
+        Shared<Window> _window;
 
         LayerStack _layerStack;
         bool _isRunning = true;

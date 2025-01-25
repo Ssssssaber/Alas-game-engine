@@ -12,7 +12,7 @@ namespace Alas
         ALAS_ASSERT(!_instance, "Application already exists");
         _instance = this;
 
-        _window = Alas::Window::Create();
+        _window.reset(Alas::Window::Create());
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );

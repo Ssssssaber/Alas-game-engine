@@ -5,7 +5,6 @@
 
 // core app and imgui layer 
 #include "src/Core/Application.h"
-#include "src/Core/WindowManager.h"
 #include "src/ImGui/ImGuiLayer.h"
 
 // Renderer
