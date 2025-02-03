@@ -31,4 +31,6 @@ namespace Alas {
 
     template <typename T>
     using Unique = std::unique_ptr<T>; 
+
+    using UID = uint64_t;
 };

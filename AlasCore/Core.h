@@ -10,6 +10,8 @@
 #include "src/Core/MouseCodes.h"
 #include "src/Events/Event.h"
 
+#include "src/Entity/Entity.h"
+#include "src/Entity/Components.h"
+#include "src/Entity/Scene.h"
+#include "src/Entity/ScriptableEntity.h"
 
-#include "src/GameObject/GameObject.h"
-#include "src/GameObject/Scene.h"

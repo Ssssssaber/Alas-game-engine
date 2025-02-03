@@ -6,7 +6,7 @@
 
 #include "Events/ApplicationEvent.h"
 
-#include "GameObject/Scene.h"
+#include "Entity/Scene.h"
 
 namespace Alas
 {
@@ -27,7 +27,6 @@ namespace Alas
         bool OnWindowClose(WindowCloseEvent& event);
     private:        
         Shared<Scene> _scene;
-        std::vector<Shared<GameObject>> _gameObjects;
         
         Shared<OrthCamera> _camera;
         Shared<Window> _window;

@@ -147,27 +147,27 @@ public:
 
         _baseShader = Alas::Shader::Create("Assets/Shaders/BaseShader.shader");
 
-        _triangle.reset(new Triangle(_triangleVertexArray, _baseShader, "main triangle"));
-        _triangle->SetColor(glm::vec3(0.3f, 0.9f, 0.6f));
+        _triangle = _scene->CreateEntity("Main triangle");
+        auto& script = _triangle.AddComponent<Alas::NativeScriptComponent>();
+        script.Bind<Triangle>();
+        
+        auto& mesh = _triangle.AddComponent<Alas::MeshComponent>(_baseShader, _triangleVertexArray);
+        mesh.Color = glm::vec3(0.3f, 0.9f, 0.6f);
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                Alas::Shared<Alas::GameObject> go;
-                go.reset(new Alas::GameObject(_quadVertexArray, _baseShader, "quad " + char(1)));
+                Alas::Entity ent = _scene->CreateEntity("Quad");
+                auto& mesh = ent.AddComponent<Alas::MeshComponent>(_baseShader, _quadVertexArray);
+
                 int a = i + 1, b = j + 1;
-                glm::vec4 color = glm::normalize(glm::vec4(a, b, glm::abs(a - b), a + b));
-                go->SetColor(color);
-                go->SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
-                go->SetPosition(glm::vec3(i * 0.3f, j * 0.3f, 0.0f));
-                
-                _scene->AddGameObject(go);
+                mesh.Color = glm::normalize(glm::vec4(a, b, glm::abs(a - b), a + b));
+                auto& transform = ent.GetComponent<Alas::TransformComponent>();
+                transform.Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+                transform.Position = glm::vec3(i * 0.3f, j * 0.3f, 0.0f);
             }
         }
-
-
-        _scene->AddGameObject(_triangle);
         
     }
 
@@ -219,36 +219,26 @@ public:
 
         Alas::Renderer::BeginScene(_camera);
 
-        // ALAS_CLIENT_INFO("{0}; {1}", glm::to_string(triangle->GetPosition()), glm::to_string(go->GetPosition()));
-        std::map<uint64_t, Alas::Shared<Alas::GameObject>> objects = _scene->GetGameObjectList();
-        std::map<uint64_t, Alas::Shared<Alas::GameObject>>::iterator it;
-        
-        for (it = objects.begin(); it != objects.end(); it++)
-        {
-            // TODO :: SORTING GAMEOBJECTS BY Z COORDINATE
-            Alas::Shared<Alas::GameObject> go = it->second;
-            go->InnerUpdate();
-            Alas::Renderer::Submit(*go);
-            // Alas::Renderer::Submit(go->GetVertexArray(), go->GetShader(), go->GetModelMatrix());
-        }
+        _scene->SceneUpdate();
         
         Alas::Renderer::EndScene();
     }
 
-    Alas::GameObject& OnCreateObjectButton(const Alas::Shared<Alas::VertexArray>& vertexArray, const Alas::Shared<Alas::Shader>& shader)
+    void OnCreateObjectButton(const Alas::Shared<Alas::VertexArray>& vertexArray, const Alas::Shared<Alas::Shader>& shader)
     {
-        Alas::Shared<Alas::GameObject> go;
-        go.reset(new Alas::GameObject(vertexArray, shader));
         float delta = Alas::Time::getDeltaTime();
         float time = Alas::Time::GetTimeInSeconds();
+
+        Alas::Entity ent = _scene->CreateEntity("Quad");
+        auto& mesh = ent.AddComponent<Alas::MeshComponent>(_baseShader, _quadVertexArray);
+
+        mesh.Color = glm::vec3(abs(glm::sin(time)));
+        auto& transform = ent.GetComponent<Alas::TransformComponent>();
+        transform.Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+        transform.Position = glm::vec3(delta * 20 + time / 250, delta * 20 - time / 250, 0.0f);
+        transform.Rotation = glm::vec3(0.0f, 0.0f, time * 10);
+
         ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
-        go->SetRotation(glm::vec3(0.0f, 0.0f, time * 10));
-        go->SetPosition(glm::vec3(delta * 20 + time / 250, delta * 20 - time / 250, 0.0f));
-        glm::vec3 color = glm::vec3(abs(glm::sin(time)));
-        go->GetShader()->setVec4("u_Color", color.x, color.y, color.z, 1.0f);
-        ALAS_CLIENT_INFO("{0}", glm::to_string(color));
-        _scene->AddGameObject(go);
-        return *go;
     }
 
     void OnImGuiRender()
@@ -283,7 +273,6 @@ public:
         
         if (ImGui::Button("Start game"))
         {
-            // _gameLoopThread = std::thread(&Alas::GameLoop::Start, _gameLoop);
             Alas::Application::Get().StartGameLoop(_scene);
         }
 
@@ -299,19 +288,19 @@ public:
 
         ImGui::SeparatorText("Game objects");
 
-        std::map<uint64_t, Alas::Shared<Alas::GameObject>> objects = _scene->GetGameObjectList();
-        std::map<uint64_t, Alas::Shared<Alas::GameObject>>::iterator it;      
+        auto objects = _scene->GetEntityMap();
+        std::map<Alas::UID, Alas::Entity>::iterator it;      
         for (it = objects.begin(); it != objects.end(); it++)
         {
-            Alas::Shared<Alas::GameObject> go = it->second;
-            std::string str = "ID: " + std::to_string(go->GetId()) + " " + *go->GetName();
+            Alas::Entity ent = it->second;
+            std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
             if (ImGui::TreeNode(str.c_str()))
             {
-                ImGui::InputText("Name", go->GetName());
-                ImGui::DragFloat3("Position", glm::value_ptr(go->GetPosition()), 0.01f);
-                ImGui::DragFloat3("Rotation", glm::value_ptr(go->GetRotation()));
-                ImGui::DragFloat3("Scale", glm::value_ptr(go->GetScale()), 0.01f);
-                ImGui::ColorEdit3("Color", glm::value_ptr(go->GetColor()));
+                auto& transform = ent.GetComponent<Alas::TransformComponent>();
+                ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), 0.01f);
+                ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation));
+                ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), 0.01f);
+                ImGui::ColorEdit3("Color", glm::value_ptr(ent.GetComponent<Alas::MeshComponent>().Color));
                 ImGui::TreePop();
             }
         }
@@ -336,7 +325,7 @@ public:
         bool _gameLoopStarted = false;
         std::thread _gameLoopThread;
 
-        Alas::Shared<Alas::GameObject> _triangle;
+        Alas::Entity _triangle;
 
         Alas::Shared<Alas::VertexArray> _triangleVertexArray;
         Alas::Shared<Alas::VertexArray> _quadVertexArray;
@@ -361,7 +350,6 @@ public:
     Sandbox()
     {
         PushLayer(new ExampleLayer());
-        // PushOverlay(new AGS::ImGuiLayer());
     }
 
     ~Sandbox()

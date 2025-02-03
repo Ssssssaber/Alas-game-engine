@@ -12,3 +12,6 @@
 [submodule "AlasCore/vendor/glm"]
 	path = AlasCore/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "AlasCore/vendor/entt"]
+	path = AlasCore/vendor/entt
+	url = https://github.com/skypjack/entt.git

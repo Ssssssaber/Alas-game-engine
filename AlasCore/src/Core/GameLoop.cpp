@@ -10,21 +10,21 @@ namespace Alas
     {
         _scene = sceneRef;
 
-        for (auto IdGameObject : _scene->GetGameObjectList())
-        {
-            Shared<GameObject> goPtr = IdGameObject.second;
-            Triangle* tr = dynamic_cast<Triangle*>(goPtr.get());
-            Shared<GameObject> loopGo; 
-            if (!tr)
-            {   
-                loopGo = std::make_shared<GameObject>(*goPtr);
-            }
-            else
-            {
-                loopGo = std::make_shared<Triangle>(*goPtr);
-            }
-            _gameObjects.push_back(loopGo);
-        }
+        // for (auto IdGameObject : _scene->GetGameObjectList())
+        // {
+        //     Shared<GameObject> goPtr = IdGameObject.second;
+        //     Triangle* tr = dynamic_cast<Triangle*>(goPtr.get());
+        //     Shared<GameObject> loopGo; 
+        //     if (!tr)
+        //     {   
+        //         loopGo = std::make_shared<GameObject>(*goPtr);
+        //     }
+        //     else
+        //     {
+        //         loopGo = std::make_shared<Triangle>(*goPtr);
+        //     }
+        //     _gameObjects.push_back(loopGo);
+        // }
     }
 
     void GameLoop::Init()
@@ -45,13 +45,16 @@ namespace Alas
         RenderCommand::Clear();
 
         Alas::Renderer::BeginScene(_camera);
+
+        _scene->SceneUpdate();
+        _scene->RuntimeUpdate();
         
-        for (auto go : _gameObjects)
-        {
-            go->Update();
-            go->InnerUpdate();
-            Renderer::Submit(*go);
-        }
+        // for (auto go : _gameObjects)
+        // {
+        //     go->Update();
+        //     go->InnerUpdate();
+        //     Renderer::Submit(*go);
+        // }
         
         _window->OnUpdate();
 
