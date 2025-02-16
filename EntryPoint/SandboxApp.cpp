@@ -32,7 +32,7 @@ public:
         _baseTexture.reset(new Alas::Texture2D("Assets/Textures/goool.png"));
         _baseTexture->Bind();
         
-        _mainGOTexture.reset(new Alas::Texture2D("Assets/Textures/main.png"));
+        _mainGOTexture.reset(new Alas::Texture2D("Assets/Textures/cross.png"));
         _mainGOTexture->Bind();
 
         _triangle = _scene->CreateEntity("Main triangle");

@@ -60,7 +60,7 @@ namespace Alas
         {
             auto [transform, sprite] = spriteGO.get<TransformComponent, SpriteComponent>(entity);
 
-            Renderer::Submit(sprite.Texture, sprite.Shader, sprite.Color, transform.CalculateModelMatrix());
+            Renderer::Submit2D(sprite.Texture, sprite.Shader, sprite.Color, transform.CalculateModelMatrix());
         }
     }
 } // namespace Alas

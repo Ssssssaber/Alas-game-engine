@@ -7,6 +7,8 @@ namespace Alas
 
     void Renderer::Init()
     {
+        RenderCommand::EnableBlending();
+
         _Data.quadVertexArray.reset(VertexArray::Create());
         
         float quadVertices[5 * 4] = {
@@ -46,12 +48,7 @@ namespace Alas
 
 	}
 
-    // void Renderer::DrawQuad(const Shared<Shader>& shader, const glm::vec3& color,  const glm::mat4& modelMatrix)
-    // {
-    //     Submit(_Data.quadVertexArray, shader, color, modelMatrix);
-    // }
-
-    void Renderer::Submit(const Shared<Texture2D>& texture, const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix)
+    void Renderer::Submit2D(const Shared<Texture2D>& texture, const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix)
     {
         texture->Bind();
         shader->Bind();
@@ -63,15 +60,4 @@ namespace Alas
 		RenderCommand::DrawIndexed(_Data.quadVertexArray);
     }
 
-	// void Renderer::Submit(const Shared<VertexArray>& vertexArray, 
-    //     const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix = glm::mat4(1.0f))
-	// {
-    //     shader->Bind();
-    //     shader->setMat4("u_viewProjectionMatrix", _Data.ViewProjectionMatrix);
-    //     shader->setMat4("u_model", modelMatrix);
-    //     shader->setVec4("u_Color", color.x, color.y, color.z, 1.0f);
-
-	// 	vertexArray->Bind();
-	// 	RenderCommand::DrawIndexed(vertexArray);
-	// }
 } // namespace AGS

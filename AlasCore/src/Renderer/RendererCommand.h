@@ -7,6 +7,10 @@ namespace Alas {
 	class RenderCommand
 	{
 	public:
+        inline static void EnableBlending()
+        {
+            _rendererAPI->EnableBlending();
+        }
         inline static void SetActiveWindow(const Window& window)
         {
             window.SetAsCurrent();
