@@ -16,5 +16,6 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#define FMT_GCC_PRAGMA(...)
 #include "Logger.h"
 #include "Core.h"

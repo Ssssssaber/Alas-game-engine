@@ -2,6 +2,8 @@
 
 #include "Core/Logger.h"
 
+#include "Renderer/Renderer.h"
+
 #include "Events/ApplicationEvent.h"
 
 namespace Alas
@@ -23,6 +25,8 @@ namespace Alas
         _input = Input::Init();
 
         _time = new Time();
+
+        Renderer::Init();
     }
 
     Application::~Application() {}

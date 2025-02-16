@@ -55,12 +55,12 @@ namespace Alas
 
     void Scene::SceneUpdate()
     {
-        auto group = _entityRegistry.group<TransformComponent>(entt::get<MeshComponent>);
-        for (auto entity : group)
+        auto spriteGO = _entityRegistry.group<TransformComponent>(entt::get<SpriteComponent>);
+        for (auto entity : spriteGO)
         {
-            auto [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
+            auto [transform, sprite] = spriteGO.get<TransformComponent, SpriteComponent>(entity);
 
-            Renderer::Submit(mesh.VertexArray, mesh.Shader, mesh.Color, transform.CalculateModelMatrix());
+            Renderer::Submit(sprite.Texture, sprite.Shader, sprite.Color, transform.CalculateModelMatrix());
         }
     }
 } // namespace Alas

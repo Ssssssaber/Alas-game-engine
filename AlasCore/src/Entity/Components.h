@@ -2,6 +2,8 @@
 
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/Texture2D.h"
+
 
 #include <glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -67,15 +69,15 @@ namespace Alas
 		}
 	};
 
-    struct MeshComponent
+    struct SpriteComponent
     {
         Shared<Shader> Shader;
-        Shared<VertexArray> VertexArray;
+        Shared<Texture2D> Texture;
         glm::vec3 Color = glm::vec3(0.5f, 0.5f, 0.5f);
 
-        MeshComponent() = default;
-		MeshComponent(const MeshComponent&) = default;
-        MeshComponent(Shared<Alas::Shader> shader, Shared<Alas::VertexArray> array) :
-            Shader(shader), VertexArray(array) {}
+        SpriteComponent() = default;
+		SpriteComponent(const SpriteComponent&) = default;
+        SpriteComponent(Shared<Texture2D> texture, Shared<Alas::Shader> shader) :
+            Texture(texture), Shader(shader) {}
     };
 } // namespace Alas

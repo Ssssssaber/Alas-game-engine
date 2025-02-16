@@ -38,6 +38,7 @@ target_include_directories(alas_engine_core PUBLIC
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/backends
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/glm/glm/
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/entt/src/entt
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/stb_image
 )
 
 target_precompile_headers(alas_engine_core PUBLIC ${PROJECT_SOURCE_DIR}/AlasCore/src/Core/precompiled.h)

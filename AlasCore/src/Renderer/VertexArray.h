@@ -18,8 +18,9 @@ namespace Alas {
 		virtual const Shared<IndexBuffer>& GetIndexBuffer() const = 0;
 
 		static VertexArray* Create();
+
+    protected:
         uint32_t _rendererId;
-    private:
 
     };
 }

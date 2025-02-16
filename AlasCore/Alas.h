@@ -15,6 +15,7 @@
 #include "src/Renderer/IndexBuffer.h"
 #include "src/Renderer/VertexArray.h"
 #include "src/Renderer/OrthCamera.h"
+#include "src/Renderer/Texture2D.h"
 
 // ENTRY POINT
 #include "src/Core/EntryPoint.h"
