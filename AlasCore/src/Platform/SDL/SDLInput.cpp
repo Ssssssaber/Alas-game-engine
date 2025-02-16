@@ -13,8 +13,7 @@ namespace Alas
     
     void SDLInput::InitImpl()
     {
-        keys = SDL_GetKeyboardState(NULL); 
-        
+        keys = SDL_GetKeyboardState(NULL);
     }
 
     bool SDLInput::IsKeyPressedImpl(int keyCode)

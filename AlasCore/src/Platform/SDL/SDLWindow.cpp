@@ -90,13 +90,14 @@ namespace Alas {
 
     void SDLGLWindow::OnUpdate()
     {
+        if (SDL_GetKeyboardFocus() == _window) _focusedWindow = this;
+
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
             ImGui_ImplSDL3_ProcessEvent(&e);
             
-            if (SDL_GetKeyboardFocus() == _window) _focusedWindow = this;
             
-            if (e.type == SDL_EVENT_QUIT)
+            if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED || e.type == SDL_EVENT_QUIT)
             {
                 WindowCloseEvent event;
                 _params.EventCallback(event);

@@ -48,14 +48,7 @@ namespace Alas
 
         _scene->SceneUpdate();
         _scene->RuntimeUpdate();
-        
-        // for (auto go : _gameObjects)
-        // {
-        //     go->Update();
-        //     go->InnerUpdate();
-        //     Renderer::Submit(*go);
-        // }
-        
+      
         _window->OnUpdate();
 
         Renderer::EndScene();
