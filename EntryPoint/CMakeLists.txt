@@ -20,10 +20,10 @@ if(WIN32)
   )
 endif()
 
-# add_custom_command(
-#   TARGET alas_entry_point
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND}
-#   ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets/" "${FullOutputDir}/Assets/"
-#   COMMENT "---- Copying Assets folder from EntryPoint -----"
-# )
+add_custom_command(
+  TARGET alas_entry_point
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND}
+  ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets/" "${FullOutputDir}/Assets/"
+  COMMENT "---- Copying Assets folder from EntryPoint -----"
+)

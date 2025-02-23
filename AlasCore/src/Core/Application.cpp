@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "Core/Logger.h"
+#include "Core/GameLoop.h"
 
 #include "Renderer/Renderer.h"
 
@@ -81,9 +82,15 @@ namespace Alas
 
             _window->OnUpdate();
 
-            if (_gameLoop)
+            if (!_gameLoop) continue;
+            
+            if (_gameLoop->GetIsRunning())
             {
                 _gameLoop->Update();
+            }
+            else
+            {
+                _gameLoop = nullptr;
             }
         }
     }

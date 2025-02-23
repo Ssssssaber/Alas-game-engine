@@ -30,7 +30,7 @@ namespace Alas
 			: Tag(tag) {}
 	};
 
-	struct TransformComponent
+	struct Transform
 	{
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
@@ -38,9 +38,9 @@ namespace Alas
         
         glm::mat4 _modelMatrix;
 
-		TransformComponent() = default;
-		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::vec3& translation)
+		Transform() = default;
+		Transform(const Transform&) = default;
+		Transform(const glm::vec3& translation)
 			: Position(translation) {}
 
         glm::mat4 CalculateModelMatrix()
@@ -73,11 +73,40 @@ namespace Alas
     {
         Shared<Shader> Shader;
         Shared<Texture2D> Texture;
-        glm::vec3 Color = glm::vec3(0.5f, 0.5f, 0.5f);
+        glm::vec3 Color = glm::vec3(1.0f, 1.0f, 1.0f);
 
         SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;
         SpriteComponent(Shared<Texture2D> texture, Shared<Alas::Shader> shader) :
             Texture(texture), Shader(shader) {}
+    };
+
+    struct RigidBody2D
+    {
+        enum class BodyType { Static, Kinematic, Dynamic};
+        BodyType Type = BodyType::Static;
+        double Mass = 1.0;
+        glm::vec2 Velocity = glm::vec2(0.0f);
+        glm::vec2 Force = glm::vec2(0.0f);
+        bool AffectedByGravity = true;
+
+
+        RigidBody2D() = default;
+		RigidBody2D(const RigidBody2D&) = default;
+        RigidBody2D(RigidBody2D::BodyType bodyType) :
+            Type(bodyType) {}
+        
+    };
+
+    struct BoxCollider2D
+    {
+        glm::vec2 Offset = {0.0f, 0.0f};
+        glm::vec2 Size = {.5f, .5f};
+        
+        BoxCollider2D() = default;
+		BoxCollider2D(const BoxCollider2D&) = default;
+        BoxCollider2D(glm::vec2 offset, glm::vec2 size) :
+            Offset(offset), Size(size) {}
+        
     };
 } // namespace Alas

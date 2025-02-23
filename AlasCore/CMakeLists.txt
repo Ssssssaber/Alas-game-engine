@@ -34,6 +34,7 @@ target_include_directories(alas_engine_core PUBLIC
     ${PROJECT_SOURCE_DIR}/AlasCore/src
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/OpenGL/GLAD/include/
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/spdlog/include
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/Chipmunk2D/include
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/imgui/backends
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/glm/glm/
@@ -44,6 +45,7 @@ target_include_directories(alas_engine_core PUBLIC
 target_precompile_headers(alas_engine_core PUBLIC ${PROJECT_SOURCE_DIR}/AlasCore/src/Core/precompiled.h)
 
 add_subdirectory(vendor/spdlog)
+add_subdirectory(vendor/Chipmunk2D)
 add_subdirectory(vendor/OpenGL/GLAD/)
 if(SDL_VENDORED)
     add_subdirectory(vendor/SDL EXCLUDE_FROM_ALL)
@@ -68,5 +70,6 @@ target_link_libraries(alas_engine_core PUBLIC
     glad_lib
     spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
     SDL3::SDL3
+    chipmunk_static
 )
 

@@ -4,7 +4,6 @@
 
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
-#include "Core/GameLoop.h"
 
 #include "Events/ApplicationEvent.h"
 #include "ImGui/ImGuiLayer.h"
@@ -19,6 +18,8 @@
 // use pointers 
 namespace Alas
 {
+    class GameLoop;
+    class Scene;
     class Application 
     {
     public:

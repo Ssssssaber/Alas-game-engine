@@ -14,7 +14,9 @@ namespace Alas
     {
     public:
         GameLoop(const Shared<Scene> sceneRef);
-        ~GameLoop() = default;
+        ~GameLoop();
+
+        bool GetIsRunning() { return _isRunning; }
 
         void Init();
 
@@ -27,7 +29,6 @@ namespace Alas
         bool OnWindowClose(WindowCloseEvent& event);
     private:        
         Shared<Scene> _scene;
-        
         Shared<OrthCamera> _camera;
         Shared<Window> _window;
 

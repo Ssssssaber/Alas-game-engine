@@ -32,32 +32,40 @@ public:
         _baseTexture.reset(new Alas::Texture2D("Assets/Textures/goool.png"));
         _baseTexture->Bind();
         
-        _mainGOTexture.reset(new Alas::Texture2D("Assets/Textures/cross.png"));
+        _mainGOTexture.reset(new Alas::Texture2D("Assets/Textures/keke.png"));
         _mainGOTexture->Bind();
 
-        _triangle = _scene->CreateEntity("Main triangle");
-        auto& script = _triangle.AddComponent<Alas::NativeScriptComponent>();
+        _mainGo = _scene->CreateEntity("Main triangle");
+        auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
         script.Bind<Triangle>();
 
-        auto& sprite = _triangle.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
+        auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
         sprite.Color = glm::vec3(0.5f);
 
-        _triangle.GetComponent<Alas::TransformComponent>().Scale = glm::vec3(2.0f, 2.0f, 2.0f);
+        // _mainGo.GetComponent<Alas::Transform>().Scale = glm::vec3(2.0f, 2.0f, 2.0f);        
+        _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 30.0f);
 
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                Alas::Entity ent = _scene->CreateEntity("Quad");
-                auto& mesh = ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
+        auto& body = _mainGo.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
+        body.AffectedByGravity = false;
+        _mainGo.AddComponent<Alas::BoxCollider2D>();
 
-                int a = i + 1, b = j + 1;
-                mesh.Color = glm::normalize(glm::vec4(a, b, glm::abs(a - b), a + b));
-                auto& transform = ent.GetComponent<Alas::TransformComponent>();
-                transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
-                transform.Position = glm::vec3(i * 0.3f, j * 0.3f, 0.0f);
-            }
-        }
+        // for (int i = 0; i < 4; i++)
+        // {
+        //     for (int j = 0; j < 4; j++)
+        //     {
+        //         Alas::Entity ent = _scene->CreateEntity("Quad");
+        //         auto& mesh = ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
+
+        //         int a = i + 1, b = j + 1;
+        //         mesh.Color = glm::normalize(glm::vec4(a, b, glm::abs(a - b), a + b));
+        //         auto& transform = ent.GetComponent<Alas::Transform>();
+        //         transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+        //         transform.Position = glm::vec3(i * 0.3f, j * 0.3f, 0.0f);
+
+        //         ent.AddComponent<Alas::BoxCollider2D>(glm::vec2(-0.5f), glm::vec2(1.0f));
+        //         ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Kinematic);
+        //     }
+        // }
         
     }
 
@@ -114,21 +122,17 @@ public:
         Alas::Renderer::EndScene();
     }
 
-    void OnCreateObjectButton()
+    Alas::Entity OnCreateObjectButton()
     {
-        float delta = Alas::Time::getDeltaTime();
-        float time = Alas::Time::GetTimeInSeconds();
-
         Alas::Entity ent = _scene->CreateEntity("Quad");
-        auto& mesh = ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
-
-        mesh.Color = glm::vec3(abs(glm::sin(time)));
-        auto& transform = ent.GetComponent<Alas::TransformComponent>();
+        auto& sprite = ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
+        auto& transform = ent.GetComponent<Alas::Transform>();
         transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
-        transform.Position = glm::vec3(delta * 20 + time / 250, delta * 20 - time / 250, 0.0f);
-        transform.Rotation = glm::vec3(0.0f, 0.0f, time * 10);
-
-        ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
+        transform.Position = glm::vec3(0.0f);
+        transform.Rotation = glm::vec3(0.0f);
+        // ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
+        
+        return ent; 
     }
 
     void OnImGuiRender()
@@ -167,9 +171,23 @@ public:
         }
 
         ImGui::InputFloat("FPS", &_frameRate);
-        if (ImGui::Button("Create quad", ImVec2(200, 50)))
+        if (ImGui::Button("Create static", ImVec2(200, 50)))
         {
-            OnCreateObjectButton();
+            Alas::Entity ent(OnCreateObjectButton());
+            ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Static);
+            ent.AddComponent<Alas::BoxCollider2D>();
+        }
+        if (ImGui::Button("Create dynamic", ImVec2(200, 50)))
+        {
+            Alas::Entity ent(OnCreateObjectButton());
+            ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
+            ent.AddComponent<Alas::BoxCollider2D>();
+        }
+        if (ImGui::Button("Create kinematic", ImVec2(200, 50)))
+        {
+            Alas::Entity ent(OnCreateObjectButton());
+            ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Kinematic);
+            ent.AddComponent<Alas::BoxCollider2D>();
         }
 
         ImGui::SeparatorText("Game objects");
@@ -182,7 +200,7 @@ public:
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
             if (ImGui::TreeNode(str.c_str()))
             {
-                auto& transform = ent.GetComponent<Alas::TransformComponent>();
+                auto& transform = ent.GetComponent<Alas::Transform>();
                 ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), 0.01f);
                 ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation));
                 ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), 0.01f);
@@ -208,7 +226,7 @@ public:
 
         Alas::Shared<Alas::Scene> _scene;
 
-        Alas::Entity _triangle;
+        Alas::Entity _mainGo;
         
         Alas::Shared<Alas::Shader> _textureShader;
 

@@ -15,3 +15,6 @@
 [submodule "AlasCore/vendor/entt"]
 	path = AlasCore/vendor/entt
 	url = https://github.com/skypjack/entt.git
+[submodule "AlasCore/vendor/Chipmunk2D"]
+	path = AlasCore/vendor/Chipmunk2D
+	url = https://github.com/Ssssssaber/Chipmunk2D-Alas-Fork.git
