@@ -1,20 +1,20 @@
 [submodule "AlasCore/vendor/spdlog"]
 	path = AlasCore/vendor/spdlog
-	url = https://github.com/gabime/spdlog.git
+	url = https://github.com/Ssssssaber/spdlog-Alas-fork.git
 [submodule "AlasCore/vendor/SDL"]
 	path = AlasCore/vendor/SDL
-	url = https://github.com/libsdl-org/SDL.git
+	url = https://github.com/Ssssssaber/SDL-Alas-fork.git
     branch = main
 [submodule "AlasCore/vendor/imgui"]
 	path = AlasCore/vendor/imgui
-	url = https://github.com/ocornut/imgui.git
+	url = https://github.com/Ssssssaber/imgui-Alas-fork.git
     branch = docking
 [submodule "AlasCore/vendor/glm"]
 	path = AlasCore/vendor/glm
-	url = https://github.com/g-truc/glm.git
+	url = https://github.com/Ssssssaber/glm-Alas-fork.git
 [submodule "AlasCore/vendor/entt"]
 	path = AlasCore/vendor/entt
-	url = https://github.com/skypjack/entt.git
+	url = https://github.com/Ssssssaber/entt-Alas-fork.git
 [submodule "AlasCore/vendor/Chipmunk2D"]
 	path = AlasCore/vendor/Chipmunk2D
 	url = https://github.com/Ssssssaber/Chipmunk2D-Alas-Fork.git
