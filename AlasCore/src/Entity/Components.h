@@ -91,7 +91,6 @@ namespace Alas
         double Mass = 1.0;
 
         double GravityScale = 1.0;
-        bool AffectedByGravity = true;
 
 
         RigidBody2D() = default;

@@ -32,7 +32,8 @@ namespace Alas {
         // void DeleteGameObject(uint64_t id) { _sceneDict.erase(id); }
         // Entity GetEnt
         const std::map<UID, Entity>& GetEntityMap() { return _entityMap; }
-        
+    public:
+        std::string Name = "Scene";
     private:
         static UID _nextID;
 

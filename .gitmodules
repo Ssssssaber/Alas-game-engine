@@ -18,3 +18,6 @@
 [submodule "AlasCore/vendor/Chipmunk2D"]
 	path = AlasCore/vendor/Chipmunk2D
 	url = https://github.com/Ssssssaber/Chipmunk2D-Alas-Fork.git
+[submodule "AlasCore/vendor/yaml-cpp"]
+	path = AlasCore/vendor/yaml-cpp
+	url = https://github.com/Ssssssaber/yaml-cpp-alas-fork.git

@@ -7,6 +7,8 @@
 #include "src/Core/Application.h"
 #include "src/ImGui/ImGuiLayer.h"
 
+#include "src/Entity/SceneSerialization.h"
+
 // Renderer
 #include "src/Renderer/Renderer.h"
 #include "src/Renderer/RendererCommand.h"

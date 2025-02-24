@@ -2,17 +2,18 @@
 
 #include <chipmunk/chipmunk.h>
 
+#include "Core/Input.h"
+#include "Core/KeyCodes.h"
+
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
-#include "Core/Input.h"
-
-#include "Core/KeyCodes.h"
 namespace Alas
 {
     GameLoop::GameLoop(const Shared<Scene> sceneRef, Time* timeRef) : _scene(sceneRef), _time(timeRef)
     {
         _scene->Physics2DInit();
+
     }
 
     GameLoop::~GameLoop()

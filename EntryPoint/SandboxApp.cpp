@@ -46,7 +46,6 @@ public:
         _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 30.0f);
 
         auto& body = _mainGo.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
-        body.AffectedByGravity = false;
         body.GravityScale = 0;
         _mainGo.AddComponent<Alas::BoxCollider2D>();
 
@@ -67,7 +66,7 @@ public:
         //         ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Kinematic);
         //     }
         // }
-        
+    
     }
 
     void OnUpdate() override
@@ -190,6 +189,13 @@ public:
             ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Kinematic);
             ent.AddComponent<Alas::BoxCollider2D>();
         }
+
+        ImGui::InputText("Scene label", &_scene->Name);
+        if (ImGui::Button("Save scene", ImVec2(200, 50)))
+        {
+            Alas::SceneSerialization::SerializeScene(_scene, "Assets/" + _scene->Name + ".yaml");  
+        }
+          
 
         ImGui::SeparatorText("Game objects");
 
