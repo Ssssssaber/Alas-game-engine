@@ -51,7 +51,7 @@ namespace Alas
 
     void Application::StartGameLoop(const Shared<Scene>& scene)
     {
-        _gameLoop.reset(new GameLoop(scene));
+        _gameLoop.reset(new GameLoop(scene, _time));
         _gameLoop->Init();
     }
     
@@ -65,7 +65,7 @@ namespace Alas
         while (_isRunning)
         {
             float currentTime = Time::GetTimeInSeconds();
-            _time->updateDeltaTime(currentTime - lastTime);
+            _time->updatePhysicsDeltaTime(currentTime - lastTime);
             lastTime = currentTime;
             
             for (Layer* layer : _layerStack)

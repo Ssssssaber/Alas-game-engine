@@ -47,6 +47,7 @@ public:
 
         auto& body = _mainGo.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
         body.AffectedByGravity = false;
+        body.GravityScale = 0;
         _mainGo.AddComponent<Alas::BoxCollider2D>();
 
         // for (int i = 0; i < 4; i++)
@@ -75,7 +76,7 @@ public:
         Alas::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         Alas::RenderCommand::Clear();
         
-        float deltaTime = Alas::Time::getDeltaTime();
+        float deltaTime = Alas::Time::getPhysicsDeltaTime();
         _timeElapsed += deltaTime;
         _framesElapsed += 1;
 

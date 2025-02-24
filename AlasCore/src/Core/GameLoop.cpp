@@ -6,12 +6,12 @@
 #include "Renderer/RendererCommand.h"
 
 #include "Core/Input.h"
+
 #include "Core/KeyCodes.h"
 namespace Alas
 {
-    GameLoop::GameLoop(const Shared<Scene> sceneRef)
+    GameLoop::GameLoop(const Shared<Scene> sceneRef, Time* timeRef) : _scene(sceneRef), _time(timeRef)
     {
-        _scene = sceneRef;
         _scene->Physics2DInit();
     }
 
@@ -34,18 +34,28 @@ namespace Alas
 
     void GameLoop::Update()
     {
+        static int count = 3;
+        static float lastTime = 0;
+
         Window::SetCurrentWindow(*_window);
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
 
         Alas::Renderer::BeginScene(_camera);
 
-        _scene->RuntimeUpdate();
         _scene->Physics2DUpdate();
-        _scene->SceneUpdate();
-      
-        _window->OnUpdate();
+        count += 1;
+        if (count > 3)
+        {
+            float currentTime = Time::GetTimeInSeconds();
+            _time->updateDeltaTime(currentTime - lastTime);
+            lastTime = currentTime;
+            _scene->RuntimeUpdate();
+            count = 0;   
+        }
 
+        _scene->SceneUpdate();
+        _window->OnUpdate();
         Renderer::EndScene();
     }
 

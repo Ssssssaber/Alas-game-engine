@@ -40,7 +40,7 @@ namespace Alas
     void Scene::Physics2DInit()
     {
         _physicsSpace = cpSpaceNew();
-        cpSpaceSetGravity(_physicsSpace, {_gravity.x, _gravity.y});
+        cpSpaceSetGravity(_physicsSpace, cpvzero);
 
         for (auto idAndEntity : _entityMap)
         {
@@ -86,6 +86,8 @@ namespace Alas
                         box.Size.x * transform.Scale.x,
                         box.Size.y * transform.Scale.y,
                         0));
+
+                    // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
                 }
 
                 cpBodySetPosition(physicsBody, cpv(transform.Position.x, transform.Position.y));
@@ -113,32 +115,27 @@ namespace Alas
             switch (rigid.Type)
             {
                 case RigidBody2D::BodyType::Dynamic:
-
-                
-                    // cpBodySetVelocity(
-                    //     _physicsSpaceBodyMap[entity.GetUID()],
-                    //     {entity.GetComponent<RigidBody2D>().Velocity.x,
-                    //     entity.GetComponent<RigidBody2D>().Velocity.y});
-                
-                    // if (rigid.AffectedByGravity)
-                    // {
-                    //     cpBodyUpdateVelocity(_physicsSpaceBodyMap[entity.GetUID()], {_gravity.x, _gravity.y}, 0, Time::getDeltaTime());
-                    // }            
-                    cpBodySetForce(_physicsSpaceBodyMap[entity.GetUID()], {rigid.Force.x, rigid.Force.y}); 
-                           
+                {        
+                    cpVect actualVelocity = cpBodyGetVelocity(_physicsSpaceBodyMap[entity.GetUID()]);
+                    glm::vec2 deltaVelocity = rigid.Velocity - glm::vec2(actualVelocity.x, actualVelocity.y);
+                    glm::vec2 acceleration = deltaVelocity / Time::getPhysicsDeltaTime() + glm::vec2(rigid.Mass * _gravity.x * rigid.GravityScale, rigid.Mass * _gravity.y * rigid.GravityScale);
+                    cpBodySetForce(_physicsSpaceBodyMap[entity.GetUID()], {acceleration.x, acceleration.y});
                     break;
+                }
                 case RigidBody2D::BodyType::Kinematic:
+                {
                     cpBodySetVelocity(
                         _physicsSpaceBodyMap[entity.GetUID()],
                         {entity.GetComponent<RigidBody2D>().Velocity.x,
                         entity.GetComponent<RigidBody2D>().Velocity.y});
                     break;
+                }                    
                 case RigidBody2D::BodyType::Static:
                     break;
             }
         }
 
-        cpSpaceStep(_physicsSpace, Time::getDeltaTime());
+        cpSpaceStep(_physicsSpace, Time::getPhysicsDeltaTime());
 
         auto rigidBodies = _entityRegistry.group<IDComponent>(entt::get<RigidBody2D>);
         for (auto entt : rigidBodies)

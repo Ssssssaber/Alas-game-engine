@@ -84,10 +84,13 @@ namespace Alas
     struct RigidBody2D
     {
         enum class BodyType { Static, Kinematic, Dynamic};
+        
         BodyType Type = BodyType::Static;
-        double Mass = 1.0;
         glm::vec2 Velocity = glm::vec2(0.0f);
-        glm::vec2 Force = glm::vec2(0.0f);
+        
+        double Mass = 1.0;
+
+        double GravityScale = 1.0;
         bool AffectedByGravity = true;
 
 

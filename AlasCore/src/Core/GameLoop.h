@@ -1,6 +1,7 @@
 
 #include "Core/Window.h"
 #include "Core/LayerStack.h"
+#include "Core/Time.h"
 
 #include "Renderer/OrthCamera.h"
 
@@ -13,7 +14,7 @@ namespace Alas
     class GameLoop
     {
     public:
-        GameLoop(const Shared<Scene> sceneRef);
+        GameLoop(const Shared<Scene> sceneRef, Time* timeRef);
         ~GameLoop();
 
         bool GetIsRunning() { return _isRunning; }
@@ -31,6 +32,7 @@ namespace Alas
         Shared<Scene> _scene;
         Shared<OrthCamera> _camera;
         Shared<Window> _window;
+        Time* _time;
 
         LayerStack _layerStack;
         bool _isRunning = true;

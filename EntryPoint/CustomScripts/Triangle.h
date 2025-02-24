@@ -7,7 +7,6 @@ public:
     virtual void OnUpdate() override 
     {
         float deltaTime = Alas::Time::getDeltaTime();
-        // auto& transform = GetComponent<Alas::Transform>();
         glm::vec3 direction = glm::vec3();
 
         if (Alas::Input::IsKeyPressed(ALAS_KEY_I))
@@ -27,14 +26,12 @@ public:
             direction.x += _triangleSpeed * deltaTime;
         }
         
-        GetComponent<Alas::RigidBody2D>().Force = direction * _triangleSpeed;
-
-        // ALAS_CORE_INFO("keke");
+        GetComponent<Alas::RigidBody2D>().Velocity = direction * _triangleSpeed;
     }
 
     private:
         glm::vec3 _triPos = glm::vec3(0);
-        float _triangleSpeed = 10.0f;
+        float _triangleSpeed = 5.0f;
         float _triangleRotationSpeed = 1.0f;
 
 };

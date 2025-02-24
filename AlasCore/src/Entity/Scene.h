@@ -40,7 +40,7 @@ namespace Alas {
         std::map<UID, Entity> _entityMap;
 
         cpSpace* _physicsSpace;
-        glm::vec2 _gravity = glm::vec2(0.0f, -1.0f);
+        glm::vec2 _gravity = glm::vec2(0.0f, -3.0f);
         std::map<UID, cpBody*> _physicsSpaceBodyMap;
         std::map<UID, cpShape*> _physicsSpaceShapeMap;
     };
