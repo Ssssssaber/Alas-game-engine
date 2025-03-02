@@ -3,7 +3,7 @@
 #include "Renderer/OrthCamera.h"
 #include "Entity/Entity.h"
 #include "Renderer/Shader.h"
-#include "Renderer/Texture2D.h"
+#include "Renderer/Texture.h"
 #include "Renderer/RendererAPI.h"
 #include "glm.hpp"
 namespace Alas {
@@ -15,7 +15,7 @@ namespace Alas {
         static void EndScene();
 
         static void DrawQuad(const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix);
-        static void Submit2D(const Shared<Texture2D>& texture, const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix);
+        static void Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix);
 
         static void Submit(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, const glm::vec3& color,  const glm::mat4& modelMatrix);
         static void Submit(Entity& entity);

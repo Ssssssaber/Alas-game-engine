@@ -5,7 +5,7 @@ namespace Alas
     class OpenGLShader : public Shader
     {
     public:
-        OpenGLShader(std::string& vertexShaderSource, std::string& fragmentShaderSource);
+        OpenGLShader(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
         ~OpenGLShader();
 
         virtual void Bind() const override;

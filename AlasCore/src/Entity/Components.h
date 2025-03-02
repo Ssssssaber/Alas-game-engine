@@ -2,7 +2,7 @@
 
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
-#include "Renderer/Texture2D.h"
+#include "Renderer/Texture.h"
 
 
 #include <glm.hpp>
@@ -71,14 +71,14 @@ namespace Alas
 
     struct SpriteComponent
     {
-        Shared<Shader> Shader;
-        Shared<Texture2D> Texture;
+        Shared<Shader> c_Shader;
+        Shared<Texture> c_Texture;
         glm::vec3 Color = glm::vec3(1.0f, 1.0f, 1.0f);
 
         SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;
-        SpriteComponent(Shared<Texture2D> texture, Shared<Alas::Shader> shader) :
-            Texture(texture), Shader(shader) {}
+        SpriteComponent(Shared<Texture> texture, Shared<Shader> shader) :
+            c_Texture(texture), c_Shader(shader) {}
     };
 
     struct RigidBody2D

@@ -1,6 +1,8 @@
 #pragma once
 
+
 #define BIT(x) (1 << x)
+#define FMT_UNICODE 0
 
 #ifdef ALAS_ENABLE_ASSERTS
 	
@@ -24,7 +26,10 @@
 #endif
 
 #include <memory>
+#include <random>
 
+#define MIN_ID 0
+#define MAX_ID UINT64_MAX
 namespace Alas {
     template <typename T>
     using Shared = std::shared_ptr<T>;
@@ -33,4 +38,14 @@ namespace Alas {
     using Unique = std::unique_ptr<T>; 
 
     using UID = uint64_t;
+
+    static std::random_device s_RandomDevice;  // a seed source for the random number engine
+    static std::mt19937 s_RandomGenerator(s_RandomDevice()); // mersenne_twister_engine seeded with rd()
+    static std::uniform_int_distribution<uint64_t> s_UniformDistribution(MIN_ID, MAX_ID);
+
+    static UID GetUniqueId()
+    {
+        return s_UniformDistribution(s_RandomGenerator);
+    }
+    
 };

@@ -1,6 +1,7 @@
 #include <yaml-cpp/yaml.h>
 #include "Scene.h"
 #include "Entity.h"
+#include "Resources/ResourceManager.h"
 
 namespace Alas
 {
@@ -27,6 +28,7 @@ namespace Alas
             case (RigidBody2D::BodyType::Kinematic): return "Kinematic";
             case (RigidBody2D::BodyType::Static): return "Static";
         }
+        return "None";
     } 
 
     class SceneSerialization
@@ -79,8 +81,8 @@ namespace Alas
                     
                     out << YAML::BeginMap;
 
-                    out << YAML::Key << "Shader" << YAML::Value << "Shader name";
-                    out << YAML::Key << "Texture" << YAML::Value << "Texture name";
+                    out << YAML::Key << "Shader" << YAML::Value << ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID());
+                    out << YAML::Key << "Texture" << YAML::Value << ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID());
                     out << YAML::Key << "Color" << YAML::Value << sprite.Color;
 
                     out << YAML::EndMap;

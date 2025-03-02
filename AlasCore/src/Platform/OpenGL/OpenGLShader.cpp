@@ -3,7 +3,7 @@
 
 namespace Alas {
 
-    OpenGLShader::OpenGLShader(std::string& vertexShaderSource, std::string& fragmentShaderSource)
+    OpenGLShader::OpenGLShader(const std::string& vertexShaderSource, const std::string& fragmentShaderSource) : Shader()
     {
         // Create an empty vertex shader handle
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);

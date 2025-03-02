@@ -1,18 +1,15 @@
-#include "Texture2D.h"
+#include "OpenGLTexture.h"
+
+#include "OpenGLCore.h"
 
 #include <glad/glad.h>
-
-#include <string>
-
-#include "Platform/OpenGL/OpenGLCore.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 namespace Alas
 {
-
-    Texture2D::Texture2D(std::string filepath)
+    OpenGLTexture::OpenGLTexture(const std::string& filepath) : Texture()
     {
         stbi_set_flip_vertically_on_load(1);
         stbi_uc* data = stbi_load(filepath.c_str(), &_width, &_height, &_numChannels, 4);
@@ -37,12 +34,13 @@ namespace Alas
         stbi_image_free(data);
     }
 
-    Texture2D::~Texture2D()
+    OpenGLTexture::~OpenGLTexture()
     {
         GlCall(glDeleteTextures(1, &_rendererId));
     }
 
-    void Texture2D::Bind(uint32_t slot) const
+    
+    void OpenGLTexture::Bind(uint32_t slot) const
     {
         GlCall(glActiveTexture(GL_TEXTURE0 + slot));
         GlCall(glBindTexture(GL_TEXTURE_2D, _rendererId));

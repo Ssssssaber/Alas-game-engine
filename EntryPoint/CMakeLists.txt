@@ -20,10 +20,18 @@ if(WIN32)
   )
 endif()
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set (ASSETS_OUTPUT_DIR "${FULL_OUTPUT_DIR}/Assets/")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set (ASSETS_OUTPUT_DIR "${FULL_OUTPUT_DIR}${CMAKE_BUILD_TYPE}/Assets/")
+endif()
+
+message("---- Assets output dir: ${ASSETS_OUTPUT_DIR}")
+
 add_custom_command(
   TARGET alas_entry_point
   POST_BUILD
   COMMAND ${CMAKE_COMMAND}
-  ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets/" "${FullOutputDir}/Assets/"
+  ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets/" "${ASSETS_OUTPUT_DIR}"
   COMMENT "---- Copying Assets folder from EntryPoint -----"
 )

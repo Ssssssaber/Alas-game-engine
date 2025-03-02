@@ -10,18 +10,16 @@
 #include "Renderer/Renderer.h"
 namespace Alas
 {
-    uint64_t Scene::_nextID = 0;
     Entity Scene::CreateEntity(const std::string name)
     {
-        _nextID++;
-
+        UID id = GetUniqueId();
         Entity entity = { _entityRegistry.create(), this };
-		entity.AddComponent<IDComponent>(_nextID);
+		entity.AddComponent<IDComponent>(id);
 		entity.AddComponent<Transform>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 
-		_entityMap[_nextID] = entity;
+		_entityMap[id] = entity;
 
 		return entity;
     }
@@ -77,6 +75,9 @@ namespace Alas
                         break;
                 }
 
+                cpBodySetPosition(physicsBody, cpv(transform.Position.x, transform.Position.y));
+                cpBodySetAngle(physicsBody, transform.Rotation.z);
+
                 if (entity.HasComponent<BoxCollider2D>())
                 {
                     auto& box = entity.GetComponent<BoxCollider2D>();
@@ -90,8 +91,7 @@ namespace Alas
                     // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
                 }
 
-                cpBodySetPosition(physicsBody, cpv(transform.Position.x, transform.Position.y));
-                cpBodySetAngle(physicsBody, transform.Rotation.z);
+                
 
                 _physicsSpaceBodyMap[entity.GetUID()] = physicsBody;
             }
@@ -131,7 +131,13 @@ namespace Alas
                     break;
                 }                    
                 case RigidBody2D::BodyType::Static:
+                {
+                    cpBodySetPosition(
+                        _physicsSpaceBodyMap[entity.GetUID()],
+                        {entity.GetComponent<Transform>().Position.x,
+                        entity.GetComponent<Transform>().Position.y});
                     break;
+                }
             }
         }
 
@@ -189,7 +195,7 @@ namespace Alas
         {
             auto [transform, sprite] = spriteGO.get<Transform, SpriteComponent>(entity);
 
-            Renderer::Submit2D(sprite.Texture, sprite.Shader, sprite.Color, transform.CalculateModelMatrix());
+            Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
         }
     }
 } // namespace Alas

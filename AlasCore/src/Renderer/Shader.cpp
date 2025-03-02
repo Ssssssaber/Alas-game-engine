@@ -1,11 +1,12 @@
 #include "Shader.h"
 #include "Renderer.h"
+#include "Resources/ResourceManager.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include <sstream>
 #include <fstream>
 
 namespace Alas {
-    Shared<Shader> Shader::Create(std::string& vertexShaderSource, std::string& fragmentShaderSource)
+    Shared<Shader> Shader::Create(const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
     {
         switch (Renderer::GetAPI())
         {
@@ -20,7 +21,11 @@ namespace Alas {
     Shared<Shader> Shader::Create(const std::string& filepath)
     {
         ShaderSourceCode* source = ParseShaderFile(filepath);
-        return Create(source->vertexShaderSource, source->fragmentShaderSource);
+        Shared<Shader> shader = Create(source->VertexShaderSource, source->FragmentShaderSource);
+        
+        if (shader) ResourceManager::AddResource(shader->GetUID(), filepath);
+
+        return shader;
     }
 
     ShaderSourceCode* Shader::ParseShaderFile(const std::string& filepath)
@@ -54,9 +59,6 @@ namespace Alas {
             }
         }
 
-        return new ShaderSourceCode{
-            .vertexShaderSource = ss[0].str(),
-            .fragmentShaderSource = ss[1].str()
-        };
+        return new ShaderSourceCode(ss[0].str(), ss[1].str());
     }
 }

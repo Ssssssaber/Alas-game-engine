@@ -29,10 +29,10 @@ public:
         _textureShader = Alas::Shader::Create("Assets/Shaders/TextureShader.shader");
         _textureShader->Bind();
 
-        _baseTexture.reset(new Alas::Texture2D("Assets/Textures/goool.png"));
+        _baseTexture = Alas::Texture::Create("Assets/Textures/goool.png");
         _baseTexture->Bind();
         
-        _mainGOTexture.reset(new Alas::Texture2D("Assets/Textures/keke.png"));
+        _mainGOTexture = Alas::Texture::Create("Assets/Textures/keke.png");
         _mainGOTexture->Bind();
 
         _mainGo = _scene->CreateEntity("Main triangle");
@@ -237,8 +237,8 @@ public:
         
         Alas::Shared<Alas::Shader> _textureShader;
 
-        Alas::Shared<Alas::Texture2D> _baseTexture;
-        Alas::Shared<Alas::Texture2D> _mainGOTexture;
+        Alas::Shared<Alas::Texture> _baseTexture;
+        Alas::Shared<Alas::Texture> _mainGOTexture;
 
         Alas::Shared<Alas::OrthCamera> _camera;
         glm::vec3 _cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);

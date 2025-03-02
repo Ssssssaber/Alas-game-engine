@@ -3,15 +3,22 @@
 namespace Alas {
 
     struct ShaderSourceCode {
-        std::string vertexShaderSource;
-        std::string fragmentShaderSource;
+        std::string VertexShaderSource;
+        std::string FragmentShaderSource;
+
+        ShaderSourceCode(std::string vertexShaderSource, std::string fragmentShaderSource) :
+            VertexShaderSource(vertexShaderSource), FragmentShaderSource(fragmentShaderSource)
+        {}
     }; 
 
     class Shader 
     {
     public:
-        static Shared<Shader> Create(std::string& vertexShaderSource, std::string& fragmentShaderSource);
+        static Shared<Shader> Create(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
         static Shared<Shader> Create(const std::string& filepath);
+
+        Shader() { _resourceID = GetUniqueId();}
+        UID GetUID() { return _resourceID; }
 
         virtual ~Shader() = default;
         virtual void Bind() const = 0;
@@ -31,10 +38,11 @@ namespace Alas {
         virtual void setMat3(const std::string &name, const glm::mat3 &mat) const = 0;
         virtual void setMat4(const std::string &name, const glm::mat4 &mat) const = 0;
         
-        uint32_t _rendererId;
     private:
         static ShaderSourceCode* ParseShaderFile(const std::string& filepath);
-
+        
     private:
+        UID _resourceID;
+        uint32_t _rendererId;
     };
 }

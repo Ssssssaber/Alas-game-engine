@@ -35,7 +35,6 @@ namespace Alas {
     public:
         std::string Name = "Scene";
     private:
-        static UID _nextID;
 
         entt::registry _entityRegistry;
         std::map<UID, Entity> _entityMap;
