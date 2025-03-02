@@ -13,6 +13,11 @@ namespace Alas
     Entity Scene::CreateEntity(const std::string name)
     {
         UID id = GetUniqueId();
+        return CreateEntityWithId(name, id);
+    }
+
+    Entity Scene::CreateEntityWithId(const std::string name, UID id)
+    {
         Entity entity = { _entityRegistry.create(), this };
 		entity.AddComponent<IDComponent>(id);
 		entity.AddComponent<Transform>();
@@ -22,6 +27,12 @@ namespace Alas
 		_entityMap[id] = entity;
 
 		return entity;
+    }
+
+    void Scene::DeleteEntityWithId(UID id)
+    {
+        Entity entity = _entityMap[id];
+		DeleteEntity(entity);
     }
 
     void Scene::DeleteEntity(Entity& entity)

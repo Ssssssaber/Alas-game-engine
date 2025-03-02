@@ -190,10 +190,14 @@ public:
             ent.AddComponent<Alas::BoxCollider2D>();
         }
 
-        ImGui::InputText("Scene label", &_scene->Name);
+        ImGui::InputText("Scene Name", &_sceneToLoadName);
         if (ImGui::Button("Save scene", ImVec2(200, 50)))
         {
-            Alas::SceneSerialization::SerializeScene(_scene, "Assets/" + _scene->Name + ".yaml");  
+            Alas::SceneSerialization::SerializeScene(_scene, "Assets/" + _sceneToLoadName + ".yaml");  
+        }
+        if (ImGui::Button("Load Scene", ImVec2(200, 50)))
+        {
+            _scene = Alas::SceneSerialization::DeserializeScene("Assets/" + _sceneToLoadName + ".yaml");  
         }
           
 
@@ -228,6 +232,8 @@ public:
         float _timeElapsed = 0;
         float _framesElapsed = 0;
         float _frameRate = 0;
+
+        std::string _sceneToLoadName;
 
         Alas::Window* _editorWindow;
 

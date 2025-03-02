@@ -19,6 +19,8 @@ namespace Alas {
         Scene() = default;
 
         Entity CreateEntity(const std::string name = std::string());
+        Entity CreateEntityWithId(const std::string name, UID id);
+        void DeleteEntityWithId(UID id);
         void DeleteEntity(Entity& entity);
         
         void Physics2DInit();
