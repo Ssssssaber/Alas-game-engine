@@ -23,8 +23,12 @@ namespace Alas {
         ShaderSourceCode* source = ParseShaderFile(filepath);
         Shared<Shader> shader = Create(source->VertexShaderSource, source->FragmentShaderSource);
         
-        if (shader) ResourceManager::AddResource(shader->GetUID(), filepath);
-
+        if (shader) 
+        {
+            ResourceManager::AddResourceToRegistry(shader->GetUID(), filepath);
+            ResourceManager::AddUsedResource(shader->GetUID(), shader);
+        }
+    
         return shader;
     }
 

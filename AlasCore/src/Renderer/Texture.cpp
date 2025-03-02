@@ -16,7 +16,9 @@ namespace Alas
 
         if (texture) 
         {
-            ResourceManager::AddResource(texture->GetUID(), filepath);
+            ResourceManager::AddResourceToRegistry(texture->GetUID(), filepath);
+            ResourceManager::AddUsedResource(texture->GetUID(), texture);
+            
             return texture;
         }
         

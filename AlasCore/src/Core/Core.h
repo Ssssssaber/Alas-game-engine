@@ -28,7 +28,7 @@
 #include <memory>
 #include <random>
 
-#define MIN_ID 0
+#define MIN_ID 1
 #define MAX_ID UINT64_MAX
 namespace Alas {
     template <typename T>

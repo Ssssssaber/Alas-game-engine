@@ -298,8 +298,33 @@ namespace Alas
             {
                 // implement sprite
                 auto& sprite = ent.AddComponent<SpriteComponent>();
-                sprite.c_Shader = Shader::Create(spriteData[SPRITE_C_SHADER].as<std::string>());
-                sprite.c_Texture = Texture::Create(spriteData[SPRITE_C_TEXTURE].as<std::string>());
+
+                {
+                    const std::string& shaderFilepath = spriteData[SPRITE_C_SHADER].as<std::string>();
+                    UID shaderID = ResourceManager::GetResourceIdByPath(shaderFilepath);
+                    if (shaderID == 0)
+                    {
+                        sprite.c_Shader = Shader::Create(shaderFilepath);
+                    }
+                    else
+                    {
+                        sprite.c_Shader = ResourceManager::GetUsedShader(shaderID);
+                    }
+                }
+                {
+                    const std::string& textureFilepath = spriteData[SPRITE_C_TEXTURE].as<std::string>();
+                    UID textureID = ResourceManager::GetResourceIdByPath(textureFilepath);
+                    if (textureID == 0)
+                    {
+                        sprite.c_Texture = Texture::Create(textureFilepath);
+                    }
+                    else
+                    {
+                        sprite.c_Texture = ResourceManager::GetUsedTexture(textureID);
+                    }
+                    
+                }
+                
                 sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec3>();
             }
             
