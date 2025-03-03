@@ -147,10 +147,13 @@ public:
     {
         if (selectedComponentId >= IM_ARRAYSIZE(_componentsStr)) return ent;
 
-        if (_componentsStr[selectedComponentId] == SPRITE_C) ent.AddComponent<Alas::SpriteComponent>();
-        else if (_componentsStr[selectedComponentId] == RIGID_BODY_2D_C) ent.AddComponent<Alas::RigidBody2D>();
-        else if (_componentsStr[selectedComponentId] == BOX_COLLIDER_2D_C) ent.AddComponent<Alas::BoxCollider2D>();
-        
+        if (_componentsStr[selectedComponentId] == SPRITE_C && !ent.HasComponent<Alas::SpriteComponent>())
+            ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
+        else if (_componentsStr[selectedComponentId] == RIGID_BODY_2D_C && !ent.HasComponent<Alas::RigidBody2D>())
+            ent.AddComponent<Alas::RigidBody2D>();
+        else if (_componentsStr[selectedComponentId] == BOX_COLLIDER_2D_C && !ent.HasComponent<Alas::BoxCollider2D>() ) 
+            ent.AddComponent<Alas::BoxCollider2D>();
+            
         return ent; 
     }
 
@@ -257,6 +260,7 @@ public:
                     ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), BASE_DRAG_STEP);
                     ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation), BASE_DRAG_STEP);
                     ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), BASE_DRAG_STEP);
+                    // if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::Transform>();
                     ImGui::TreePop();
                 }
 
@@ -267,6 +271,7 @@ public:
                     ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID()).c_str());
                     ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID()).c_str());
                     ImGui::ColorEdit3("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
+                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
                     ImGui::TreePop();
                 }
 
@@ -311,13 +316,13 @@ public:
                             }
                             ImGui::EndCombo();
                         }
-
                         ImGui::Spacing();
-                        
                     }
                     
                     ImGui::DragFloat(RIGID_BODY_2D_C_MASS, &rigidBody2D.Mass, BASE_DRAG_STEP);
                     ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, BASE_DRAG_STEP);
+
+                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::RigidBody2D>();
                     ImGui::TreePop();
                 }
 
@@ -327,6 +332,7 @@ public:
                     auto& boxCollider2D = ent.GetComponent<Alas::BoxCollider2D>();
                     ImGui::DragFloat2(BOX_COLLIDER_2D_C_OFFSET, glm::value_ptr(boxCollider2D.Offset), BASE_DRAG_STEP);
                     ImGui::DragFloat2(BOX_COLLIDER_2D_C_SIZE, glm::value_ptr(boxCollider2D.Size), BASE_DRAG_STEP);
+                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::BoxCollider2D>();
                     ImGui::TreePop();
                 }
 
