@@ -12,6 +12,11 @@
 #include <imgui_internal.h>
 
 #include "CustomScripts/Triangle.h"
+
+#define BASE_BUTTON_WIDTH 125
+#define BASE_BUTTON_HEIGHT 25
+
+#define BASE_DRAG_STEP 0.01f
 class ExampleLayer : public Alas::Layer
 {
 public:
@@ -140,7 +145,9 @@ public:
 
     void OnImGuiRender()
     {
+        
         bool open = true;
+        ImGui::ShowDemoWindow(&open);
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
@@ -173,38 +180,21 @@ public:
             Alas::Application::Get().StartGameLoop(_scene);
         }
 
-        ImGui::InputFloat("FPS", &_frameRate);
-        if (ImGui::Button("Create static", ImVec2(200, 50)))
-        {
-            Alas::Entity ent(OnCreateObjectButton());
-            ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Static);
-            ent.AddComponent<Alas::BoxCollider2D>();
-        }
-        if (ImGui::Button("Create dynamic", ImVec2(200, 50)))
-        {
-            Alas::Entity ent(OnCreateObjectButton());
-            ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
-            ent.AddComponent<Alas::BoxCollider2D>();
-        }
-        if (ImGui::Button("Create kinematic", ImVec2(200, 50)))
-        {
-            Alas::Entity ent(OnCreateObjectButton());
-            ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Kinematic);
-            ent.AddComponent<Alas::BoxCollider2D>();
-        }
-
         ImGui::InputText("Scene Name", &_sceneToLoadName);
-        if (ImGui::Button("Save scene", ImVec2(200, 50)))
+        if (ImGui::Button("Save scene", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
         {
             Alas::SceneSerialization::SerializeScene(_scene, "Assets/" + _sceneToLoadName + ".yaml");  
         }
-        if (ImGui::Button("Load Scene", ImVec2(200, 50)))
+        if (ImGui::Button("Load Scene", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
         {
             _scene = Alas::SceneSerialization::DeserializeScene("Assets/" + _sceneToLoadName + ".yaml");  
         }
           
-
         ImGui::SeparatorText("Game objects");
+        if (ImGui::Button("Create game object", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
+        {
+            OnCreateObjectButton();
+        }
 
         auto objects = _scene->GetEntityMap();
         std::map<Alas::UID, Alas::Entity>::iterator it;      
@@ -214,11 +204,75 @@ public:
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
             if (ImGui::TreeNode(str.c_str()))
             {
-                auto& transform = ent.GetComponent<Alas::Transform>();
-                ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), 0.01f);
-                ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation));
-                ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), 0.01f);
-                ImGui::ColorEdit3("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
+                ImGui::LabelText(ID_C, std::to_string((ent.GetUID())).c_str());
+
+                ImGui::InputText(TAG_C, &ent.GetComponent<Alas::TagComponent>().Tag);
+
+                if(ImGui::TreeNode(TRANSFORM_C))
+                {
+                    auto& transform = ent.GetComponent<Alas::Transform>();
+                    ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), BASE_DRAG_STEP);
+                    ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation), BASE_DRAG_STEP);
+                    ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), BASE_DRAG_STEP);
+                    ImGui::TreePop();
+                }
+
+                if (ent.HasComponent<Alas::SpriteComponent>())
+                if(ImGui::TreeNode(SPRITE_C))
+                {
+                    auto& sprite = ent.GetComponent<Alas::SpriteComponent>();
+                    ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID()).c_str());
+                    ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID()).c_str());
+                    ImGui::ColorEdit3("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
+                    ImGui::TreePop();
+                }
+
+                if (ent.HasComponent<Alas::RigidBody2D>())
+                if(ImGui::TreeNode(RIGID_BODY_2D_C))
+                {
+                    auto& rigidBody2D = ent.GetComponent<Alas::RigidBody2D>();
+                    ImGui::LabelText(RIGID_BODY_2D_C_TYPE, Alas::RigidBody2D::TypeToString(rigidBody2D.Type).c_str());
+                    // ImGui::select
+                    if (ImGui::TreeNode(RIGID_BODY_2D_C_TYPE))
+                    {
+                        static int selected = -1;
+                        
+                        static const std::string typesStr[] = {
+                            Alas::RigidBody2D::TypeToString(Alas::RigidBody2D::BodyType::Dynamic),
+                            Alas::RigidBody2D::TypeToString(Alas::RigidBody2D::BodyType::Kinematic),
+                            Alas::RigidBody2D::TypeToString(Alas::RigidBody2D::BodyType::Static),
+                        };
+
+                        static const Alas::RigidBody2D::BodyType types[] = {
+                            Alas::RigidBody2D::BodyType::Dynamic,
+                            Alas::RigidBody2D::BodyType::Kinematic,
+                            Alas::RigidBody2D::BodyType::Static,
+                        };
+
+                        for (int n = 0; n < 3; n++)
+                        {
+                            if (ImGui::Selectable(typesStr[n].c_str(), selected == n))
+                            {
+                                selected = n;
+                                rigidBody2D.Type = types[n];
+                            }
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::DragFloat(RIGID_BODY_2D_C_MASS, &rigidBody2D.Mass, BASE_DRAG_STEP);
+                    ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, BASE_DRAG_STEP);
+                    ImGui::TreePop();
+                }
+
+                if (ent.HasComponent<Alas::BoxCollider2D>())
+                if(ImGui::TreeNode(BOX_COLLIDER_2D_C))
+                {
+                    auto& boxCollider2D = ent.GetComponent<Alas::BoxCollider2D>();
+                    ImGui::DragFloat2(BOX_COLLIDER_2D_C_OFFSET, glm::value_ptr(boxCollider2D.Offset), BASE_DRAG_STEP);
+                    ImGui::DragFloat2(BOX_COLLIDER_2D_C_SIZE, glm::value_ptr(boxCollider2D.Size), BASE_DRAG_STEP);
+                    ImGui::TreePop();
+                }
+
                 ImGui::TreePop();
             }
         }

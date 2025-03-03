@@ -7,7 +7,11 @@
 #include "src/Core/Application.h"
 #include "src/ImGui/ImGuiLayer.h"
 
+// Scene loading and saving
 #include "src/Entity/SceneSerialization.h"
+
+// Resources Management
+#include "src/Resources/ResourceManager.h"
 
 // Renderer
 #include "src/Renderer/Renderer.h"

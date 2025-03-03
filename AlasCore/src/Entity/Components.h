@@ -10,6 +10,30 @@
 #include <gtx/quaternion.hpp>
 #include <string>
 
+#define ID_C "ID"
+#define TAG_C "Tag"
+
+#define TRANSFORM_C "Transform"
+#define TRANSFORM_C_POSITION "Position"
+#define TRANSFORM_C_ROTATION "Rotation"
+#define TRANSFORM_C_SCLAE "Scale"
+
+#define SPRITE_C "Sprite"
+#define SPRITE_C_SHADER "Shader"
+#define SPRITE_C_TEXTURE "Texture"
+#define SPRITE_C_COLOR "Color"
+
+#define RIGID_BODY_2D_C "RigidBody2D"
+#define RIGID_BODY_2D_C_TYPE "Type"
+#define RIGID_BODY_2D_C_MASS "Mass"
+#define RIGID_BODY_2D_C_GRAVITY_SCALE "Gravity scale"
+
+#define BOX_COLLIDER_2D_C "Box Collider"
+#define BOX_COLLIDER_2D_C_OFFSET "Offset"
+#define BOX_COLLIDER_2D_C_SIZE "Size"
+
+// for parsing yaml rigid body type
+#define DEFAULT_RIGID_BODY_2D_TYPE RigidBody2D::BodyType::Dynamic
 namespace Alas
 {
     struct IDComponent
@@ -88,15 +112,41 @@ namespace Alas
         BodyType Type = BodyType::Static;
         glm::vec2 Velocity = glm::vec2(0.0f);
         
-        double Mass = 1.0;
+        float Mass = 1.0;
 
-        double GravityScale = 1.0;
+        float GravityScale = 1.0;
 
 
         RigidBody2D() = default;
 		RigidBody2D(const RigidBody2D&) = default;
         RigidBody2D(RigidBody2D::BodyType bodyType) :
             Type(bodyType) {}
+
+        static std::string TypeToString(BodyType type)
+        {
+            switch (type)
+            {
+                case (BodyType::Dynamic): return "Dynamic";            
+                case (BodyType::Kinematic): return "Kinematic";
+                case (BodyType::Static): return "Static";
+            }
+            return "None";
+        }
+    
+        static BodyType StringToType(const std::string& string)
+        {
+            if (string == "Dynamic") return BodyType::Dynamic;
+            else if (string == "Kinematic") return BodyType::Kinematic;
+            else if (string == "Static") return BodyType::Static;
+            else
+            {
+                ALAS_CORE_ERROR(
+                    "Unknown RigidBody2D BodyType: {0}. Setting default type ({0}).",
+                    string,
+                    TypeToString(DEFAULT_RIGID_BODY_2D_TYPE));
+                return DEFAULT_RIGID_BODY_2D_TYPE;
+            }
+        }
         
     };
 

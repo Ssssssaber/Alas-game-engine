@@ -8,29 +8,6 @@
 // keys for yaml file
 #define SCENE_NAME "Scene name"
 #define ENTITIES "Entities"
-#define TAG_C "Tag"
-
-#define TRANSFORM_C "Transform"
-#define TRANSFORM_C_POSITION "Position"
-#define TRANSFORM_C_ROTATION "Rotation"
-#define TRANSFORM_C_SCLAE "Scale"
-
-#define SPRITE_C "Sprite"
-#define SPRITE_C_SHADER "Shader"
-#define SPRITE_C_TEXTURE "Texture"
-#define SPRITE_C_COLOR "Color"
-
-#define RIGID_BODY_2D_C "RigidBody2D"
-#define RIGID_BODY_2D_C_TYPE "Type"
-#define RIGID_BODY_2D_C_MASS "Mass"
-#define RIGID_BODY_2D_C_GRAVITY_SCALE "Gravity scale"
-
-#define BOX_COLLIDER_2D_C "Box Collider"
-#define BOX_COLLIDER_2D_C_OFFSET "Offset"
-#define BOX_COLLIDER_2D_C_SIZE "Size"
-
-// for parsing yaml rigid body type
-#define DEFAULT_RIGID_BODY_2D_TYPE RigidBody2D::BodyType::Dynamic
 
 namespace YAML {
 
@@ -126,32 +103,6 @@ namespace Alas
         return out;
     }
 
-    std::string RigidBody2DTypeToString(RigidBody2D::BodyType type)
-    {
-        switch (type)
-        {
-            case (RigidBody2D::BodyType::Dynamic): return "Dynamic";            
-            case (RigidBody2D::BodyType::Kinematic): return "Kinematic";
-            case (RigidBody2D::BodyType::Static): return "Static";
-        }
-        return "None";
-    }
-
-    RigidBody2D::BodyType StringToRigidBody2DType(const std::string& string)
-    {
-        if (string == "Dynamic") return RigidBody2D::BodyType::Dynamic;
-        else if (string == "Kinematic") return RigidBody2D::BodyType::Kinematic;
-        else if (string == "Static") return RigidBody2D::BodyType::Static;
-        else
-        {
-            ALAS_CORE_ERROR(
-                "Unknown RigidBody2D BodyType: {0}. Setting default type ({0}).",
-                string,
-                RigidBody2DTypeToString(DEFAULT_RIGID_BODY_2D_TYPE));
-            return DEFAULT_RIGID_BODY_2D_TYPE;
-        }
-    }
-
     bool CheckKeyExists(YAML::Node& node, const std::string& key, const std::string& filepath)
     {
         if (!node[key]) 
@@ -220,7 +171,7 @@ namespace Alas
                 
                 out << YAML::BeginMap;
 
-                out << YAML::Key << RIGID_BODY_2D_C_TYPE << YAML::Value << RigidBody2DTypeToString(rigid.Type);
+                out << YAML::Key << RIGID_BODY_2D_C_TYPE << YAML::Value << RigidBody2D::TypeToString(rigid.Type);
                 out << YAML::Key << RIGID_BODY_2D_C_MASS << YAML::Value << rigid.Mass;
                 out << YAML::Key << RIGID_BODY_2D_C_GRAVITY_SCALE << YAML::Value << rigid.GravityScale;
 
@@ -332,7 +283,7 @@ namespace Alas
             if (rigidBody2DData)
             {
                 auto& rigidBody = ent.AddComponent<RigidBody2D>();
-                rigidBody.Type = StringToRigidBody2DType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
+                rigidBody.Type = RigidBody2D::StringToType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
                 rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<double>();
                 rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<double>();
             }
