@@ -143,6 +143,17 @@ public:
         return ent; 
     }
 
+    Alas::Entity& OnAddComponentButton(Alas::Entity& ent, int selectedComponentId)
+    {
+        if (selectedComponentId >= IM_ARRAYSIZE(_componentsStr)) return ent;
+
+        if (_componentsStr[selectedComponentId] == SPRITE_C) ent.AddComponent<Alas::SpriteComponent>();
+        else if (_componentsStr[selectedComponentId] == RIGID_BODY_2D_C) ent.AddComponent<Alas::RigidBody2D>();
+        else if (_componentsStr[selectedComponentId] == BOX_COLLIDER_2D_C) ent.AddComponent<Alas::BoxCollider2D>();
+        
+        return ent; 
+    }
+
     void OnImGuiRender()
     {
         
@@ -202,8 +213,40 @@ public:
         {
             Alas::Entity ent = it->second;
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
+
+            static int selectedComponentId = 0; // Here we store our selection data as an index.
             if (ImGui::TreeNode(str.c_str()))
             {
+                {                        
+                    // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
+                    const char* combo_preview_value = _componentsStr[selectedComponentId];
+
+                    if (ImGui::BeginCombo("Component to add", combo_preview_value))
+                    {
+                        for (int n = 0; n < IM_ARRAYSIZE(_componentsStr); n++)
+                        {
+                            const bool is_selected = (selectedComponentId == n);
+                            if (ImGui::Selectable(_componentsStr[n], is_selected))
+                            {
+                                selectedComponentId = n;
+                            }
+                                
+                            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                            if (is_selected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
+
+                    ImGui::Spacing();
+                    
+                }
+                
+                if (ImGui::Button("Add Component"))
+                {
+                    OnAddComponentButton(ent, selectedComponentId);
+                }
+
                 ImGui::LabelText(ID_C, std::to_string((ent.GetUID())).c_str());
 
                 ImGui::InputText(TAG_C, &ent.GetComponent<Alas::TagComponent>().Tag);
@@ -303,6 +346,12 @@ public:
         float _timeElapsed = 0;
         float _framesElapsed = 0;
         float _frameRate = 0;
+
+        const char* _componentsStr[3] = {
+            SPRITE_C,
+            RIGID_BODY_2D_C,
+            BOX_COLLIDER_2D_C
+        };
 
         std::string _sceneToLoadName;
 

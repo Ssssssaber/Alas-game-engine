@@ -113,7 +113,7 @@ namespace Alas
     {
         enum class BodyType { Static, Kinematic, Dynamic};
         
-        BodyType Type = BodyType::Static;
+        BodyType Type = BodyType::Dynamic;
         glm::vec2 Velocity = glm::vec2(0.0f);
         
         float Mass = 1.0;
