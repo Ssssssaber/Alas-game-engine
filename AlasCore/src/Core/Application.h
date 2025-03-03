@@ -29,7 +29,7 @@ namespace Alas
         
         void Run();
 
-        void StartGameLoop(const Shared<Scene>& scene);
+        void StartGameLoop(Shared<Scene> scene);
 
         void OnEvent(Event& e);
 

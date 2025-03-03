@@ -32,22 +32,25 @@ public:
         _baseTexture = Alas::Texture::Create("Assets/Textures/goool.png");
         _baseTexture->Bind();
         
-        // _mainGOTexture = Alas::Texture::Create("Assets/Textures/keke.png");
-        // _mainGOTexture->Bind();
+        // -------------- test scene load correctly
 
-        // _mainGo = _scene->CreateEntity("Main triangle");
-        // auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
-        // script.Bind<Triangle>();
+        _mainGOTexture = Alas::Texture::Create("Assets/Textures/keke.png");
+        _mainGOTexture->Bind();
 
-        // auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
-        // sprite.Color = glm::vec3(0.5f);
+        _mainGo = _scene->CreateEntity("Main triangle");
+        auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
+        script.Bind<Triangle>();
 
-        // // _mainGo.GetComponent<Alas::Transform>().Scale = glm::vec3(2.0f, 2.0f, 2.0f);        
-        // _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 30.0f);
+        auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
+        sprite.Color = glm::vec3(0.5f);
 
-        // auto& body = _mainGo.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
-        // body.GravityScale = 0;
-        // _mainGo.AddComponent<Alas::BoxCollider2D>();
+        _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 30.0f);
+
+        auto& body = _mainGo.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
+        body.GravityScale = 0;
+        _mainGo.AddComponent<Alas::BoxCollider2D>();
+
+        // -------------- test scene load correctly
 
         // for (int i = 0; i < 4; i++)
         // {

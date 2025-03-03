@@ -10,8 +10,10 @@
 
 namespace Alas
 {
-    GameLoop::GameLoop(const Shared<Scene> sceneRef, Time* timeRef) : _scene(sceneRef), _time(timeRef)
+    GameLoop::GameLoop(Shared<Scene> sceneRef, Time* timeRef) : _time(timeRef)
     {
+        _scene.reset(new Scene());
+        CopyScene(sceneRef);
         _scene->Physics2DInit();
 
     }
@@ -19,6 +21,73 @@ namespace Alas
     GameLoop::~GameLoop()
     {
         // _scene.pht
+    }
+
+    void GameLoop::CopyScene(Shared<Scene> sceneRef)
+    {
+        auto entities = sceneRef->GetEntityMap();
+
+        for (auto idAndEnt = entities.begin(); idAndEnt != entities.end(); idAndEnt++)
+        {
+            UID id = idAndEnt->first;
+            Entity entToCopy = idAndEnt->second;
+
+            Entity newEnt = _scene->CreateEntityWithId(entToCopy.GetComponent<TagComponent>().Tag, idAndEnt->first);
+
+            auto& transform = newEnt.GetComponent<Transform>();
+            auto& transformToCopy = entToCopy.GetComponent<Transform>();
+            transform.Position = transformToCopy.Position;
+            transform.Rotation = transformToCopy.Rotation;
+            transform.Scale = transformToCopy.Scale;
+        
+            if (entToCopy.HasComponent<SpriteComponent>())
+            {
+                // implement sprite
+                auto& sprite = newEnt.AddComponent<SpriteComponent>();
+
+                auto& spriteToCopy = entToCopy.GetComponent<SpriteComponent>(); 
+                
+                sprite.c_Shader = spriteToCopy.c_Shader;
+                sprite.c_Texture = spriteToCopy.c_Texture;
+                sprite.Color = spriteToCopy.Color;
+            }
+            
+            if (entToCopy.HasComponent<RigidBody2D>())
+            {
+                // implement sprite
+                auto& rigidBody2D = newEnt.AddComponent<RigidBody2D>();
+
+                auto& rigidBody2DToCopy = entToCopy.GetComponent<RigidBody2D>(); 
+                
+                rigidBody2D.Type = rigidBody2DToCopy.Type;
+                rigidBody2D.Mass = rigidBody2DToCopy.Mass;
+                rigidBody2D.GravityScale = rigidBody2DToCopy.GravityScale;
+            }
+
+            if (entToCopy.HasComponent<BoxCollider2D>())
+            {
+                // implement sprite
+                auto& boxCollider2D = newEnt.AddComponent<BoxCollider2D>();
+
+                auto& boxCollider2DToCopy = entToCopy.GetComponent<BoxCollider2D>(); 
+                
+                boxCollider2D.Offset = boxCollider2DToCopy.Offset;
+                boxCollider2D.Size = boxCollider2DToCopy.Size;
+            }
+
+            if (entToCopy.HasComponent<NativeScriptComponent>())
+            {
+                // implement sprite
+                auto& script = newEnt.AddComponent<NativeScriptComponent>();
+
+                auto& scriptToCopy = entToCopy.GetComponent<NativeScriptComponent>(); 
+                
+                script.InstantiateScript = scriptToCopy.InstantiateScript;
+                script.Instance = scriptToCopy.Instance;
+                script.DestroyScript = scriptToCopy.DestroyScript;
+            }
+            
+        }
     }
 
     void GameLoop::Init()

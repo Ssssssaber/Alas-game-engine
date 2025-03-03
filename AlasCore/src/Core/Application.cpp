@@ -49,7 +49,7 @@ namespace Alas
         }
     }
 
-    void Application::StartGameLoop(const Shared<Scene>& scene)
+    void Application::StartGameLoop(Shared<Scene> scene)
     {
         _gameLoop.reset(new GameLoop(scene, _time));
         _gameLoop->Init();

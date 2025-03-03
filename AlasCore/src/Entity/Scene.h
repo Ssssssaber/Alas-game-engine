@@ -16,7 +16,7 @@ namespace Alas {
     friend class Entity;
 
     public:
-        Scene() = default;
+        Scene() : _entityRegistry() {}
 
         Entity CreateEntity(const std::string name = std::string());
         Entity CreateEntityWithId(const std::string name, UID id);
