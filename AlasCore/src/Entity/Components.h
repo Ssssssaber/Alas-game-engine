@@ -34,6 +34,10 @@
 
 // for parsing yaml rigid body type
 #define DEFAULT_RIGID_BODY_2D_TYPE RigidBody2D::BodyType::Dynamic
+#define RIGID_BODY_2D_TYPE_DYNAMIC_STR "Dynamic"
+#define RIGID_BODY_2D_TYPE_KINEMATIC_STR "Kinematic"
+#define RIGID_BODY_2D_TYPE_STATIC_STR "Static"
+
 namespace Alas
 {
     struct IDComponent
@@ -126,9 +130,9 @@ namespace Alas
         {
             switch (type)
             {
-                case (BodyType::Dynamic): return "Dynamic";            
-                case (BodyType::Kinematic): return "Kinematic";
-                case (BodyType::Static): return "Static";
+                case (BodyType::Dynamic): return RIGID_BODY_2D_TYPE_DYNAMIC_STR;            
+                case (BodyType::Kinematic): return RIGID_BODY_2D_TYPE_KINEMATIC_STR;
+                case (BodyType::Static): return RIGID_BODY_2D_TYPE_STATIC_STR;
             }
             return "None";
         }

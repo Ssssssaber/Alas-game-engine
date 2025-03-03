@@ -231,34 +231,48 @@ public:
                 if(ImGui::TreeNode(RIGID_BODY_2D_C))
                 {
                     auto& rigidBody2D = ent.GetComponent<Alas::RigidBody2D>();
-                    ImGui::LabelText(RIGID_BODY_2D_C_TYPE, Alas::RigidBody2D::TypeToString(rigidBody2D.Type).c_str());
-                    // ImGui::select
-                    if (ImGui::TreeNode(RIGID_BODY_2D_C_TYPE))
+                                        
                     {
-                        static int selected = -1;
-                        
-                        static const std::string typesStr[] = {
-                            Alas::RigidBody2D::TypeToString(Alas::RigidBody2D::BodyType::Dynamic),
-                            Alas::RigidBody2D::TypeToString(Alas::RigidBody2D::BodyType::Kinematic),
-                            Alas::RigidBody2D::TypeToString(Alas::RigidBody2D::BodyType::Static),
+                                                
+                        const char* typesStr[] = {
+                            RIGID_BODY_2D_TYPE_DYNAMIC_STR,
+                            RIGID_BODY_2D_TYPE_KINEMATIC_STR,
+                            RIGID_BODY_2D_TYPE_STATIC_STR
                         };
 
-                        static const Alas::RigidBody2D::BodyType types[] = {
+                        const Alas::RigidBody2D::BodyType types[] = {
                             Alas::RigidBody2D::BodyType::Dynamic,
                             Alas::RigidBody2D::BodyType::Kinematic,
                             Alas::RigidBody2D::BodyType::Static,
                         };
 
-                        for (int n = 0; n < 3; n++)
+                        static int item_selected_idx = 0; // Here we store our selection data as an index.
+
+                        // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
+                        const char* combo_preview_value = typesStr[item_selected_idx];
+
+                        if (ImGui::BeginCombo("Type", combo_preview_value))
                         {
-                            if (ImGui::Selectable(typesStr[n].c_str(), selected == n))
+                            for (int n = 0; n < IM_ARRAYSIZE(typesStr); n++)
                             {
-                                selected = n;
-                                rigidBody2D.Type = types[n];
+                                const bool is_selected = (item_selected_idx == n);
+                                if (ImGui::Selectable(typesStr[n], is_selected))
+                                {
+                                    item_selected_idx = n;
+                                    rigidBody2D.Type = types[item_selected_idx];
+                                }
+                                    
+                                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                                if (is_selected)
+                                    ImGui::SetItemDefaultFocus();
                             }
+                            ImGui::EndCombo();
                         }
-                        ImGui::TreePop();
+
+                        ImGui::Spacing();
+                        
                     }
+                    
                     ImGui::DragFloat(RIGID_BODY_2D_C_MASS, &rigidBody2D.Mass, BASE_DRAG_STEP);
                     ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, BASE_DRAG_STEP);
                     ImGui::TreePop();
