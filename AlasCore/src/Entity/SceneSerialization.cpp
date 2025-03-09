@@ -205,6 +205,9 @@ namespace Alas
     Shared<Scene> SceneSerialization::DeserializeScene(const std::string& filepath)
     {
         YAML::Node sceneNode = YAML::LoadFile(filepath);
+        Shared<Scene> scene;
+        scene.reset(new Scene());
+
 		try
 		{
 			sceneNode = YAML::LoadFile(filepath);
@@ -212,11 +215,13 @@ namespace Alas
 		catch (YAML::ParserException e)
 		{
 			ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
-			return false;
+			return scene;
 		}
-
-        Shared<Scene> scene = std::make_unique<Scene>();
-
+        catch (YAML::BadFile e)
+		{
+			ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
+			return scene;
+		}
 
         if (!CheckKeyExists(sceneNode, SCENE_NAME, filepath) ||
             !CheckKeyExists(sceneNode, ENTITIES, filepath)) return scene;
@@ -232,11 +237,11 @@ namespace Alas
                 ALAS_CORE_ERROR("Entity with id {0} has no tag component", id);   
             }
 
-            Entity& ent = scene->CreateEntityWithId(data[TAG_C].as<std::string>(), id);
+            Entity ent = scene->CreateEntityWithId(data[TAG_C].as<std::string>(), id);
             
             auto& transform = ent.GetComponent<Transform>();
 
-            auto& transformData = data[TRANSFORM_C];
+            auto transformData = data[TRANSFORM_C];
             if (transformData)
             {        
                 transform.Position = transformData[TRANSFORM_C_POSITION].as<glm::vec3>();
@@ -244,7 +249,7 @@ namespace Alas
                 transform.Scale = transformData[TRANSFORM_C_SCLAE].as<glm::vec3>();
             }
 
-            auto& spriteData = data[SPRITE_C];
+            auto spriteData = data[SPRITE_C];
             if (spriteData)
             {
                 // implement sprite
@@ -279,16 +284,16 @@ namespace Alas
                 sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec3>();
             }
             
-            auto& rigidBody2DData = data[RIGID_BODY_2D_C];
+            auto rigidBody2DData = data[RIGID_BODY_2D_C];
             if (rigidBody2DData)
             {
                 auto& rigidBody = ent.AddComponent<RigidBody2D>();
                 rigidBody.Type = RigidBody2D::StringToType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
-                rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<double>();
-                rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<double>();
+                rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<float>();
+                rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<float>();
             }
             
-            auto& boxCollider2DData = data[BOX_COLLIDER_2D_C];
+            auto boxCollider2DData = data[BOX_COLLIDER_2D_C];
             if (boxCollider2DData)
             {
                 auto& boxCollider = ent.AddComponent<BoxCollider2D>();

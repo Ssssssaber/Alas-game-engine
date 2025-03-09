@@ -32,6 +32,8 @@ namespace Alas{
 
         struct SDLParams {
             std::string title;
+            Uint32 windowID;
+
             uint32_t width;
             uint32_t height;
             

@@ -55,11 +55,13 @@ namespace Alas {
         }
         
         _window = SDL_CreateWindow(_params.title.data(), _params.width, _params.height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+        
         if (_window == NULL)
         {
             ALAS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
             return;
         }
+        _params.windowID = SDL_GetWindowID(_window);
 
         if (!s_IsGLADInitialized)
         {
@@ -96,6 +98,7 @@ namespace Alas {
         while (SDL_PollEvent (&e) != 0) {
             ImGui_ImplSDL3_ProcessEvent(&e);
             
+            if (e.window.windowID != _params.windowID) continue;
             
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED || e.type == SDL_EVENT_QUIT)
             {
