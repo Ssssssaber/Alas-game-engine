@@ -1,4 +1,4 @@
-#include "OpenGlShader.h"
+#include "OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLCore.h"
 
 namespace Alas {

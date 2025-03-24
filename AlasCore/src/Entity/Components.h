@@ -101,7 +101,7 @@ namespace Alas
     {
         Shared<Shader> c_Shader;
         Shared<Texture> c_Texture;
-        glm::vec3 Color = glm::vec3(1.0f, 1.0f, 1.0f);
+        glm::vec4 Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;

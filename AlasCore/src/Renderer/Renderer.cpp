@@ -48,13 +48,13 @@ namespace Alas
 
 	}
 
-    void Renderer::Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec3& color, const glm::mat4& modelMatrix)
+    void Renderer::Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix)
     {
         texture->Bind();
         shader->Bind();
         shader->setMat4("u_viewProjectionMatrix", _Data.ViewProjectionMatrix);
         shader->setMat4("u_model", modelMatrix);
-        shader->setVec4("u_Color", color.x, color.y, color.z, 1.0f);
+        shader->setVec4("u_Color", color.x, color.y, color.z, color.w);
         shader->setInt("u_Texture", 0);
         
 		RenderCommand::DrawIndexed(_Data.quadVertexArray);

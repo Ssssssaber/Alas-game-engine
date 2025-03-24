@@ -89,6 +89,13 @@ namespace YAML {
 
 namespace Alas
 {
+    YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& vec)
+    {
+        out << YAML::Flow;
+        out << YAML::BeginSeq << vec.x << vec.y << vec.z << vec.w << YAML::EndSeq;
+        return out;
+    }
+
     YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& vec)
     {
         out << YAML::Flow;
@@ -281,7 +288,7 @@ namespace Alas
                     
                 }
                 
-                sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec3>();
+                sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec4>();
             }
             
             auto rigidBody2DData = data[RIGID_BODY_2D_C];

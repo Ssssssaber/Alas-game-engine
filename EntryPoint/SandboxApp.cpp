@@ -34,7 +34,7 @@ public:
         _textureShader = Alas::Shader::Create("Assets/Shaders/TextureShader.shader");
         _textureShader->Bind();
 
-        _baseTexture = Alas::Texture::Create("Assets/Textures/goool.png");
+        _baseTexture = Alas::Texture::Create("Assets/Textures/wall.png");
         _baseTexture->Bind();
         
         // -------------- test scene load correctly
@@ -47,7 +47,7 @@ public:
         script.Bind<Triangle>();
 
         auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
-        sprite.Color = glm::vec3(0.5f);
+        sprite.Color = glm::vec4(1.0f);
 
         _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 30.0f);
 
@@ -80,7 +80,7 @@ public:
     void OnUpdate() override
     {
         Alas::Window::SetCurrentWindow(*_editorWindow);
-        Alas::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        Alas::RenderCommand::SetClearColor({ 0.2f, 0.6f, 0.8f, 1 });
         Alas::RenderCommand::Clear();
         
         float deltaTime = Alas::Time::getPhysicsDeltaTime();
@@ -270,7 +270,7 @@ public:
                     auto& sprite = ent.GetComponent<Alas::SpriteComponent>();
                     ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID()).c_str());
                     ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID()).c_str());
-                    ImGui::ColorEdit3("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
+                    ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
                     if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
                     ImGui::TreePop();
                 }
