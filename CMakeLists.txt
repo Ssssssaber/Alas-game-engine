@@ -15,10 +15,6 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(OSBitness 64)
 endif()
 
-set(CMAKE_BUILD_TYPE Release)
-
-message("###################3 ${CMAKE_BUILD_TYPE}")
-
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   message(FATAL_ERROR "---- Clang not supported -----")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

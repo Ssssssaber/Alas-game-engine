@@ -22,6 +22,8 @@ class ExampleLayer : public Alas::Layer
 public:
     ExampleLayer() : Layer("Example")
     {
+        Alas::ScriptingEngine::LoadAndExecuteScript("main-go.lua");
+
         _editorWindow = &Alas::Application::Get().GetWindow(); 
         _editorWindow->SetVSync(true);
 
@@ -94,6 +96,12 @@ public:
             _timeElapsed = 0;
         }
 
+        glm::vec2 velocity = Alas::ScriptingEngine::LuaUpdate();
+        // _mainGo.GetComponent<Alas::RigidBody2D>().Velocity = velocity;
+        auto& transfrom = _mainGo.GetComponent<Alas::Transform>();
+        transfrom.Position.x += velocity.x;
+        transfrom.Position.y += velocity.y;
+        
         if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
         {
             _cameraPos.y += _cameraSpeed * deltaTime;

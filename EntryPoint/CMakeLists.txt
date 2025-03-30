@@ -20,8 +20,6 @@ if(WIN32)
   )
 endif()
 
-message("###################3 ${CMAKE_BUILD_TYPE}")
-
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set (ASSETS_OUTPUT_DIR "${FULL_OUTPUT_DIR}/Assets/")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

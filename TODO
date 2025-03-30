@@ -1,0 +1,3 @@
+1. Make lua scripts access position, mass, velocity depending on components
+2. Processing multiple lua scripts
+2. Resource manager attaching scripts to object
