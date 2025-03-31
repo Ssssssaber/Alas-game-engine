@@ -22,7 +22,7 @@ class ExampleLayer : public Alas::Layer
 public:
     ExampleLayer() : Layer("Example")
     {
-        Alas::ScriptingEngine::LoadAndExecuteScript("main-go.lua");
+        // Alas::ScriptingEngine::LoadAndExecuteScript("main-go.lua");
 
         _editorWindow = &Alas::Application::Get().GetWindow(); 
         _editorWindow->SetVSync(true);
@@ -42,11 +42,10 @@ public:
         // -------------- test scene load correctly
 
         _mainGOTexture = Alas::Texture::Create("Assets/Textures/keke.png");
-        _mainGOTexture->Bind();
 
         _mainGo = _scene->CreateEntity("Main triangle");
-        auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
-        script.Bind<Triangle>();
+        // auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
+        // script.Bind<Triangle>();
 
         auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
         sprite.Color = glm::vec4(1.0f);
@@ -57,6 +56,10 @@ public:
         body.GravityScale = 0;
         _mainGo.AddComponent<Alas::BoxCollider2D>();
 
+        auto& luaScript = _mainGo.AddComponent<Alas::LuaScriptComponent>("main-test.lua");
+        // luaScript.Handle = Alas::LuaScriptHandle(&_mainGo);
+        // ALAS_CORE_INFO(luaScript.Filepath);
+        
         // -------------- test scene load correctly
 
         // for (int i = 0; i < 4; i++)
@@ -96,11 +99,12 @@ public:
             _timeElapsed = 0;
         }
 
-        glm::vec2 velocity = Alas::ScriptingEngine::LuaUpdate();
-        // _mainGo.GetComponent<Alas::RigidBody2D>().Velocity = velocity;
-        auto& transfrom = _mainGo.GetComponent<Alas::Transform>();
-        transfrom.Position.x += velocity.x;
-        transfrom.Position.y += velocity.y;
+        // // glm::vec2 velocity = Alas::ScriptingEngine::LuaUpdate();
+        // auto velocity = _mainGo.GetComponent<Alas::RigidBody2D>().Velocity;
+        // ALAS_CORE_INFO("EDITOR {0} {1}", velocity.x, velocity.y);
+        // // auto& transfrom = _mainGo.GetComponent<Alas::Transform>();
+        // // transfrom.Position.x += velocity.x;
+        // // transfrom.Position.y += velocity.y;
         
         if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
         {
@@ -146,6 +150,7 @@ public:
         transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
         transform.Position = glm::vec3(0.0f);
         transform.Rotation = glm::vec3(0.0f);
+        auto& luaScript = ent.AddComponent<Alas::LuaScriptComponent>("main-test.lua");
         // ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
         
         return ent; 

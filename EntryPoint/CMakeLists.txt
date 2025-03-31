@@ -28,10 +28,10 @@ endif()
 
 message("---- Assets output dir: ${ASSETS_OUTPUT_DIR}")
 
-add_custom_command(
-  TARGET alas_entry_point
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND}
-  ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets/" "${ASSETS_OUTPUT_DIR}"
-  COMMENT "---- Copying Assets folder from EntryPoint -----"
-)
+# add_custom_command(
+#   TARGET alas_entry_point
+#   POST_BUILD
+#   COMMAND ${CMAKE_COMMAND}
+#   ARGS -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/Assets/" "${ASSETS_OUTPUT_DIR}"
+#   COMMENT "---- Copying Assets folder from EntryPoint -----"
+# )

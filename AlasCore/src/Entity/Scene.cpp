@@ -8,6 +8,8 @@
 #include "Entity/ScriptableEntity.h"
 
 #include "Renderer/Renderer.h"
+
+#include "Scripting/lua/ScriptingEngine.h"
 namespace Alas
 {
     Entity Scene::CreateEntity(const std::string name)
@@ -126,7 +128,7 @@ namespace Alas
             switch (rigid.Type)
             {
                 case RigidBody2D::BodyType::Dynamic:
-                {        
+                {
                     cpVect actualVelocity = cpBodyGetVelocity(_physicsSpaceBodyMap[entity.GetUID()]);
                     glm::vec2 deltaVelocity = rigid.Velocity - glm::vec2(actualVelocity.x, actualVelocity.y);
                     glm::vec2 acceleration = deltaVelocity / Time::getPhysicsDeltaTime() + glm::vec2(rigid.Mass * _gravity.x * rigid.GravityScale, rigid.Mass * _gravity.y * rigid.GravityScale);
@@ -186,17 +188,32 @@ namespace Alas
     {
         auto native = _entityRegistry.view<NativeScriptComponent>();
 
-        native.each([=](auto entity, auto& nativeScript)
+        native.each([=](auto entt, auto& nativeScript)
             {
                 if (!nativeScript.Instance)
                 {
                     nativeScript.Instance = nativeScript.InstantiateScript();
-                    nativeScript.Instance->_entity = Entity{ entity, this };
+                    nativeScript.Instance->_entity = { entt, this };
                     nativeScript.Instance->OnCreate();
                 }
 
                 nativeScript.Instance->OnUpdate();
             });
+        
+        auto lua = _entityRegistry.view<LuaScriptComponent>();
+        
+        for (auto entt : lua)
+        {
+            Entity entity = { entt, this };
+
+
+            // auto velocity = entity.GetComponent<Alas::RigidBody2D>().Velocity;
+            // ALAS_CORE_INFO("GAME {0} {1}", velocity.x, velocity.y);
+
+            ScriptingEngine::LoadAndExecuteScript(entity.GetComponent<LuaScriptComponent>().Filepath, entity);
+        }
+
+            
     }
 
     void Scene::SceneUpdate()

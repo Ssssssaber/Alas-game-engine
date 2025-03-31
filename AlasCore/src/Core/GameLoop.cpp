@@ -86,7 +86,16 @@ namespace Alas
                 script.Instance = scriptToCopy.Instance;
                 script.DestroyScript = scriptToCopy.DestroyScript;
             }
-            
+
+            if (entToCopy.HasComponent<LuaScriptComponent>())
+            {
+                // implement sprite
+                auto& scriptToCopy = entToCopy.GetComponent<LuaScriptComponent>(); 
+                auto& script = newEnt.AddComponent<LuaScriptComponent>(scriptToCopy.Filepath);
+                script.Handle = LuaScriptHandle(std::make_shared<Entity>(newEnt));
+
+                script.Filepath = scriptToCopy.Filepath;
+            }
         }
     }
 
@@ -123,7 +132,7 @@ namespace Alas
             _scene->RuntimeUpdate();
             count = 0;   
         }
-
+        
         _scene->SceneUpdate();
         _window->OnUpdate();
         Renderer::EndScene();

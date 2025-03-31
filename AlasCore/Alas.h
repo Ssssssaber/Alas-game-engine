@@ -13,9 +13,6 @@
 // Resources Management
 #include "src/Resources/ResourceManager.h"
 
-// temp
-#include "src/Scripting/lua/ScriptingEngine.h"
-
 // Renderer
 #include "src/Renderer/Renderer.h"
 #include "src/Renderer/RendererCommand.h"

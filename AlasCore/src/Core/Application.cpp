@@ -7,6 +7,8 @@
 
 #include "Events/ApplicationEvent.h"
 
+#include "Scripting/lua/ScriptingEngine.h"
+
 namespace Alas
 {
     Application* Application::_instance = nullptr;
@@ -28,6 +30,8 @@ namespace Alas
         _time = new Time();
 
         Renderer::Init();
+
+        ScriptingEngine::Init();
     }
 
     Application::~Application() {}

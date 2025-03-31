@@ -3,6 +3,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/Texture.h"
+#include "Scripting/lua/LuaScriptHandle.h"
 
 
 #include <glm.hpp>
@@ -97,6 +98,17 @@ namespace Alas
 		}
 	};
 
+    struct LuaScriptComponent
+    {   
+        std::string Filepath;
+        LuaScriptHandle Handle;
+
+        LuaScriptComponent() = default;
+		LuaScriptComponent(const LuaScriptComponent&) = default;
+		LuaScriptComponent(const std::string& filepath)
+			: Filepath(filepath) {}
+    };
+
     struct SpriteComponent
     {
         Shared<Shader> c_Shader;
@@ -111,7 +123,7 @@ namespace Alas
 
     struct RigidBody2D
     {
-        enum class BodyType { Static, Kinematic, Dynamic};
+        enum class BodyType { Static = 0, Kinematic = 1, Dynamic = 2};
         
         BodyType Type = BodyType::Dynamic;
         glm::vec2 Velocity = glm::vec2(0.0f);
@@ -139,9 +151,9 @@ namespace Alas
     
         static BodyType StringToType(const std::string& string)
         {
-            if (string == "Dynamic") return BodyType::Dynamic;
-            else if (string == "Kinematic") return BodyType::Kinematic;
-            else if (string == "Static") return BodyType::Static;
+            if (string == RIGID_BODY_2D_TYPE_DYNAMIC_STR) return BodyType::Dynamic;
+            else if (string == RIGID_BODY_2D_TYPE_KINEMATIC_STR) return BodyType::Kinematic;
+            else if (string == RIGID_BODY_2D_TYPE_STATIC_STR) return BodyType::Static;
             else
             {
                 ALAS_CORE_ERROR(
