@@ -20,34 +20,16 @@ function velocity_test(delta_time)
         if (IsButtonPressed(KeyCode.KEY_D)) then 
             velocity.x = velocity.x + keke_speed * delta_time
         end
-
-
-        -- if (IsButtonPressed(KeyCode.KEY_W)) then
-        --     velocity.y = keke_speed * delta_time
-        -- end
-        
-        -- if (IsButtonPressed(KeyCode.KEY_A)) then 
-        --     velocity.x = -keke_speed * delta_time
-        -- end
-        
-        -- if (IsButtonPressed(KeyCode.KEY_S)) then 
-        --     velocity.y = -keke_speed * delta_time
-        -- end
-        
-        -- if (IsButtonPressed(KeyCode.KEY_D)) then 
-        --     velocity.x = keke_speed * delta_time
-        -- end
-        
         SetVelocity(velocity)
     else
-        io.write("No rigid body component")
+        print("No rigid body component")
     end
 end
 
 
 function transform_test(delta_time)
     transform = GetTransform()
-    -- io.write(transform.rotation)
+    -- print(transform.rotation)
     if (transform) then
         if (IsButtonPressed(KeyCode.KEY_W)) then
             transform.position.y = keke_speed * delta_time
@@ -69,40 +51,40 @@ function transform_test(delta_time)
         transform.scale.x = delta_time * rotation_speed
         SetTransform(transform)
     else
-        io.write("No transform component")
+        print("No transform component")
     end
 end
 
 function sprite_test(delta_time)
     sprite = GetSprite()
-    -- io.write(transform.rotation)
+    -- print(transform.rotation)
     if (sprite) then
         sprite.color.x = delta_time
         sprite.color.y = delta_time
         SetSprite(sprite)
     else
-        io.write("No sprite component")
+        print("No sprite component")
     end
 end
 
 function rigid_body_test(delta_time)
     rigid_body = GetRigidBody()
-    -- io.write(transform.rotation)
+    -- print(transform.rotation)
     if (rigid_body) then
         rigid_body.velocity.x = delta_time
         rigid_body.velocity.y = -delta_time
         SetRigidBody(rigid_body)
     else
-        io.write("No rigid_body component")
+        print("No rigid_body component")
     end
 end
 
-function Update()    
+function Update()
     delta_time = GetDeltaTime()
     
     velocity_test(delta_time)
-    -- transform_test(delta_time)
-    -- sprite_test(delta_time)
-    -- rigid_body_test(delta_time)
+    transform_test(delta_time)
+    sprite_test(delta_time)
+    rigid_body_test(delta_time)
 
 end
