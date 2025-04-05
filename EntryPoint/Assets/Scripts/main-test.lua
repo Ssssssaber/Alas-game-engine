@@ -74,12 +74,12 @@ function transform_test(delta_time)
 end
 
 function sprite_test(delta_time)
-    spite1 = GetSprite()
+    sprite = GetSprite()
     -- io.write(transform.rotation)
-    if (spite1) then
-        sprite1.color.x = delta_time
-        sprite1.color.y = delta_time
-        SetSprite(sprite1)
+    if (sprite) then
+        sprite.color.x = delta_time
+        sprite.color.y = delta_time
+        SetSprite(sprite)
     else
         io.write("No sprite component")
     end

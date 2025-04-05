@@ -13,17 +13,17 @@ namespace Alas
         LuaScriptHandle(const LuaScriptHandle& other) = default;
         LuaScriptHandle(Shared<Entity> entity);
         
-        vec2 GetVelocity();
-        void SetVelocity(vec2 new_velocity);
+        vec2* GetVelocity();
+        void SetVelocity(vec2* new_velocity);
 
-        transform GetTransform();
-        void SetTransform(transform new_transform);
+        transform* GetTransform();
+        void SetTransform(transform* new_transform);
 
-        rigid_body GetRigidBody();
-        void SetRigidBody(rigid_body new_rigid_body);
+        rigid_body* GetRigidBody();
+        void SetRigidBody(rigid_body* new_rigid_body);
 
-        sprite GetSprite();
-        void SetSprite(sprite new_sprite);
+        sprite* GetSprite();
+        void SetSprite(sprite* new_sprite);
     
     private:
         Shared<Entity> _entity;
