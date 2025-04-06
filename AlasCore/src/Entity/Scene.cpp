@@ -10,6 +10,7 @@
 #include "Renderer/Renderer.h"
 
 #include "Scripting/lua/ScriptingEngine.h"
+
 namespace Alas
 {
     Entity Scene::CreateEntity(const std::string name)
@@ -98,8 +99,8 @@ namespace Alas
                     // // cpBB 
                     cpShape *bodyShape = cpSpaceAddShape(_physicsSpace, cpBoxShapeNew(
                         physicsBody,
-                        box.Size.x * transform.Scale.x,
-                        box.Size.y * transform.Scale.y,
+                        box.Size.x * transform.Scale.x / BOX_PHYSICS_SCALE,
+                        box.Size.y * transform.Scale.y / BOX_PHYSICS_SCALE,
                         0));
 
                     // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
@@ -224,11 +225,29 @@ namespace Alas
     {
         ALAS_PROFILE_FUNCTION();
         auto spriteGO = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
-        for (auto entity : spriteGO)
+        for (auto entt : spriteGO)
         {
-            auto [transform, sprite] = spriteGO.get<Transform, SpriteComponent>(entity);
+            Entity entity = {entt, this};
+            auto& transform = entity.GetComponent<Transform>();
+            auto& sprite = entity.GetComponent<SpriteComponent>();
+            
 
             Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
+            if (entity.HasComponent<BoxCollider2D>())
+            {
+                auto& box = entity.GetComponent<BoxCollider2D>();
+                glm::vec3 boxPosition = {
+                    transform.Position.x + box.Offset.x,
+                    transform.Position.y + box.Offset.y,
+                    transform.Position.z
+                };
+                glm::vec3 boxScale =  {
+                    box.Size.x / 0.5f * transform.Scale.x,
+                    box.Size.x / 0.5f * transform.Scale.y,
+                    0.0f
+                };
+                Renderer::DrawBox(boxPosition, transform.Rotation.z, boxScale);
+            }
         }
     }
 } // namespace Alas

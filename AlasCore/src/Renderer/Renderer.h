@@ -16,6 +16,8 @@ namespace Alas {
 
         static void DrawQuad(const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix);
         static void Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix);
+        static void DrawLine(const glm::vec3& position, const float rotation, const glm::vec3& scale);
+        static void DrawBox(const glm::vec3& position, const float rotation, const glm::vec3& scale);
 
         static void Submit(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, const glm::vec4& color,  const glm::mat4& modelMatrix);
         static void Submit(Entity& entity);
@@ -28,6 +30,11 @@ namespace Alas {
         {
             glm::mat4 ViewProjectionMatrix;
             Shared<VertexArray> quadVertexArray;
+            
+            Shared<VertexArray> lineVertexArray;
+            Shared<VertexArray> lineQuadVertexArray;
+
+            Shared<Shader> lineShader;
         };
 
         static RendererData _Data;

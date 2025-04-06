@@ -14,6 +14,7 @@ namespace Alas
     {
         _scene.reset(new Scene());
         CopyScene(sceneRef);
+        _scene->BOX_PHYSICS_SCALE = sceneRef->BOX_PHYSICS_SCALE;
         _scene->Physics2DInit();
 
     }

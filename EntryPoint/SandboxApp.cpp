@@ -50,7 +50,7 @@ public:
         auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
         sprite.Color = glm::vec4(1.0f);
 
-        _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 30.0f);
+        _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
         auto& body = _mainGo.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Dynamic);
         body.GravityScale = 0;
@@ -138,6 +138,10 @@ public:
 
         Alas::Renderer::BeginScene(_camera);
 
+
+        Alas::Renderer::DrawLine(glm::vec3(0.0f), 30.f, glm::vec3(1.0f));
+        Alas::Renderer::DrawBox(glm::vec3(0.0f), 30.f, glm::vec3(1.0f));
+
         _scene->SceneUpdate();
         
         Alas::Renderer::EndScene();
@@ -151,7 +155,6 @@ public:
         transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
         transform.Position = glm::vec3(0.0f);
         transform.Rotation = glm::vec3(0.0f);
-        auto& luaScript = ent.AddComponent<Alas::LuaScriptComponent>("main-test.lua");
         // ALAS_CLIENT_INFO("{0} {1} {2}", delta, time, sin(time));
         
         return ent; 
@@ -217,7 +220,11 @@ public:
         {
             _scene = Alas::SceneSerialization::DeserializeScene("Assets/" + _sceneToLoadName + ".yaml");  
         }
-          
+
+        ImGui::SeparatorText("COLLIDERS");
+        ImGui::DragFloat("Box scale", &_scene->BOX_PHYSICS_SCALE, BASE_DRAG_STEP);
+
+
         ImGui::SeparatorText("Game objects");
         if (ImGui::Button("Create game object", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
         {

@@ -32,6 +32,11 @@ namespace Alas {
 			ALAS_PROFILE_FUNCTION();
 			_rendererAPI->DrawIndexed(vertexArray);
 		}
+		static void DrawLine(const Shared<VertexArray>& vertexArray)
+		{
+			ALAS_PROFILE_FUNCTION();
+			_rendererAPI->DrawLine(vertexArray);
+		}
 	private:
 		static RendererAPI* _rendererAPI;
 	};

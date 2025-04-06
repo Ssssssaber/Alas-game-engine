@@ -21,6 +21,13 @@ namespace Alas {
 
 	void OpenGLRendererAPI::DrawIndexed(const Shared<VertexArray>& vertexArray)
 	{
-		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		vertexArray->Bind();
+		GlCall(glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr));
+	}
+
+	void OpenGLRendererAPI::DrawLine(const Shared<VertexArray>& vertexArray)
+	{
+		vertexArray->Bind();
+		GlCall(glDrawArrays(GL_LINE_LOOP, 0, vertexArray->GetIndexBuffer()->GetCount()));
 	}
 }

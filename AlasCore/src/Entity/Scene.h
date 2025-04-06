@@ -35,6 +35,7 @@ namespace Alas {
         // Entity GetEnt
         const std::map<UID, Entity>& GetEntityMap() { return _entityMap; }
     public:
+        float BOX_PHYSICS_SCALE = 1.260f;
         std::string Name = "Scene";
     private:
 
