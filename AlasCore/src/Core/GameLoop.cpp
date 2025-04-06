@@ -25,6 +25,8 @@ namespace Alas
 
     void GameLoop::CopyScene(Shared<Scene> sceneRef)
     {
+        ALAS_PROFILE_FUNCTION();
+
         auto entities = sceneRef->GetEntityMap();
 
         for (auto idAndEnt = entities.begin(); idAndEnt != entities.end(); idAndEnt++)
@@ -101,6 +103,7 @@ namespace Alas
 
     void GameLoop::Init()
     {
+        ALAS_PROFILE_FUNCTION();
         _window.reset(Alas::Window::Create());
         _window->SetEventCallback(
             std::bind(&GameLoop::OnEvent, this, std::placeholders::_1)
@@ -113,6 +116,7 @@ namespace Alas
 
     void GameLoop::Update()
     {
+        ALAS_PROFILE_FUNCTION();
         static int count = 3;
         static float lastTime = 0;
 

@@ -61,6 +61,7 @@ namespace Alas
     
     void Application::Run()
     {
+        ALAS_PROFILE_FUNCTION()
         WindowResizeEvent e(1280, 720);
         ALAS_CORE_INFO(e.ToString());
         
@@ -68,6 +69,8 @@ namespace Alas
         
         while (_isRunning)
         {
+
+            ALAS_PROFILE_SCOPE("RunLoop");
             float currentTime = Time::GetTimeInSeconds();
             _time->updatePhysicsDeltaTime(currentTime - lastTime);
             lastTime = currentTime;

@@ -9,8 +9,12 @@ namespace Alas {
     {
     public:
         static void Init();    
-        static void LoadAndExecuteScript(std::string filename, Entity entity);
+        static void HandleScript(std::string filename, Entity entity);
     
+    private:
+        static void LoadScript(std::string filename, Entity entity);
+        static void ExecuteScript();
+
     private:
         static sol::state lua; 
     };

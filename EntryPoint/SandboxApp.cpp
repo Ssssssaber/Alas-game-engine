@@ -84,6 +84,7 @@ public:
 
     void OnUpdate() override
     {
+        ALAS_PROFILE_FUNCTION();
         Alas::Window::SetCurrentWindow(*_editorWindow);
         Alas::RenderCommand::SetClearColor({ 0.2f, 0.6f, 0.8f, 1 });
         Alas::RenderCommand::Clear();
@@ -172,7 +173,7 @@ public:
 
     void OnImGuiRender()
     {
-        
+        ALAS_PROFILE_FUNCTION();
         bool open = true;
         ImGui::ShowDemoWindow(&open);
 
@@ -398,12 +399,13 @@ class Sandbox : public Alas::Application
 public:
     Sandbox()
     {
+        ALAS_PROFILE_BEGIN_SESSION("profiling");
         PushLayer(new ExampleLayer());
     }
 
     ~Sandbox()
     {
-
+        ALAS_PROFILE_END_SESSION();
     }
 };
 

@@ -56,6 +56,7 @@ namespace Alas {
 
     void ImGuiLayer::Begin()
 	{
+        ALAS_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
@@ -63,6 +64,7 @@ namespace Alas {
 
     void ImGuiLayer::End()
 	{
+        ALAS_PROFILE_FUNCTION();
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());

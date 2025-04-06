@@ -50,6 +50,7 @@ namespace Alas
 
     void Scene::Physics2DInit()
     {
+        ALAS_PROFILE_FUNCTION();
         _physicsSpace = cpSpaceNew();
         cpSpaceSetGravity(_physicsSpace, cpvzero);
 
@@ -113,6 +114,7 @@ namespace Alas
 
     void Scene::Physics2DUpdate()
     {
+        ALAS_PROFILE_FUNCTION();
         auto physicsEntt = _entityRegistry.view<RigidBody2D>();
 
         for (auto entt : physicsEntt)
@@ -176,6 +178,7 @@ namespace Alas
 
     void Scene::Physics2DStop()
     {
+        ALAS_PROFILE_FUNCTION();
         for (auto idAndShape : _physicsSpaceShapeMap)
         {
             cpBodyFree(cpShapeGetBody(idAndShape.second));
@@ -186,6 +189,7 @@ namespace Alas
 
     void Scene::RuntimeUpdate()
     {
+        ALAS_PROFILE_FUNCTION();
         auto native = _entityRegistry.view<NativeScriptComponent>();
 
         native.each([=](auto entt, auto& nativeScript)
@@ -210,7 +214,7 @@ namespace Alas
             // auto velocity = entity.GetComponent<Alas::RigidBody2D>().Velocity;
             // ALAS_CORE_INFO("GAME {0} {1}", velocity.x, velocity.y);
 
-            ScriptingEngine::LoadAndExecuteScript(entity.GetComponent<LuaScriptComponent>().Filepath, entity);
+            ScriptingEngine::HandleScript(entity.GetComponent<LuaScriptComponent>().Filepath, entity);
         }
 
             
@@ -218,6 +222,7 @@ namespace Alas
 
     void Scene::SceneUpdate()
     {
+        ALAS_PROFILE_FUNCTION();
         auto spriteGO = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
         for (auto entity : spriteGO)
         {

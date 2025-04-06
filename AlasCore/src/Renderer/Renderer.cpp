@@ -7,6 +7,7 @@ namespace Alas
 
     void Renderer::Init()
     {
+        ALAS_PROFILE_FUNCTION()
         RenderCommand::EnableBlending();
 
         _Data.quadVertexArray.reset(VertexArray::Create());
@@ -40,16 +41,18 @@ namespace Alas
 
     void Renderer::BeginScene(const Shared<OrthCamera>& camera)
 	{
+        ALAS_PROFILE_FUNCTION();
         _Data.ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 	}
 
 	void Renderer::EndScene()
 	{
-
+        ALAS_PROFILE_FUNCTION();
 	}
 
     void Renderer::Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix)
     {
+        ALAS_PROFILE_FUNCTION()
         texture->Bind();
         shader->Bind();
         shader->setMat4("u_viewProjectionMatrix", _Data.ViewProjectionMatrix);

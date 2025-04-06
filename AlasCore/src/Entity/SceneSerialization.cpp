@@ -123,6 +123,7 @@ namespace Alas
 
     void SceneSerialization::SerializeScene(const Shared<Scene>& scene, const std::string& filepath)
     {
+        ALAS_PROFILE_FUNCTION();
         YAML::Emitter out;
         out << YAML::BeginMap;
         out << YAML::Key << SCENE_NAME << YAML::Value << scene->Name;
@@ -211,6 +212,7 @@ namespace Alas
 
     Shared<Scene> SceneSerialization::DeserializeScene(const std::string& filepath)
     {
+        ALAS_PROFILE_FUNCTION();
         YAML::Node sceneNode = YAML::LoadFile(filepath);
         Shared<Scene> scene;
         scene.reset(new Scene());

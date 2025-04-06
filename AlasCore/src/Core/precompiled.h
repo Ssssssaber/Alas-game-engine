@@ -19,3 +19,4 @@
 #define FMT_GCC_PRAGMA(...)
 #include "Logger.h"
 #include "Core.h"
+#include "Utils/Profiler.h"

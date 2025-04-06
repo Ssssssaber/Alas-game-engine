@@ -3,6 +3,9 @@
 // Headers for creating custom gameobjects
 #include "Core.h"
 
+// Utils
+#include "src/Utils/Profiler.h"
+
 // core app and imgui layer 
 #include "src/Core/Application.h"
 #include "src/ImGui/ImGuiLayer.h"

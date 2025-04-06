@@ -1,10 +1,19 @@
+
 if (ALAS_ENABLE_ASSERTS)
+    message("----- ASSETS ENABLED")
     add_definitions(-DALAS_ENABLE_ASSERTS)
 endif()
 
 if (SDL_WINDOWS)
+    message("----- USING SDL")
     add_definitions(-DSDL_WINDOWS)
 endif()
+
+if (ALAS_PROFILE)
+    message("----- PROFILING ENABLED")
+    add_definitions(-DALAS_PROFILE)
+endif()
+
 
 set(IMGUI_SOURCES
     vendor/imgui/imgui.cpp

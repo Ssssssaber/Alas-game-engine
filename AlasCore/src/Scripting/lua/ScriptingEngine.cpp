@@ -12,8 +12,15 @@ namespace Alas
         
     }
 
-    void ScriptingEngine::LoadAndExecuteScript(std::string filename, Entity entity)
+    void ScriptingEngine::HandleScript(std::string filename, Entity entity)
     {
+        LoadScript(filename, entity);
+        ExecuteScript();
+    }
+
+    void ScriptingEngine::LoadScript(std::string filename, Entity entity)
+    {
+        ALAS_PROFILE_FUNCTION()
         try
         {
             S_RegisterEntityRelatedFunctions(lua, entity);
@@ -24,7 +31,11 @@ namespace Alas
             ALAS_CORE_ERROR(e.what());
             return;
         }
+    }
 
+    void ScriptingEngine::ExecuteScript()
+    {
+        ALAS_PROFILE_FUNCTION()
         auto result = lua["Update"]();
 
         if (!result.valid())
