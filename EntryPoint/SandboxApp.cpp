@@ -296,6 +296,15 @@ public:
                     ImGui::TreePop();
                 }
 
+                if (ent.HasComponent<Alas::LuaScriptComponent>())
+                if(ImGui::TreeNode(LUA_SCRIPT_C))
+                {
+                    auto& lua = ent.GetComponent<Alas::LuaScriptComponent>();
+                    ImGui::LabelText(LUA_SCRIPT_C_FILE, (lua.Filepath).c_str());
+                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::LuaScriptComponent>();
+                    ImGui::TreePop();
+                }
+
                 if (ent.HasComponent<Alas::RigidBody2D>())
                 if(ImGui::TreeNode(RIGID_BODY_2D_C))
                 {

@@ -199,6 +199,18 @@ namespace Alas
                 out << YAML::EndMap;
             }
 
+            if (entity.HasComponent<LuaScriptComponent>())
+            {
+                auto& lua = entity.GetComponent<LuaScriptComponent>();
+                out << YAML::Key << LUA_SCRIPT_C;
+                
+                out << YAML::BeginMap;
+
+                out << YAML::Key << LUA_SCRIPT_C_FILE << YAML::Value << lua.Filepath;
+
+                out << YAML::EndMap;
+            }
+
             out << YAML::EndMap;
         }
 
@@ -308,6 +320,13 @@ namespace Alas
                 auto& boxCollider = ent.AddComponent<BoxCollider2D>();
                 boxCollider.Offset = boxCollider2DData[BOX_COLLIDER_2D_C_OFFSET].as<glm::vec2>();
                 boxCollider.Size = boxCollider2DData[BOX_COLLIDER_2D_C_SIZE].as<glm::vec2>();
+            }
+
+            auto luaScriptData = data[LUA_SCRIPT_C];
+            if (luaScriptData)
+            {
+                auto& lua = ent.AddComponent<LuaScriptComponent>();
+                lua.Filepath = luaScriptData[LUA_SCRIPT_C_FILE].as<std::string>();
             }
         }
 

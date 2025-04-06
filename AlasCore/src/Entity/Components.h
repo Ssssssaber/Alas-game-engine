@@ -39,6 +39,9 @@
 #define RIGID_BODY_2D_TYPE_KINEMATIC_STR "Kinematic"
 #define RIGID_BODY_2D_TYPE_STATIC_STR "Static"
 
+#define LUA_SCRIPT_C "Lua script"
+#define LUA_SCRIPT_C_FILE "Lua script file"
+
 namespace Alas
 {
     struct IDComponent
