@@ -5,8 +5,6 @@
 
 #include "Entity/Components.h"
 
-#include "Core/Window.h"
-
 namespace Alas
 {
     Renderer::RendererData Renderer::_Data = RendererData();
@@ -176,12 +174,7 @@ namespace Alas
         _Data.OverlayTextShader->Bind();
 
         _Data.OverlayTextShader->setMat4("projection",
-            glm::ortho(
-                0.0f,
-                static_cast<float>(Window::GetCurrentWindow().GetWidth()),
-                0.0f,
-                static_cast<float>(Window::GetCurrentWindow().GetHeight())
-            )
+            _Data.Camera->GetProjectionMatrix()
         );
         _Data.OverlayTextShader->setVec3("textColor", color.x, color.y, color.z);
 
