@@ -1,3 +1,6 @@
-1. Make lua scripts access position, mass, velocity depending on components
-2. Processing multiple lua scripts
-2. Resource manager attaching scripts to object
+* Processing multiple lua scripts effectively
+* Resource manager attaching scripts to object
+* Think of a way to let renderer not know about window to render text
+* Worldspace text invalid movement
+* Circle colliders instead of quads for some reason
+

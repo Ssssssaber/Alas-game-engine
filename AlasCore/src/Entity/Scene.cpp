@@ -224,29 +224,68 @@ namespace Alas
     void Scene::SceneUpdate()
     {
         ALAS_PROFILE_FUNCTION();
-        auto spriteGO = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
-        for (auto entt : spriteGO)
         {
-            Entity entity = {entt, this};
-            auto& transform = entity.GetComponent<Transform>();
-            auto& sprite = entity.GetComponent<SpriteComponent>();
-            
-
-            Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
-            if (entity.HasComponent<BoxCollider2D>())
+            auto spriteGO = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
+            for (auto entt : spriteGO)
             {
-                auto& box = entity.GetComponent<BoxCollider2D>();
-                glm::vec3 boxPosition = {
-                    transform.Position.x + box.Offset.x,
-                    transform.Position.y + box.Offset.y,
+                Entity entity = {entt, this};
+                auto& transform = entity.GetComponent<Transform>();
+                auto& sprite = entity.GetComponent<SpriteComponent>();
+                
+
+                Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
+                if (entity.HasComponent<BoxCollider2D>())
+                {
+                    auto& box = entity.GetComponent<BoxCollider2D>();
+                    glm::vec3 boxPosition = {
+                        transform.Position.x + box.Offset.x,
+                        transform.Position.y + box.Offset.y,
+                        transform.Position.z
+                    };
+                    glm::vec3 boxScale =  {
+                        box.Size.x / 250.0f * transform.Scale.x,
+                        box.Size.y / 250.0f * transform.Scale.y,
+                        0.0f
+                    };
+                    Renderer::DrawBox(boxPosition, transform.Rotation.z, boxScale);
+                }
+            }
+        }
+        {
+            auto textGOs = _entityRegistry.view<WorldSpaceText>();
+            for (auto entt : textGOs)
+            {
+                Entity entity = {entt, this};
+                
+                if (!entity.HasComponent<Transform>()) continue;
+                
+                auto& text = entity.GetComponent<WorldSpaceText>();
+                auto& transform = entity.GetComponent<Transform>();
+
+                glm::vec3 position = {
+                    transform.Position.x + text.Offset.x,
+                    transform.Position.y + text.Offset.y,
                     transform.Position.z
                 };
-                glm::vec3 boxScale =  {
-                    box.Size.x / 0.5f * transform.Scale.x,
-                    box.Size.x / 0.5f * transform.Scale.y,
-                    0.0f
+                float rotation = transform.Rotation.z + text.Rotation;
+                glm::vec2 scale = {
+                    transform.Scale.x * text.Scale.x,
+                    transform.Scale.y * text.Scale.y
                 };
-                Renderer::DrawBox(boxPosition, transform.Rotation.z, boxScale);
+
+                Renderer::SubmitWorldSpaceText(text.DisplayText, position, rotation, scale, text.Color);
+            }
+        }
+
+        {
+            auto textGOs = _entityRegistry.view<OverlayText>();
+            for (auto entt : textGOs)
+            {
+                Entity entity = {entt, this};
+                
+                auto& text = entity.GetComponent<OverlayText>();
+                
+                Renderer::SubmitOverlayText(text.DisplayText, text.ScreenPosition, text.Rotation, text.Scale, text.Color);
             }
         }
     }

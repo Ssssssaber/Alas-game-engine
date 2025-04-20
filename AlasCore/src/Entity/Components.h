@@ -42,6 +42,20 @@
 #define LUA_SCRIPT_C "Lua script"
 #define LUA_SCRIPT_C_FILE "Lua script file"
 
+#define OVERLAY_TEXT_C "Overlay Text"
+#define OVERLAY_TEXT_C_SCREEN_POSITION "Screen Position"
+#define OVERLAY_TEXT_C_ROTATION "Rotation"
+#define OVERLAY_TEXT_C_SCALE "Scale"
+#define OVERLAY_TEXT_C_DISPLAY_TEXT "Display Text"
+#define OVERLAY_TEXT_C_COLOR "Color"
+
+#define WORLD_SPACE_TEXT_C "World Space Text"
+#define WORLD_SPACE_TEXT_C_OFFSET "Position"
+#define WORLD_SPACE_TEXT_C_ROTATION "Rotation"
+#define WORLD_SPACE_TEXT_C_SCALE "Scale"
+#define WORLD_SPACE_TEXT_C_DISPLAY_TEXT "Display Text"
+#define WORLD_SPACE_TEXT_C_COLOR "Color"
+
 namespace Alas
 {
     struct IDComponent
@@ -172,12 +186,46 @@ namespace Alas
     struct BoxCollider2D
     {
         glm::vec2 Offset = {0.0f, 0.0f};
-        glm::vec2 Size = {.5f, .5f};
+        glm::vec2 Size = {250.0f, 250.0f};
         
         BoxCollider2D() = default;
 		BoxCollider2D(const BoxCollider2D&) = default;
         BoxCollider2D(glm::vec2 offset, glm::vec2 size) :
             Offset(offset), Size(size) {}
         
+    };
+
+    struct WorldSpaceText
+    {
+        glm::vec2 Offset = {0.0f, 0.0f};
+        float Rotation = 0.0f;
+        glm::vec2 Scale = {1.0f, 1.0f};
+        std::string DisplayText;
+        glm::vec4 Color = glm::vec4{1.0f};
+
+        WorldSpaceText() = default;
+		WorldSpaceText(const WorldSpaceText&) = default;
+        WorldSpaceText(const std::string& text) :
+            DisplayText(text) {}
+        WorldSpaceText(const std::string& text, const glm::vec4& color) :
+            DisplayText(text), Color(color) {}
+
+    };
+
+    struct OverlayText
+    {
+        glm::vec2 ScreenPosition = {0.0f, 0.0f};
+        float Rotation = 0.0f;
+        glm::vec2 Scale = {1.0f, 1.0f};
+        std::string DisplayText;
+        glm::vec4 Color = glm::vec4{1.0f};
+
+        OverlayText() = default;
+		OverlayText(const OverlayText&) = default;
+        OverlayText(const std::string& text) :
+            DisplayText(text) {}
+        OverlayText(const std::string& text, const glm::vec4& color) :
+            DisplayText(text), Color(color) {}
+
     };
 } // namespace Alas

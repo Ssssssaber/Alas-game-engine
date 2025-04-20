@@ -1,4 +1,4 @@
-keke_speed = 5
+keke_speed = 100
 rotation_speed = 110
 
 function velocity_test(delta_time)
@@ -83,8 +83,8 @@ function Update()
     delta_time = GetDeltaTime()
     
     velocity_test(delta_time)
-    transform_test(delta_time)
-    sprite_test(delta_time)
-    rigid_body_test(delta_time)
+    -- transform_test(delta_time)
+    -- sprite_test(delta_time)
+    -- rigid_body_test(delta_time)
 
 end

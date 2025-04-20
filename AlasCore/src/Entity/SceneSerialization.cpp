@@ -211,15 +211,48 @@ namespace Alas
                 out << YAML::EndMap;
             }
 
+            if (entity.HasComponent<OverlayText>())
+            {
+                auto& overlayText = entity.GetComponent<OverlayText>();
+                out << YAML::Key << OVERLAY_TEXT_C;
+                
+                out << YAML::BeginMap;
+
+                out << YAML::Key << OVERLAY_TEXT_C_DISPLAY_TEXT << YAML::Value << overlayText.DisplayText;
+                out << YAML::Key << OVERLAY_TEXT_C_COLOR << YAML::Value << overlayText.Color;
+
+                out << YAML::Key << OVERLAY_TEXT_C_SCREEN_POSITION << YAML::Value << overlayText.ScreenPosition;
+                out << YAML::Key << OVERLAY_TEXT_C_ROTATION << YAML::Value << overlayText.Rotation;
+                out << YAML::Key << OVERLAY_TEXT_C_SCALE << YAML::Value << overlayText.Scale;
+
+                out << YAML::EndMap;
+            }
+
+            if (entity.HasComponent<WorldSpaceText>())
+            {
+                auto& overlayText = entity.GetComponent<WorldSpaceText>();
+                out << YAML::Key << WORLD_SPACE_TEXT_C;
+                
+                out << YAML::BeginMap;
+
+                out << YAML::Key << WORLD_SPACE_TEXT_C_DISPLAY_TEXT << YAML::Value << overlayText.DisplayText;
+                out << YAML::Key << WORLD_SPACE_TEXT_C_COLOR << YAML::Value << overlayText.Color;
+
+                out << YAML::Key << WORLD_SPACE_TEXT_C_OFFSET << YAML::Value << overlayText.Offset;
+                out << YAML::Key << WORLD_SPACE_TEXT_C_ROTATION << YAML::Value << overlayText.Rotation;
+                out << YAML::Key << WORLD_SPACE_TEXT_C_SCALE << YAML::Value << overlayText.Scale;
+
+                out << YAML::EndMap;
+            }
+    
             out << YAML::EndMap;
         }
-
-        out << YAML::EndMap;
         out << YAML::EndMap;
 
         std::ofstream fout(filepath);
         fout << out.c_str();
         assert(out.good());
+        
     }
 
     Shared<Scene> SceneSerialization::DeserializeScene(const std::string& filepath)
@@ -304,22 +337,52 @@ namespace Alas
                 
                 sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec4>();
             }
-            
-            auto rigidBody2DData = data[RIGID_BODY_2D_C];
-            if (rigidBody2DData)
+
             {
-                auto& rigidBody = ent.AddComponent<RigidBody2D>();
-                rigidBody.Type = RigidBody2D::StringToType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
-                rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<float>();
-                rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<float>();
+                auto rigidBody2DData = data[RIGID_BODY_2D_C];
+                if (rigidBody2DData)
+                {
+                    auto& rigidBody = ent.AddComponent<RigidBody2D>();
+                    rigidBody.Type = RigidBody2D::StringToType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
+                    rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<float>();
+                    rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<float>();
+                }
             }
-            
-            auto boxCollider2DData = data[BOX_COLLIDER_2D_C];
-            if (boxCollider2DData)
+
             {
-                auto& boxCollider = ent.AddComponent<BoxCollider2D>();
-                boxCollider.Offset = boxCollider2DData[BOX_COLLIDER_2D_C_OFFSET].as<glm::vec2>();
-                boxCollider.Size = boxCollider2DData[BOX_COLLIDER_2D_C_SIZE].as<glm::vec2>();
+                auto boxCollider2DData = data[BOX_COLLIDER_2D_C];
+                if (boxCollider2DData)
+                {
+                    auto& boxCollider = ent.AddComponent<BoxCollider2D>();
+                    boxCollider.Offset = boxCollider2DData[BOX_COLLIDER_2D_C_OFFSET].as<glm::vec2>();
+                    boxCollider.Size = boxCollider2DData[BOX_COLLIDER_2D_C_SIZE].as<glm::vec2>();
+                }
+            }
+
+            {
+                auto overlayTextData = data[OVERLAY_TEXT_C];
+                if (overlayTextData)
+                {
+                    auto& overlayText = ent.AddComponent<OverlayText>();
+                    overlayText.DisplayText = overlayTextData[OVERLAY_TEXT_C_DISPLAY_TEXT].as<std::string>();
+                    overlayText.Color = overlayTextData[OVERLAY_TEXT_C_COLOR].as<glm::vec4>();
+                    overlayText.ScreenPosition = overlayTextData[OVERLAY_TEXT_C_SCREEN_POSITION].as<glm::vec2>();
+                    overlayText.Rotation = overlayTextData[OVERLAY_TEXT_C_ROTATION].as<float>();
+                    overlayText.Scale = overlayTextData[OVERLAY_TEXT_C_SCALE].as<glm::vec2>();
+                }
+            }
+
+            {
+                auto worldSpaceTextData = data[WORLD_SPACE_TEXT_C];
+                if (worldSpaceTextData)
+                {
+                    auto& worldSpaceText = ent.AddComponent<WorldSpaceText>();
+                    worldSpaceText.DisplayText = worldSpaceTextData[WORLD_SPACE_TEXT_C_DISPLAY_TEXT].as<std::string>();
+                    worldSpaceText.Color = worldSpaceTextData[WORLD_SPACE_TEXT_C_COLOR].as<glm::vec4>();
+                    worldSpaceText.Offset = worldSpaceTextData[WORLD_SPACE_TEXT_C_OFFSET].as<glm::vec2>();
+                    worldSpaceText.Rotation = worldSpaceTextData[WORLD_SPACE_TEXT_C_ROTATION].as<float>();
+                    worldSpaceText.Scale = worldSpaceTextData[WORLD_SPACE_TEXT_C_SCALE].as<glm::vec2>();
+                }
             }
 
             auto luaScriptData = data[LUA_SCRIPT_C];
