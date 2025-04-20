@@ -236,7 +236,8 @@ public:
 
         ImGui::SeparatorText("COLLIDERS");
         ImGui::DragFloat("Box scale", &_scene->BOX_PHYSICS_SCALE, BASE_DRAG_STEP);
-
+        ImGui::SeparatorText("GRAVITY");
+        ImGui::DragFloat2("Gravity", glm::value_ptr(_scene->_gravity), BASE_DRAG_STEP);
 
         ImGui::SeparatorText("Game objects");
         if (ImGui::Button("Create game object", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))

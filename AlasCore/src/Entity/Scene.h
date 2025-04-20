@@ -36,6 +36,7 @@ namespace Alas {
         const std::map<UID, Entity>& GetEntityMap() { return _entityMap; }
     public:
         float BOX_PHYSICS_SCALE = 1.260f;
+        glm::vec2 _gravity = glm::vec2(0.0f, -9.81f);
         std::string Name = "Scene";
     private:
 
@@ -43,7 +44,6 @@ namespace Alas {
         std::map<UID, Entity> _entityMap;
 
         cpSpace* _physicsSpace;
-        glm::vec2 _gravity = glm::vec2(0.0f, -3.0f);
         std::map<UID, cpBody*> _physicsSpaceBodyMap;
         std::map<UID, cpShape*> _physicsSpaceShapeMap;
     };

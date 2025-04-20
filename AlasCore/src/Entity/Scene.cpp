@@ -53,7 +53,7 @@ namespace Alas
     {
         ALAS_PROFILE_FUNCTION();
         _physicsSpace = cpSpaceNew();
-        cpSpaceSetGravity(_physicsSpace, cpvzero);
+        cpSpaceSetGravity(_physicsSpace, {_gravity.x, _gravity.y});
 
         for (auto idAndEntity : _entityMap)
         {
