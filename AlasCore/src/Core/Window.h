@@ -26,7 +26,6 @@ namespace Alas
         
         static void SetCurrentWindow(Window& window);
         static const Window& GetCurrentWindow();
-
         static const Window& GetFocusedWindow();
         
         virtual void OnUpdate() = 0;

@@ -9,6 +9,7 @@ namespace Alas
 
     void Window::SetCurrentWindow(Window& window)
     {
+        _currentWindow = &window;
         RenderCommand::SetActiveWindow(window);
         Input::SetActiveWindow(window);
     }

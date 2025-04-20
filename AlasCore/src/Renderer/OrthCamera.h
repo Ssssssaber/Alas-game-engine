@@ -8,6 +8,9 @@ namespace Alas
     public:
         OrthCamera(float left, float right, float top, float bottom);
 
+        float GetWidth() { return _width; }
+        float GetHeight() { return _height; }
+
         const glm::vec3& GetPosition() { return _position; }
         void SetPosition(const glm::vec3& position) { _position = position;  CalculateViewMatrix(); }
         

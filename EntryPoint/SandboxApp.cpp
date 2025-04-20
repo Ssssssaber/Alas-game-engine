@@ -26,11 +26,10 @@ public:
 
         _editorWindow = &Alas::Application::Get().GetWindow(); 
         _editorWindow->SetVSync(true);
-
-        float height = _editorWindow->GetHeight();
-        float width = _editorWindow->GetWidth();
         
         _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
+        // _camera.reset(new Alas::OrthCamera(0.0f, _editorWindow->GetWidth(), 0.0f, _editorWindow->GetHeight()));
+        
         _scene.reset(new Alas::Scene());
 
         _textureShader = Alas::Shader::Create("Assets/Shaders/TextureShader.shader");
@@ -57,8 +56,7 @@ public:
         _mainGo.AddComponent<Alas::BoxCollider2D>();
 
         auto& luaScript = _mainGo.AddComponent<Alas::LuaScriptComponent>("main-test.lua");
-        // luaScript.Handle = Alas::LuaScriptHandle(&_mainGo);
-        // ALAS_CORE_INFO(luaScript.Filepath);
+        ALAS_CORE_INFO(luaScript.Filepath);
         
         // -------------- test scene load correctly
 
@@ -133,11 +131,13 @@ public:
             _cameraRotation += _cameraRotationSpeed * deltaTime;
         }
 
+        
         _camera->SetPosition(_cameraPos);
         _camera->SetRotation(_cameraRotation);
-
+        
         Alas::Renderer::BeginScene(_camera);
-
+        
+        Alas::Renderer::SubmitText("not keke is not you", glm::vec3(50.0f), 1.0f, 1.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
         _scene->SceneUpdate();
         
         Alas::Renderer::EndScene();
@@ -390,7 +390,7 @@ public:
         glm::vec3 _cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
         float _cameraRotation = 0;
 
-        float _cameraSpeed = 2.0f;
+        float _cameraSpeed = 100.0f;
         float _cameraRotationSpeed = 15.0f;
 };
 

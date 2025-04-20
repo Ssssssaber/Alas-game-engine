@@ -1,0 +1,79 @@
+Scene name: Scene
+Entities:
+  4137804000549198629:
+    Tag: Quad
+    Transform:
+      Position: [0, 1.36, 0]
+      Rotation: [0, 0, -0.82]
+      Scale: [1, 0.26, 1]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/wall.png
+      Color: [1, 1, 1, 1]
+  6906374180076900013:
+    Tag: Quad
+    Transform:
+      Position: [-0.5, -0.7, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.36, 0.21, 2.09]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/wall.png
+      Color: [1, 1, 1, 1]
+  11955861844821318753:
+    Tag: Quad
+    Transform:
+      Position: [0, 0.81, 0.66]
+      Rotation: [0, 0, 0.77]
+      Scale: [1, -0.55, 1.44]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/wall.png
+      Color: [1, 1, 1, 1]
+  14071518482738364141:
+    Tag: Quad
+    Transform:
+      Position: [-0.42, -0.53, 0.93]
+      Rotation: [0, 0, 0]
+      Scale: [-0.92, -0.12, 0.28]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/wall.png
+      Color: [1, 1, 1, 1]
+  15259474077589515137:
+    Tag: Quad
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/wall.png
+      Color: [1, 1, 1, 1]
+  15969296982751809306:
+    Tag: Quad
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/wall.png
+      Color: [1, 1, 1, 1]
+  16269684954588571212:
+    Tag: Main triangle
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 30]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: Assets/Shaders/TextureShader.shader
+      Texture: Assets/Textures/keke.png
+      Color: [1, 1, 1, 1]
+    RigidBody2D:
+      Type: Dynamic
+      Mass: 1
+      Gravity scale: 0
+    Box Collider:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]

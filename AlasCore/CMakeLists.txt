@@ -52,6 +52,7 @@ target_include_directories(alas_engine_core PUBLIC
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/yaml-cpp/include
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/lua/src
     ${PROJECT_SOURCE_DIR}/AlasCore/vendor/sol
+    ${PROJECT_SOURCE_DIR}/AlasCore/vendor/freetype/include
 )
 
 target_precompile_headers(alas_engine_core PUBLIC ${PROJECT_SOURCE_DIR}/AlasCore/src/Core/precompiled.h)
@@ -61,6 +62,7 @@ add_subdirectory(vendor/Chipmunk2D)
 add_subdirectory(vendor/OpenGL/GLAD/)
 add_subdirectory(vendor/yaml-cpp)
 add_subdirectory(vendor/lua)
+add_subdirectory(vendor/freetype)
 
 if(SDL_VENDORED)
     add_subdirectory(vendor/SDL EXCLUDE_FROM_ALL)
@@ -88,5 +90,6 @@ target_link_libraries(alas_engine_core PUBLIC
     chipmunk_static
     yaml-cpp::yaml-cpp
     lua-lib
+    freetype
 )
 

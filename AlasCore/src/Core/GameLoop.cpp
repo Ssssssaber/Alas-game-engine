@@ -126,6 +126,8 @@ namespace Alas
 
         Alas::Renderer::BeginScene(_camera);
 
+        Alas::Renderer::SubmitText("not keke is not you", glm::vec3(50.0f), 1.0f, 1.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+
         _scene->Physics2DUpdate();
         count += 1;
         if (count > 3)
