@@ -223,12 +223,52 @@ namespace Alas
     void Scene::SceneUpdate()
     {
         ALAS_PROFILE_FUNCTION();
-        auto spriteGO = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
-        for (auto entity : spriteGO)
         {
-            auto [transform, sprite] = spriteGO.get<Transform, SpriteComponent>(entity);
+            auto spriteGOs = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
+            for (auto entt : spriteGOs)
+            {
+                auto [transform, sprite] = spriteGOs.get<Transform, SpriteComponent>(entt);
 
-            Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
+                Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
+            }
+        }
+        
+        {
+            auto textGOs = _entityRegistry.view<WorldSpaceText>();
+            for (auto entt : textGOs)
+            {
+                Entity entity = {entt, this};
+                
+                if (!entity.HasComponent<Transform>()) continue;
+                
+                auto& text = entity.GetComponent<WorldSpaceText>();
+                auto& transform = entity.GetComponent<Transform>();
+
+                glm::vec3 position = {
+                    transform.Position.x + text.Offset.x,
+                    transform.Position.y + text.Offset.y,
+                    transform.Position.z
+                };
+                float rotation = transform.Rotation.z + text.Rotation;
+                glm::vec2 scale = {
+                    transform.Scale.x * text.Scale.x,
+                    transform.Scale.y * text.Scale.y
+                };
+
+                Renderer::SubmitWorldSpaceText(text.DisplayText, position, rotation, scale, text.Color);
+            }
+        }
+
+        {
+            auto textGOs = _entityRegistry.view<OverlayText>();
+            for (auto entt : textGOs)
+            {
+                Entity entity = {entt, this};
+                
+                auto& text = entity.GetComponent<OverlayText>();
+                
+                Renderer::SubmitOverlayText(text.DisplayText, text.ScreenPosition, text.Rotation, text.Scale, text.Color);
+            }
         }
     }
 } // namespace Alas

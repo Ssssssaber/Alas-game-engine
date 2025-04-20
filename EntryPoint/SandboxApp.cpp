@@ -27,8 +27,8 @@ public:
         _editorWindow = &Alas::Application::Get().GetWindow(); 
         _editorWindow->SetVSync(true);
         
-        _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
-        // _camera.reset(new Alas::OrthCamera(0.0f, _editorWindow->GetWidth(), 0.0f, _editorWindow->GetHeight()));
+        // _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
+        _camera.reset(new Alas::OrthCamera(0.0f, _editorWindow->GetWidth(), 0.0f, _editorWindow->GetHeight()));
         
         _scene.reset(new Alas::Scene());
 
@@ -57,6 +57,17 @@ public:
 
         auto& luaScript = _mainGo.AddComponent<Alas::LuaScriptComponent>("main-test.lua");
         ALAS_CORE_INFO(luaScript.Filepath);
+
+        auto& text = _mainGo.AddComponent<Alas::WorldSpaceText>("keke");
+        text.Offset = glm::vec2(1.0f);
+
+
+        Alas::Entity overlay = _scene->CreateEntity("overlay text");
+        auto textOverlay = overlay.AddComponent<Alas::OverlayText>("keke wa baba", glm::vec4(0.5f));
+
+        
+        Alas::Entity worldSpace = _scene->CreateEntity("world space text");
+        auto textWorldSpace = worldSpace.AddComponent<Alas::WorldSpaceText>("keke", glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
         
         // -------------- test scene load correctly
 
@@ -137,7 +148,6 @@ public:
         
         Alas::Renderer::BeginScene(_camera);
         
-        Alas::Renderer::SubmitText("not keke is not you", glm::vec3(50.0f), 1.0f, 1.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
         _scene->SceneUpdate();
         
         Alas::Renderer::EndScene();
@@ -167,6 +177,10 @@ public:
             ent.AddComponent<Alas::RigidBody2D>();
         else if (_componentsStr[selectedComponentId] == BOX_COLLIDER_2D_C && !ent.HasComponent<Alas::BoxCollider2D>() ) 
             ent.AddComponent<Alas::BoxCollider2D>();
+        else if (_componentsStr[selectedComponentId] == OVERLAY_TEXT_C && !ent.HasComponent<Alas::OverlayText>() ) 
+            ent.AddComponent<Alas::OverlayText>();
+        else if (_componentsStr[selectedComponentId] == WORLD_SPACE_TEXT_C && !ent.HasComponent<Alas::WorldSpaceText>() ) 
+            ent.AddComponent<Alas::WorldSpaceText>();
             
         return ent; 
     }
@@ -350,6 +364,35 @@ public:
                     ImGui::TreePop();
                 }
 
+                if (ent.HasComponent<Alas::OverlayText>())
+                if(ImGui::TreeNode(OVERLAY_TEXT_C))
+                {
+                    auto& overlayText = ent.GetComponent<Alas::OverlayText>();
+                    ImGui::InputText(OVERLAY_TEXT_C_DISPLAY_TEXT, &overlayText.DisplayText);
+                    ImGui::DragFloat2(OVERLAY_TEXT_C_SCREEN_POSITION, glm::value_ptr(overlayText.ScreenPosition), BASE_DRAG_STEP);
+                    ImGui::DragFloat(OVERLAY_TEXT_C_ROTATION, &overlayText.Rotation, BASE_DRAG_STEP);
+                    ImGui::DragFloat2(OVERLAY_TEXT_C_SCALE, glm::value_ptr(overlayText.Scale), BASE_DRAG_STEP);
+                    ImGui::DragFloat4(OVERLAY_TEXT_C_COLOR, glm::value_ptr(overlayText.Color), BASE_DRAG_STEP);
+                    
+                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::OverlayText>();
+                    ImGui::TreePop();
+                }
+
+                
+                if (ent.HasComponent<Alas::WorldSpaceText>())
+                if(ImGui::TreeNode(WORLD_SPACE_TEXT_C))
+                {
+                    auto& worldSpaceText = ent.GetComponent<Alas::WorldSpaceText>();
+                    ImGui::InputText(WORLD_SPACE_TEXT_C_DISPLAY_TEXT, &worldSpaceText.DisplayText);
+                    ImGui::DragFloat2(WORLD_SPACE_TEXT_C_OFFSET, glm::value_ptr(worldSpaceText.Offset), BASE_DRAG_STEP);
+                    ImGui::DragFloat(WORLD_SPACE_TEXT_C_ROTATION, &worldSpaceText.Rotation, BASE_DRAG_STEP);
+                    ImGui::DragFloat2(WORLD_SPACE_TEXT_C_SCALE, glm::value_ptr(worldSpaceText.Scale), BASE_DRAG_STEP);
+                    ImGui::DragFloat4(WORLD_SPACE_TEXT_C_COLOR, glm::value_ptr(worldSpaceText.Color), BASE_DRAG_STEP);
+                    
+                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::WorldSpaceText>();
+                    ImGui::TreePop();
+                }
+
                 ImGui::TreePop();
             }
         }
@@ -367,10 +410,12 @@ public:
         float _framesElapsed = 0;
         float _frameRate = 0;
 
-        const char* _componentsStr[3] = {
+        const char* _componentsStr[5] = {
             SPRITE_C,
             RIGID_BODY_2D_C,
-            BOX_COLLIDER_2D_C
+            BOX_COLLIDER_2D_C,
+            OVERLAY_TEXT_C,
+            WORLD_SPACE_TEXT_C
         };
 
         std::string _sceneToLoadName;

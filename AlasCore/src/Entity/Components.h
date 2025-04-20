@@ -39,6 +39,20 @@
 #define RIGID_BODY_2D_TYPE_KINEMATIC_STR "Kinematic"
 #define RIGID_BODY_2D_TYPE_STATIC_STR "Static"
 
+#define OVERLAY_TEXT_C "Overlay Text"
+#define OVERLAY_TEXT_C_SCREEN_POSITION "Screen Position"
+#define OVERLAY_TEXT_C_ROTATION "Rotation"
+#define OVERLAY_TEXT_C_SCALE "Scale"
+#define OVERLAY_TEXT_C_DISPLAY_TEXT "Display Text"
+#define OVERLAY_TEXT_C_COLOR "Color"
+
+#define WORLD_SPACE_TEXT_C "World Space Text"
+#define WORLD_SPACE_TEXT_C_OFFSET "Position"
+#define WORLD_SPACE_TEXT_C_ROTATION "Rotation"
+#define WORLD_SPACE_TEXT_C_SCALE "Scale"
+#define WORLD_SPACE_TEXT_C_DISPLAY_TEXT "Display Text"
+#define WORLD_SPACE_TEXT_C_COLOR "Color"
+
 namespace Alas
 {
     struct IDComponent
@@ -176,5 +190,39 @@ namespace Alas
         BoxCollider2D(glm::vec2 offset, glm::vec2 size) :
             Offset(offset), Size(size) {}
         
+    };
+
+    struct WorldSpaceText
+    {
+        glm::vec2 Offset = {0.0f, 0.0f};
+        float Rotation = 0.0f;
+        glm::vec2 Scale = {1.0f, 1.0f};
+        std::string DisplayText;
+        glm::vec4 Color = glm::vec4{1.0f};
+
+        WorldSpaceText() = default;
+		WorldSpaceText(const WorldSpaceText&) = default;
+        WorldSpaceText(const std::string& text) :
+            DisplayText(text) {}
+        WorldSpaceText(const std::string& text, const glm::vec4& color) :
+            DisplayText(text), Color(color) {}
+
+    };
+
+    struct OverlayText
+    {
+        glm::vec2 ScreenPosition = {0.0f, 0.0f};
+        float Rotation = 0.0f;
+        glm::vec2 Scale = {1.0f, 1.0f};
+        std::string DisplayText;
+        glm::vec4 Color = glm::vec4{1.0f};
+
+        OverlayText() = default;
+		OverlayText(const OverlayText&) = default;
+        OverlayText(const std::string& text) :
+            DisplayText(text) {}
+        OverlayText(const std::string& text, const glm::vec4& color) :
+            DisplayText(text), Color(color) {}
+
     };
 } // namespace Alas

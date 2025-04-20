@@ -98,6 +98,26 @@ namespace Alas
 
                 script.Filepath = scriptToCopy.Filepath;
             }
+
+            if (entToCopy.HasComponent<OverlayText>())
+            {
+                // implement sprite
+                auto& textToCopy = entToCopy.GetComponent<OverlayText>(); 
+                auto& text = newEnt.AddComponent<OverlayText>(textToCopy.DisplayText, textToCopy.Color);
+                text.ScreenPosition = textToCopy.ScreenPosition;
+                text.Rotation = textToCopy.Rotation;
+                text.Scale = textToCopy.Scale;
+            }
+
+            if (entToCopy.HasComponent<WorldSpaceText>())
+            {
+                // implement sprite
+                auto& textToCopy = entToCopy.GetComponent<WorldSpaceText>(); 
+                auto& text = newEnt.AddComponent<WorldSpaceText>(textToCopy.DisplayText, textToCopy.Color);
+                text.Offset = textToCopy.Offset;
+                text.Rotation = textToCopy.Rotation;
+                text.Scale = textToCopy.Scale;
+            }
         }
     }
 
@@ -110,7 +130,7 @@ namespace Alas
         );
         _window->SetVSync(false);
 
-        _camera.reset(new OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
+        _camera.reset(new OrthCamera(0.0f, _window->GetWidth(), 0.0f, _window->GetHeight()));
         // _camera->SetPosition({0.0f, 1.0f, 0.0f});
     }
 
@@ -125,8 +145,6 @@ namespace Alas
         RenderCommand::Clear();
 
         Alas::Renderer::BeginScene(_camera);
-
-        Alas::Renderer::SubmitText("not keke is not you", glm::vec3(50.0f), 1.0f, 1.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
         _scene->Physics2DUpdate();
         count += 1;

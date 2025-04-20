@@ -17,7 +17,8 @@ namespace Alas {
 
         static void DrawQuad(const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix);
         static void Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix);
-        static void SubmitText(const std::string& text, glm::vec3 position, float rotation, float scale, glm::vec4 color = glm::vec4(1.0f));
+        static void SubmitOverlayText(const std::string& text, const glm::vec2& position, float rotation, const glm::vec2& scale, glm::vec4 color = glm::vec4(1.0f));
+        static void SubmitWorldSpaceText(const std::string& text, const glm::vec3& position, float rotation, const glm::vec2& scale, glm::vec4 color);
         static void Submit(const Shared<VertexArray>& vertexArray, const Shared<Shader>& shader, const glm::vec4& color,  const glm::mat4& modelMatrix);
         static void Submit(Entity& entity);
 
@@ -29,7 +30,8 @@ namespace Alas {
         {
             Shared<OrthCamera> Camera;
             Shared<VertexArray> QuadVertexArray;
-            Shared<Shader> TextShader;
+            Shared<Shader> OverlayTextShader;
+            Shared<Shader> WorldSpaceTextShader;
             Shared<TextRendering> TextRenderer;
         };
 

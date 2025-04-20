@@ -1,5 +1,11 @@
 #include "OpenGLTextRendering.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <gtx/quaternion.hpp>
+
 namespace Alas
 {
     void OpenGLTextRendering::Init()
@@ -90,7 +96,7 @@ namespace Alas
         GlCall(glBindVertexArray(0));
     }
 
-    void OpenGLTextRendering::RenderText(const std::string& text, glm::vec3 position, float rotation, float scale, glm::vec4 color)
+    void OpenGLTextRendering::RenderText(const std::string& text, glm::vec3 position, const glm::vec2& scale)
     {
         // activate corresponding render state	
         GlCall(glActiveTexture(GL_TEXTURE0));
@@ -103,11 +109,11 @@ namespace Alas
         {
             Character ch = Characters[*c];
 
-            float xpos = position.x + ch.Bearing.x * scale;
-            float ypos = position.y - (ch.Size.y - ch.Bearing.y) * scale;
+            float xpos = position.x + ch.Bearing.x * scale.x;
+            float ypos = position.y - (ch.Size.y - ch.Bearing.y) * scale.y;
 
-            float w = ch.Size.x * scale;
-            float h = ch.Size.y * scale;
+            float w = ch.Size.x * scale.x;
+            float h = ch.Size.y * scale.y;
             // update VBO for each character
             float vertices[6][4] = {
                 { xpos,     ypos + h,   0.0f, 0.0f },            
@@ -128,7 +134,7 @@ namespace Alas
             // render quad
             GlCall(glDrawArrays(GL_TRIANGLES, 0, 6));
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            position.x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+            position.x += (ch.Advance >> 6) * scale.x; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
         }
         GlCall(glBindVertexArray(0));
         GlCall(glBindTexture(GL_TEXTURE_2D, 0));

@@ -5,7 +5,6 @@ namespace Alas
 {
     OrthCamera::OrthCamera(float left, float right, float top, float bottom)
     {
-        glm::mat4 projection = glm::mat4(1.0f);
         _projectionMatrix = glm::ortho(left, right, top, bottom);
 
         _viewMatrix = glm::mat4(1.0f);

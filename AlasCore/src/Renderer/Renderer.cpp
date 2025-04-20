@@ -15,18 +15,18 @@ namespace Alas
         ALAS_PROFILE_FUNCTION()
         RenderCommand::EnableBlending();
 
-        _Data.TextShader = Shader::Create("Assets/Shaders/text-init.shader");
-
+        _Data.OverlayTextShader = Shader::Create("Assets/Shaders/OverlayText.shader");
+        _Data.WorldSpaceTextShader = Shader::Create("Assets/Shaders/WorldSpaceText.shader");
         _Data.TextRenderer = TextRendering::Create();
         _Data.TextRenderer->Init();
 
         _Data.QuadVertexArray.reset(VertexArray::Create());
         
         float quadVertices[5 * 4] = {
-            -0.2f, -0.2f, 0.0f, 0.0f, 0.0f,
-			 0.2f, -0.2f, 0.0f, 1.0f, 0.0f,
-			 0.2f,  0.2f, 0.0f, 1.0f, 1.0f,
-			-0.2f,  0.2f, 0.0f, 0.0f, 1.0f
+            -100.0f, -100.0f, 0.0f, 0.0f, 0.0f,
+			 100.0f, -100.0f, 0.0f, 1.0f, 0.0f,
+			 100.0f,  100.0f, 0.0f, 1.0f, 1.0f,
+			-100.0f,  100.0f, 0.0f, 0.0f, 1.0f
         };
         
         Alas::Shared<Alas::VertexBuffer> quadVertexBuffer;
@@ -73,15 +73,11 @@ namespace Alas
 		RenderCommand::DrawIndexed(_Data.QuadVertexArray);
     }
 
-    void Renderer::SubmitText(const std::string& text, glm::vec3 position, float rotation, float scale, glm::vec4 color)
+    void Renderer::SubmitOverlayText(const std::string& text, const glm::vec2& position, float rotation, const glm::vec2& scale, glm::vec4 color)
     {
-        
-        _Data.TextShader->Bind();
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), position) *
-                glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
-                glm::scale(glm::mat4(1.0f), glm::vec3(scale));
+        _Data.OverlayTextShader->Bind();
 
-        _Data.TextShader->setMat4("projection",
+        _Data.OverlayTextShader->setMat4("projection",
             glm::ortho(
                 0.0f,
                 static_cast<float>(Window::GetCurrentWindow().GetWidth()),
@@ -89,8 +85,29 @@ namespace Alas
                 static_cast<float>(Window::GetCurrentWindow().GetHeight())
             )
         );
-        _Data.TextShader->setVec3("textColor", color.x, color.y, color.z);
+        _Data.OverlayTextShader->setVec3("textColor", color.x, color.y, color.z);
 
-        _Data.TextRenderer->RenderText(text, position, rotation, scale, color);
+        _Data.TextRenderer->RenderText(text, {position.x, position.y, 0.0f}, scale);
+    }
+
+    void Renderer::SubmitWorldSpaceText(const std::string& text, const glm::vec3& position, float rotation, const glm::vec2& scale, glm::vec4 color)
+    {
+        
+        _Data.WorldSpaceTextShader->Bind();
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), position) *
+                glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                glm::scale(glm::mat4(1.0f), glm::vec3(scale.x, scale.y, 1.0f));
+
+        _Data.WorldSpaceTextShader->setMat4("u_viewProjectionMatrix",
+            _Data.Camera->GetViewProjectionMatrix()
+        );
+        _Data.WorldSpaceTextShader->setMat4("u_model",
+            modelMatrix
+        );
+        
+        _Data.WorldSpaceTextShader->setVec4("textColor", color.x, color.y, color.z, color.w);
+
+        _Data.TextRenderer->RenderText(text, position, scale);
+        // Alas::Renderer::SubmitWorldSpaceText("not keke is not you", glm::vec3(50.0f), 1.0f, glm::vec2(1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
     }
 } // namespace AGS

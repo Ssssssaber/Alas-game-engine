@@ -1,16 +1,7 @@
 #pragma once
 #include "Renderer/TextRendering.h"
 #include "Platform/OpenGL/OpenGLCore.h"
-#include <glm.hpp>
 #include <map>
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#define GLM_ENABLE_EXPERIMENTAL
-#include <gtx/quaternion.hpp>
-
-
 namespace Alas
 {
     struct Character
@@ -32,6 +23,6 @@ namespace Alas
         OpenGLTextRendering() = default;
         virtual void Init() override;
 
-        virtual void RenderText(const std::string& text, glm::vec3 position, float rotation, float scale, glm::vec4 color) override;
+        virtual void RenderText(const std::string& text, glm::vec3 position, const glm::vec2& scale) override;
     };
 } // namespace Alas
