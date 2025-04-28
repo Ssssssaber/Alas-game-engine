@@ -22,8 +22,11 @@ void main()
 #version 410 core
 
 out vec4 color;
+out int color2;
 
 in vec2 o_TexCoord;
+
+uniform int u_EntityId;
 
 uniform sampler2D u_Texture;
 uniform vec4 u_Color;
@@ -31,4 +34,5 @@ uniform vec4 u_Color;
 void main()
 {
     color = texture(u_Texture, o_TexCoord) * u_Color;
+    color2 = u_EntityId;
 }

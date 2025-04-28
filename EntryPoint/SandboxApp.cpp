@@ -30,6 +30,9 @@ public:
         // _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
         _camera.reset(new Alas::OrthCamera(0.0f, _editorWindow->GetWidth(), 0.0f, _editorWindow->GetHeight()));
         
+        _cameraPos = glm::vec3(-500.0f, -500.0f, 0.0f);
+        _camera->SetPosition(_cameraPos);
+        
         _scene.reset(new Alas::Scene());
 
         _textureShader = Alas::Shader::Create("Assets/Shaders/TextureShader.shader");
@@ -88,6 +91,11 @@ public:
         //         ent.AddComponent<Alas::RigidBody2D>(Alas::RigidBody2D::BodyType::Kinematic);
         //     }
         // }
+
+        Alas::FramebufferSpecification spec;
+        spec.Width = 1270;
+        spec.Height = 720;
+		m_Framebuffer = Alas::Framebuffer::Create(spec);
     
     }
 
@@ -97,6 +105,12 @@ public:
         Alas::Window::SetCurrentWindow(*_editorWindow);
         Alas::RenderCommand::SetClearColor({ 0.2f, 0.6f, 0.8f, 1 });
         Alas::RenderCommand::Clear();
+
+        m_Framebuffer->Bind();
+        Alas::RenderCommand::SetClearColor({ 0.6f, 0.6f, 0.8f, 1 });
+        Alas::RenderCommand::Clear();
+
+       
         
         float deltaTime = Alas::Time::getPhysicsDeltaTime();
         _timeElapsed += deltaTime;
@@ -141,7 +155,6 @@ public:
         {
             _cameraRotation += _cameraRotationSpeed * deltaTime;
         }
-
         
         _camera->SetPosition(_cameraPos);
         _camera->SetRotation(_cameraRotation);
@@ -152,8 +165,15 @@ public:
         Alas::Renderer::DrawBox(glm::vec3(0.0f), 30.f, glm::vec3(1.0f));
 
         _scene->SceneUpdate();
+        // m_Framebuffer->DrawBuffers();
+        
+        // auto mousePos = Alas::Input::GetMousePosition();
+        auto mousePos = ImGui::GetMousePos();
+        ALAS_CORE_INFO("ENTITY: {0}, {1} ({2} {3})", m_Framebuffer->ReadPixel(1, mousePos.x, mousePos.y), m_Framebuffer->ReadPixel(0, mousePos.x, mousePos.y), mousePos.x, mousePos.y);
         
         Alas::Renderer::EndScene();
+
+        m_Framebuffer->Unbind();
     }
 
     Alas::Entity OnCreateObjectButton()
@@ -217,7 +237,7 @@ public:
 
         ImGui::End();
 
-        ImGui::Begin("Scene");
+        ImGui::Begin("Scene Tree");
         
         if (ImGui::Button("Start game"))
         {
@@ -414,6 +434,14 @@ public:
         }
 
         ImGui::End();
+
+
+        ImGui::Begin("Scene");
+
+		uint32_t textureID = m_Framebuffer->GetColorAttachment();
+		ImGui::Image(textureID, ImVec2{ 1280, 720 }, {0, 1}, {1, 0});
+
+        ImGui::End();
     }
 
     void OnEvent(Alas::Event& event) override
@@ -433,6 +461,7 @@ public:
             OVERLAY_TEXT_C,
             WORLD_SPACE_TEXT_C
         };
+        Alas::Shared<Alas::Framebuffer> m_Framebuffer;
 
         std::string _sceneToLoadName;
 

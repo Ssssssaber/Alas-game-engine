@@ -1,6 +1,8 @@
 * Processing multiple lua scripts effectively
-* Resource manager attaching scripts to object
-* Think of a way to let renderer not know about window to render text
+* Resource manager UI for attaching scripts, shaders and textures to entity
 * Worldspace text invalid movement
 * Circle colliders instead of quads for some reason
+* Circle collider callbacks
 
+* Framebuffer implementation to render scene into imgui subwindow
+    Make it compatible with gameloop window

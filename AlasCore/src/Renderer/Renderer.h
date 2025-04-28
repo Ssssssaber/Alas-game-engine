@@ -16,7 +16,7 @@ namespace Alas {
         static void EndScene();
 
         static void DrawQuad(const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix);
-        static void Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix);
+        static void Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix, UID uid = 0);
 
         static void DrawLine(const glm::vec3& position, const float rotation, const glm::vec3& scale);
         static void DrawBox(const glm::vec3& position, const float rotation, const glm::vec3& scale);

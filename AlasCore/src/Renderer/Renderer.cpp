@@ -26,7 +26,7 @@ namespace Alas
             
             float lineVertices[] = {
                 0.0f, 0.0f,
-                0.0f, 0.5f
+                0.0f, 100.0f
             };
 
             
@@ -97,7 +97,7 @@ namespace Alas
             {
                 Alas::BufferLayout layout {
                     {Alas::ShaderElementType::Float3, "a_Position"},
-                    {Alas::ShaderElementType::Float2, "a_TexCoord"}
+                    {Alas::ShaderElementType::Float2, "a_TexCoord"},
                 };
                 quadVertexBuffer->SetLayout(layout);
             }
@@ -123,7 +123,7 @@ namespace Alas
         ALAS_PROFILE_FUNCTION();
 	}
 
-    void Renderer::Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix)
+    void Renderer::Submit2D(const Shared<Texture>& texture, const Shared<Shader>& shader, const glm::vec4& color, const glm::mat4& modelMatrix, UID uid)
     {
         ALAS_PROFILE_FUNCTION();
         texture->Bind();
@@ -131,6 +131,7 @@ namespace Alas
         shader->setMat4("u_viewProjectionMatrix", _Data.Camera->GetViewProjectionMatrix());
         shader->setMat4("u_model", modelMatrix);
         shader->setVec4("u_Color", color.x, color.y, color.z, color.w);
+        shader->setInt("u_EntityId", uid);
         shader->setInt("u_Texture", 0);
         
 		RenderCommand::DrawIndexed(_Data.QuadVertexArray);

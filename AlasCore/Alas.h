@@ -19,6 +19,7 @@
 // Renderer
 #include "src/Renderer/Renderer.h"
 #include "src/Renderer/RendererCommand.h"
+#include "src/Renderer/Framebuffer.h"
 #include "src/Renderer/Shader.h"
 #include "src/Renderer/VertexBuffer.h"
 #include "src/Renderer/IndexBuffer.h"

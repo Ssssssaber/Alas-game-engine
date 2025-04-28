@@ -233,7 +233,7 @@ namespace Alas
                 auto& sprite = entity.GetComponent<SpriteComponent>();
                 
 
-                Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix());
+                Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix(), entity.GetUID());
                 if (entity.HasComponent<BoxCollider2D>())
                 {
                     auto& box = entity.GetComponent<BoxCollider2D>();
