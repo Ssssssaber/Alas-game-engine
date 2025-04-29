@@ -3,10 +3,17 @@
 
 namespace Alas
 {
-    OrthCamera::OrthCamera(float left, float right, float top, float bottom)
+    OrthCamera::OrthCamera(uint32_t width, uint32_t height)
     {
-        _projectionMatrix = glm::ortho(left, right, top, bottom);
+        SetNewSize(width, height);
+    }
 
+    void OrthCamera::SetNewSize(uint32_t width, uint32_t height)
+    {
+        _height = height;
+        _width = width;
+        
+        _projectionMatrix = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
         _viewMatrix = glm::mat4(1.0f);
         _viewProjectionMatrix = _viewMatrix * _projectionMatrix;
     }

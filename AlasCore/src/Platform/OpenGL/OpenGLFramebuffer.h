@@ -10,11 +10,13 @@ namespace Alas {
 		OpenGLFramebuffer(const FramebufferSpecification& spec);
 		virtual ~OpenGLFramebuffer();
 
+        void UpdateFramebuffer();
+
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
 		virtual void Resize(uint32_t width, uint32_t height) override;
-		virtual uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y) override;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 
 		virtual uint32_t GetColorAttachment() const override { return _textureColorbuffer; }
 

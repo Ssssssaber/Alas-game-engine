@@ -1,9 +1,30 @@
 #include "OpenGLFramebuffer.h"
 
 namespace Alas {
+
+    static uint32_t s_MaxFramebufferSize = 8192;
+
     OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) :
         _specification(spec)
     {
+        UpdateFramebuffer();
+    }
+
+    OpenGLFramebuffer::~OpenGLFramebuffer()
+    {
+        GlCall(glDeleteFramebuffers(1, &m_RendererID));
+    }
+
+    
+    void OpenGLFramebuffer::UpdateFramebuffer()
+    {
+        if (m_RendererID)
+		{
+			GlCall(glDeleteFramebuffers(1, &m_RendererID));
+			GlCall(glDeleteTextures(1, &_textureColorbuffer));
+            GlCall(glGenTextures(1, &_entityIdTexture));
+        }
+
         GlCall(glGenFramebuffers(1, &m_RendererID));
         GlCall(glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID));
         // create a color attachment texture
@@ -28,11 +49,6 @@ namespace Alas {
         GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
     }
 
-    OpenGLFramebuffer::~OpenGLFramebuffer()
-    {
-        GlCall(glDeleteFramebuffers(1, &m_RendererID));
-    }
-
     void OpenGLFramebuffer::Bind()
     {
         GlCall(glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID));
@@ -45,10 +61,18 @@ namespace Alas {
 
     void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
     {
-        
+        if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
+        {
+            ALAS_CORE_WARN("Attempting to resize buffer to {0}, {1}", width, height);
+            return;
+        }
+        _specification.Width = width;
+        _specification.Height = height;
+
+        UpdateFramebuffer();
     }
 
-    uint32_t OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
+    int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
     {
         if (x > _specification.Width || y > _specification.Height ||
             x < 0 || y < 0) 
@@ -58,20 +82,45 @@ namespace Alas {
         }
         return 1;
 
-        // uint32_t* colorData = new uint32_t[_specification.Width * _specification.Height * 4];
+
+
+        // int32_t* colorData = new int32_t[_specification.Width * _specification.Height * 4];
         // GlCall(glReadPixels(0, 0, _specification.Width, _specification.Height, GL_RGBA, GL_UNSIGNED_BYTE, colorData));
 
-        // // // uint32_t* entityIdData = new uint32_t[_specification.Width * _specification.Height * 4];
-        // // // GlCall(glReadPixels(0, 0, _specification.Width, _specification.Height, GL_RED_INTEGER, GL_INT, entityIdData));
+        // int32_t* entityIdData = new int32_t[_specification.Width * _specification.Height * 4];
+        // GlCall(glReadPixels(0, 0, _specification.Width, _specification.Height, GL_RED_INTEGER, GL_INT, entityIdData));
         
         // int pixelIndex = (y * _specification.Width + x); // Calculate index
-        // uint32_t selectedEntityId = colorData[pixelIndex];
+        // int selectedEntityId = colorData[pixelIndex];
 
-        // // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex));
-		// // uint32_t pixelData;
-		// // GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData));
+
+
+        // // // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex));
+		// // // uint32_t pixelData;
+		// // // GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData));
         
         // return selectedEntityId;
+
+        // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex));
+		// int pixelData;
+		// GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData));
+		// return pixelData;
+
+        // Read back data
+        // GLubyte colorData[4];
+        // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0));
+        // GlCall(glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, colorData));
+
+        // GLint entityIdData;
+        // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
+        // GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &entityIdData));
+
+        // int pixelIndex = (y * _specification.Width + x); // Calculate index
+        // GLint selectedEntityId = entityIdData[pixelIndex];
+        // GLint redColor = entityIdData[pixelIndex];
+
+        // ALAS_CORE_INFO("ENTITY: {0}; Color: {1} {2} {3}; ({4} {5}) ", entityIdData, colorData[0], colorData[1], colorData[2], x, y);
+        // return entityIdData;
     }
 
 

@@ -27,12 +27,7 @@ public:
         _editorWindow = &Alas::Application::Get().GetWindow(); 
         _editorWindow->SetVSync(true);
         
-        // _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));
-        _camera.reset(new Alas::OrthCamera(0.0f, _editorWindow->GetWidth(), 0.0f, _editorWindow->GetHeight()));
-        
-        _cameraPos = glm::vec3(-500.0f, -500.0f, 0.0f);
-        _camera->SetPosition(_cameraPos);
-        
+        // _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));        
         _scene.reset(new Alas::Scene());
 
         _textureShader = Alas::Shader::Create("Assets/Shaders/TextureShader.shader");
@@ -96,7 +91,11 @@ public:
         spec.Width = 1270;
         spec.Height = 720;
 		m_Framebuffer = Alas::Framebuffer::Create(spec);
-    
+
+        _camera.reset(new Alas::OrthCamera(spec.Width, spec.Height));
+        
+        _cameraPos = glm::vec3(-500.0f, -500.0f, 0.0f);
+        _camera->SetPosition(_cameraPos);
     }
 
     void OnUpdate() override
@@ -106,12 +105,19 @@ public:
         Alas::RenderCommand::SetClearColor({ 0.2f, 0.6f, 0.8f, 1 });
         Alas::RenderCommand::Clear();
 
+
+        if (Alas::FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
+			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			// _camera->SetNewSize(m_ViewportSize.x, m_ViewportSize.y);
+		}
+
         m_Framebuffer->Bind();
         Alas::RenderCommand::SetClearColor({ 0.6f, 0.6f, 0.8f, 1 });
         Alas::RenderCommand::Clear();
 
-       
-        
         float deltaTime = Alas::Time::getPhysicsDeltaTime();
         _timeElapsed += deltaTime;
         _framesElapsed += 1;
@@ -123,54 +129,56 @@ public:
             _timeElapsed = 0;
         }
 
-        // // glm::vec2 velocity = Alas::ScriptingEngine::LuaUpdate();
-        // auto velocity = _mainGo.GetComponent<Alas::RigidBody2D>().Velocity;
-        // ALAS_CORE_INFO("EDITOR {0} {1}", velocity.x, velocity.y);
-        // // auto& transfrom = _mainGo.GetComponent<Alas::Transform>();
-        // // transfrom.Position.x += velocity.x;
-        // // transfrom.Position.y += velocity.y;
-        
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
-        {
-            _cameraPos.y += _cameraSpeed * deltaTime;
-        }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_S))
-        {
-            _cameraPos.y -= _cameraSpeed * deltaTime;
-        }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_A))
-        {
-            _cameraPos.x -= _cameraSpeed * deltaTime;
-        }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_D))
-        {
-            _cameraPos.x += _cameraSpeed * deltaTime;
-        }
+        if (m_ViewportFocused)
+		{
+            if (Alas::Input::IsKeyPressed(ALAS_KEY_W))
+            {
+                _cameraPos.y += _cameraSpeed * deltaTime;
+            }
+            if (Alas::Input::IsKeyPressed(ALAS_KEY_S))
+            {
+                _cameraPos.y -= _cameraSpeed * deltaTime;
+            }
+            if (Alas::Input::IsKeyPressed(ALAS_KEY_A))
+            {
+                _cameraPos.x -= _cameraSpeed * deltaTime;
+            }
+            if (Alas::Input::IsKeyPressed(ALAS_KEY_D))
+            {
+                _cameraPos.x += _cameraSpeed * deltaTime;
+            }
 
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_Q))
-        {
-            _cameraRotation -= _cameraRotationSpeed * deltaTime;
+            if (Alas::Input::IsKeyPressed(ALAS_KEY_Q))
+            {
+                _cameraRotation -= _cameraRotationSpeed * deltaTime;
+            }
+            if (Alas::Input::IsKeyPressed(ALAS_KEY_E))
+            {
+                _cameraRotation += _cameraRotationSpeed * deltaTime;
+            }
+            
+            _camera->SetPosition(_cameraPos);
+            _camera->SetRotation(_cameraRotation);
         }
-        if (Alas::Input::IsKeyPressed(ALAS_KEY_E))
-        {
-            _cameraRotation += _cameraRotationSpeed * deltaTime;
-        }
-        
-        _camera->SetPosition(_cameraPos);
-        _camera->SetRotation(_cameraRotation);
         
         Alas::Renderer::BeginScene(_camera);
 
-        Alas::Renderer::DrawLine(glm::vec3(0.0f), 30.f, glm::vec3(1.0f));
-        Alas::Renderer::DrawBox(glm::vec3(0.0f), 30.f, glm::vec3(1.0f));
-
         _scene->SceneUpdate();
-        // m_Framebuffer->DrawBuffers();
         
-        // auto mousePos = Alas::Input::GetMousePosition();
-        auto mousePos = ImGui::GetMousePos();
-        ALAS_CORE_INFO("ENTITY: {0}, {1} ({2} {3})", m_Framebuffer->ReadPixel(1, mousePos.x, mousePos.y), m_Framebuffer->ReadPixel(0, mousePos.x, mousePos.y), mousePos.x, mousePos.y);
-        
+        auto[mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+		my = viewportSize.y - my;
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		{
+			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+            m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+		}
+
         Alas::Renderer::EndScene();
 
         m_Framebuffer->Unbind();
@@ -436,10 +444,22 @@ public:
         ImGui::End();
 
 
-        ImGui::Begin("Scene");
+        ImGui::Begin("Scene Viewport");
+
+        auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
+		m_ViewportFocused = ImGui::IsWindowFocused();
+		m_ViewportHovered = ImGui::IsWindowHovered();
+ 
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = m_Framebuffer->GetColorAttachment();
-		ImGui::Image(textureID, ImVec2{ 1280, 720 }, {0, 1}, {1, 0});
+		ImGui::Image(textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, {0, 1}, {1, 0});
 
         ImGui::End();
     }
@@ -482,6 +502,10 @@ public:
 
         float _cameraSpeed = 100.0f;
         float _cameraRotationSpeed = 15.0f;
+
+        bool m_ViewportFocused = false, m_ViewportHovered = false;
+		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		glm::vec2 m_ViewportBounds[2];
 };
 
 class Sandbox : public Alas::Application

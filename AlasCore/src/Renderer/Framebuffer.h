@@ -29,6 +29,6 @@ namespace Alas
 
         virtual void Resize(uint32_t width, uint32_t height) = 0;
         // void DrawBuffers();
-        virtual uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
+        virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
     };
 } // namespace Alas

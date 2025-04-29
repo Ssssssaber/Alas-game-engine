@@ -131,7 +131,7 @@ namespace Alas
         );
         _window->SetVSync(false);
 
-        _camera.reset(new OrthCamera(0.0f, _window->GetWidth(), 0.0f, _window->GetHeight()));
+        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
         // _camera->SetPosition({0.0f, 1.0f, 0.0f});
     }
 
