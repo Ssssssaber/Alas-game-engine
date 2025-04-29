@@ -28,6 +28,7 @@ namespace Alas
         void OnEvent(Event& e);
 
         bool OnWindowClose(WindowCloseEvent& event);
+        bool OnWindowResize(WindowResizeEvent& event);
     
     private:
         void CopyScene(Shared<Scene> sceneRef);

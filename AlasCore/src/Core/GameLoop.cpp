@@ -173,7 +173,11 @@ namespace Alas
         EventDispatcher manager(e);
         manager.Dispatch<WindowCloseEvent>(
             std::bind(&GameLoop::OnWindowClose, this, std::placeholders::_1)
-         );
+        );
+
+        manager.Dispatch<WindowResizeEvent>(
+            std::bind(&GameLoop::OnWindowResize, this, std::placeholders::_1)
+        );
     }
 
     bool GameLoop::OnWindowClose(WindowCloseEvent& event)
@@ -181,6 +185,12 @@ namespace Alas
         _scene->Physics2DStop();
         _isRunning = false;
 
+        return true;
+    }
+
+    bool GameLoop::OnWindowResize(WindowResizeEvent& event)
+    {
+        _camera->SetNewSize(event.GetWidth(), event.GetHeight());
         return true;
     }
 } // namespace Alas

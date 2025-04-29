@@ -36,6 +36,8 @@ namespace Alas{
 
             uint32_t width;
             uint32_t height;
+
+            float aspectRatio = 1.6f / 0.9f;
             
             bool isVsync;
 

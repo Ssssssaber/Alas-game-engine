@@ -80,7 +80,7 @@ namespace Alas {
             ALAS_CORE_WARN("Reading pixel out of bounds");
             return 0;
         }
-        return 1;
+        // return 1;
 
 
 
@@ -107,20 +107,19 @@ namespace Alas {
 		// return pixelData;
 
         // Read back data
-        // GLubyte colorData[4];
-        // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0));
-        // GlCall(glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, colorData));
+        GLubyte colorData[4];
+        GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0));
+        GlCall(glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, colorData));
 
-        // GLint entityIdData;
-        // GlCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
-        // GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &entityIdData));
+        GLint entityIdData;
+        GlCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
+        GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &entityIdData));
 
-        // int pixelIndex = (y * _specification.Width + x); // Calculate index
-        // GLint selectedEntityId = entityIdData[pixelIndex];
-        // GLint redColor = entityIdData[pixelIndex];
-
-        // ALAS_CORE_INFO("ENTITY: {0}; Color: {1} {2} {3}; ({4} {5}) ", entityIdData, colorData[0], colorData[1], colorData[2], x, y);
-        // return entityIdData;
+        // GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, _specification.Width, _specification.Height, 0, GL_RED_INTEGER, GL_INT, NULL));
+        // GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _specification.Width, _specification.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
+        
+        ALAS_CORE_INFO("ENTITY: {0}; Color: {1} {2} {3}; ({4} {5}) ", entityIdData, colorData[0], colorData[1], colorData[2], x, y);
+        return entityIdData;
     }
 
 

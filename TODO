@@ -6,3 +6,6 @@
 
 * Framebuffer implementation to render scene into imgui subwindow
     Make it compatible with gameloop window
+
+Issues:
+* Camera view crops everything greater than 1280x720

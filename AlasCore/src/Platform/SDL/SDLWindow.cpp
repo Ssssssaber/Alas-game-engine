@@ -186,6 +186,7 @@ namespace Alas {
             }
             case SDL_EVENT_WINDOW_RESIZED:
             {
+                // glViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2 * (1 / _params.aspectRatio));
                 glViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
             }
         }
