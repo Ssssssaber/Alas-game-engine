@@ -43,7 +43,8 @@ namespace Alas {
         GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
         GlCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, _entityIdTexture, 0));
         
-        // GlCall(glDrawBuffers(2, m_DrawBuffers));
+        GLuint drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+        GlCall(glDrawBuffers(2, drawBuffers));
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             ALAS_ASSERT(false, "ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
         GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));

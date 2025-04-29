@@ -131,7 +131,7 @@ namespace Alas
         shader->setMat4("u_viewProjectionMatrix", _Data.Camera->GetViewProjectionMatrix());
         shader->setMat4("u_model", modelMatrix);
         shader->setVec4("u_Color", color.x, color.y, color.z, color.w);
-        shader->setInt("u_EntityId", uid);
+        shader->setInt("u_EntityId", (int)uid);
         shader->setInt("u_Texture", 0);
         
 		RenderCommand::DrawIndexed(_Data.QuadVertexArray);
