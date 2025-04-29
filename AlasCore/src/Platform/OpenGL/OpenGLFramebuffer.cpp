@@ -108,18 +108,13 @@ namespace Alas {
 		// return pixelData;
 
         // Read back data
-        GLubyte colorData[4];
-        GlCall(glReadBuffer(GL_COLOR_ATTACHMENT0));
-        GlCall(glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, colorData));
 
-        GLint entityIdData;
+        GLint entityIdData = 0;
         GlCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
         GlCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &entityIdData));
 
         // GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, _specification.Width, _specification.Height, 0, GL_RED_INTEGER, GL_INT, NULL));
         // GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _specification.Width, _specification.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
-        
-        ALAS_CORE_INFO("ENTITY: {0}; Color: {1} {2} {3}; ({4} {5}) ", entityIdData, colorData[0], colorData[1], colorData[2], x, y);
         return entityIdData;
     }
 

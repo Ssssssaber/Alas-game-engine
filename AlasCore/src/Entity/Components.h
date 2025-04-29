@@ -60,7 +60,7 @@ namespace Alas
 {
     struct IDComponent
 	{
-		UID ID;
+		UID ID = 0;
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;

@@ -154,7 +154,7 @@ namespace Alas
         RenderCommand::DrawLine(_Data.lineVertexArray);
     }
 
-    void Renderer::DrawBox(const glm::vec3& position, const float rotation, const glm::vec3& scale)
+    void Renderer::DrawBox(const glm::vec3& position, const float rotation, const glm::vec3& scale, const glm::vec4& color)
     {
         ALAS_PROFILE_FUNCTION();
 
@@ -165,7 +165,7 @@ namespace Alas
         _Data.lineShader->Bind();
         _Data.lineShader->setMat4("u_viewProjectionMatrix", _Data.Camera->GetViewProjectionMatrix());
         _Data.lineShader->setMat4("u_model", modelMatrix);
-        _Data.lineShader->setVec4("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
+        _Data.lineShader->setVec4("u_Color", color.x, color.y, color.z, color.w);
 
         RenderCommand::DrawLine(_Data.lineQuadVertexArray);
     }

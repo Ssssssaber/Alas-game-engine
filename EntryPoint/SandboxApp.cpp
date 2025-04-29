@@ -164,20 +164,21 @@ public:
         Alas::Renderer::BeginScene(_camera);
 
         _scene->SceneUpdate();
+        _entityHovered = GetEntityUnderCursor(_hoveredEntity);
+        if (_entityHovered)
+        {
+            auto& transform = _hoveredEntity.GetComponent<Alas::Transform>();
+            Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        }
         
-        auto[mx, my] = ImGui::GetMousePos();
-		mx -= m_ViewportBounds[0].x;
-		my -= m_ViewportBounds[0].y;
-		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
-		my = viewportSize.y - my;
-		int mouseX = (int)mx;
-		int mouseY = (int)my;
-
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
-		{
-			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-		}
+        if (Alas::Input::IsMouseButtonPressed(ALAS_MOUSE_BUTTON_LEFT))
+            _entitySelected = GetEntityUnderCursor(_selectedEntity);
+        
+        if (_entitySelected)
+        {
+            auto& transform = _selectedEntity.GetComponent<Alas::Transform>();
+            Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        }  
 
         Alas::Renderer::EndScene();
 
@@ -466,7 +467,35 @@ public:
 
     void OnEvent(Alas::Event& event) override
     {
-    
+        
+    }
+
+    bool GetEntityUnderCursor(Alas::Entity& entity)
+    {
+        auto[mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+		my = viewportSize.y - my;
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		{
+			uint32_t id = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+            auto entityMap = _scene->GetEntityMap();
+            if (entityMap.find(id) == entityMap.end())
+            {
+                ALAS_CLIENT_WARN(
+                    "Hovered entity with id {0} does not exist",
+                    id);
+                return false;
+            }
+            entity = entityMap[id];
+            return true;
+		}
+
+        return false;
     }
 
     private:
@@ -506,6 +535,11 @@ public:
         bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_ViewportBounds[2];
+
+        Alas::Entity _selectedEntity;
+        bool _entitySelected = false;
+        Alas::Entity _hoveredEntity;
+        bool _entityHovered = false;
 };
 
 class Sandbox : public Alas::Application
