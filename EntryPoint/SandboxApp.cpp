@@ -483,16 +483,7 @@ public:
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
 		{
 			uint32_t id = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            auto entityMap = _scene->GetEntityMap();
-            if (entityMap.find(id) == entityMap.end())
-            {
-                ALAS_CLIENT_WARN(
-                    "Hovered entity with id {0} does not exist",
-                    id);
-                return false;
-            }
-            entity = entityMap[id];
-            return true;
+            return _scene->GetEntityByIdIfExists(id, entity);
 		}
 
         return false;

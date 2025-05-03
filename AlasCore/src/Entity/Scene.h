@@ -3,9 +3,8 @@
 #include <entt.hpp>
 #include <glm.hpp>
 
-struct cpSpace;
-struct cpBody;
-struct cpShape;
+
+#include <chipmunk/chipmunk.h>
 
 namespace Alas {
 
@@ -20,10 +19,16 @@ namespace Alas {
 
         Entity CreateEntity(const std::string name = std::string());
         Entity CreateEntityWithId(const std::string name, UID id);
+        bool GetEntityByIdIfExists(UID id, Entity& resultEntity);
+
         void DeleteEntityWithId(UID id);
         void DeleteEntity(Entity& entity);
         
-        void Physics2DInit();
+        void GameLoopInit();
+
+        static cpBool BeginCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
+        static void EndCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
+    
         void Physics2DUpdate();
         void Physics2DStop();
         void RuntimeUpdate();
@@ -39,7 +44,7 @@ namespace Alas {
         glm::vec2 _gravity = glm::vec2(0.0f, -9.81f);
         std::string Name = "Scene";
     private:
-
+        static Scene* _gameLoopScene;
         entt::registry _entityRegistry;
         std::map<UID, Entity> _entityMap;
 

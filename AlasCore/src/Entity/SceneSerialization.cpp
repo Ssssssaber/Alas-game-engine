@@ -258,7 +258,7 @@ namespace Alas
     Shared<Scene> SceneSerialization::DeserializeScene(const std::string& filepath)
     {
         ALAS_PROFILE_FUNCTION();
-        YAML::Node sceneNode = YAML::LoadFile(filepath);
+        YAML::Node sceneNode;
         Shared<Scene> scene;
         scene.reset(new Scene());
 

@@ -15,7 +15,15 @@ namespace Alas
         _scene.reset(new Scene());
         CopyScene(sceneRef);
         _scene->BOX_PHYSICS_SCALE = sceneRef->BOX_PHYSICS_SCALE;
-        _scene->Physics2DInit();
+        _scene->GameLoopInit();
+
+        _window.reset(Alas::Window::Create());
+        _window->SetEventCallback(
+            std::bind(&GameLoop::OnEvent, this, std::placeholders::_1)
+        );
+        _window->SetVSync(false);
+
+        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
 
     }
 
@@ -125,13 +133,7 @@ namespace Alas
     void GameLoop::Init()
     {
         ALAS_PROFILE_FUNCTION();
-        _window.reset(Alas::Window::Create());
-        _window->SetEventCallback(
-            std::bind(&GameLoop::OnEvent, this, std::placeholders::_1)
-        );
-        _window->SetVSync(false);
-
-        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
+        
         // _camera->SetPosition({0.0f, 1.0f, 0.0f});
     }
 

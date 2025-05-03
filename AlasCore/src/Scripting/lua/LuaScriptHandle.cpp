@@ -96,4 +96,39 @@ namespace Alas
         auto& sprite = _entity->GetComponent<SpriteComponent>();
         sprite.Color = glm::vec4(new_sprite->color.x, new_sprite->color.y, new_sprite->color.z, new_sprite->color.w);
     }
+
+    void LuaScriptHandle::BindBeginCollisionFunction(const char* functionName)
+    {
+        if (!_entity->HasComponent<LuaScriptComponent>()) return; // could be unnecessary
+        
+        auto& luaHandle = _entity->GetComponent<LuaScriptComponent>();
+        luaHandle._beginCollisionFunctionName = functionName;
+        // luaHandle._endCollisionFunctionName;
+    }
+
+    void LuaScriptHandle::UnbindBeginCollisionFunction()
+    {
+        if (!_entity->HasComponent<LuaScriptComponent>()) return; // could be unnecessary
+        
+        auto& luaHandle = _entity->GetComponent<LuaScriptComponent>();
+        luaHandle._beginCollisionFunctionName = LUA_SCRIPT_NO_COLLISION_FUNC;
+        // luaHandle._endCollisionFunctionName;
+    }
+
+    void LuaScriptHandle::BindEndCollisionFunction(const char* functionName)
+    {
+        if (!_entity->HasComponent<LuaScriptComponent>()) return; // could be unnecessary
+        
+        auto& luaHandle = _entity->GetComponent<LuaScriptComponent>();
+        luaHandle._endCollisionFunctionName = functionName;
+    }
+
+    void LuaScriptHandle::UnbindEndCollisionFunction()
+    {
+        if (!_entity->HasComponent<LuaScriptComponent>()) return; // could be unnecessary
+        
+        auto& luaHandle = _entity->GetComponent<LuaScriptComponent>();
+        luaHandle._endCollisionFunctionName = LUA_SCRIPT_NO_COLLISION_FUNC;
+        // luaHandle._endCollisionFunctionName;
+    }
 } // namespace Alas

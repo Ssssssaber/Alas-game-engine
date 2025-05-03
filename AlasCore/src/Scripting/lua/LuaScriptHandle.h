@@ -8,6 +8,8 @@ namespace Alas
 
     class LuaScriptHandle
     {
+        friend class LuaScriptComponent;
+
     public:
         LuaScriptHandle() = default;
         LuaScriptHandle(const LuaScriptHandle& other) = default;
@@ -24,6 +26,12 @@ namespace Alas
 
         sprite* GetSprite();
         void SetSprite(sprite* new_sprite);
+
+        void BindBeginCollisionFunction(const char* functionName);
+        void UnbindBeginCollisionFunction();
+
+        void BindEndCollisionFunction(const char* functionName);
+        void UnbindEndCollisionFunction();
     
     private:
         Shared<Entity> _entity;

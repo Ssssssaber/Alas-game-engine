@@ -1,6 +1,5 @@
 #include "Scene.h"
 
-#include <chipmunk/chipmunk.h>
 
 #include "Core/Time.h"
 
@@ -13,6 +12,8 @@
 
 namespace Alas
 {
+    Scene* Scene::_gameLoopScene;
+    
     Entity Scene::CreateEntity(const std::string name)
     {
         UID id = GetUniqueId();
@@ -32,6 +33,19 @@ namespace Alas
 		return entity;
     }
 
+    bool Scene::GetEntityByIdIfExists(UID uid, Entity& resultEntity)
+    {
+        if (_entityMap.find(uid) == _entityMap.end())
+        {
+            ALAS_CORE_WARN(
+                "Entity with id {0} does not exist",
+                uid);
+            return false;
+        }
+        resultEntity = _entityMap[uid];
+        return true;
+    }
+
     void Scene::DeleteEntityWithId(UID id)
     {
         Entity entity = _entityMap[id];
@@ -44,14 +58,51 @@ namespace Alas
 		_entityRegistry.destroy(entity._entityHandle);
     }
 
-    static cpBool CollisionInfoHandler(cpArbiter *arb, cpSpace *space, void *data){
-        ALAS_CORE_INFO("Collision");
+    struct CollisionData {
+        UID uid;
+    };
+
+    static cpCollisionType BaseCollisionType;
+
+    cpBool Scene::BeginCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data) {
+        CollisionData* collisionData = (struct CollisionData*)(data);
+        
+        Entity entity;
+        if (!_gameLoopScene->GetEntityByIdIfExists(collisionData->uid, entity)) return cpFalse;
+        
+        if (entity.HasComponent<LuaScriptComponent>())
+        {
+            auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
+            if (luaHandle._beginCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
+                ScriptingEngine::AddBeginCollisionUpdate(collisionData->uid);
+        }
         return cpTrue;
     }
 
-    void Scene::Physics2DInit()
+    void Scene::EndCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data) {
+        CollisionData* collisionData = (struct CollisionData*)(data);
+
+        Entity entity;
+        if (!_gameLoopScene->GetEntityByIdIfExists(collisionData->uid, entity)) return;
+        
+        if (entity.HasComponent<LuaScriptComponent>())
+        {
+            auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
+            if (luaHandle._endCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
+                ScriptingEngine::AddEndCollisionUpdate(collisionData->uid);
+        }
+    }    
+
+    void Scene::GameLoopInit()
     {
         ALAS_PROFILE_FUNCTION();
+
+        _gameLoopScene = this;
+
+        // init scripting engine
+        ScriptingEngine::InitGameLoop();
+
+        // init physics system
         _physicsSpace = cpSpaceNew();
         cpSpaceSetGravity(_physicsSpace, {_gravity.x, _gravity.y});
 
@@ -73,6 +124,12 @@ namespace Alas
                             auto& box = entity.GetComponent<BoxCollider2D>();
                             cpFloat moment = cpMomentForBox(rigidBody.Mass, box.Size.x * transform.Scale.x, box.Size.y * transform.Scale.y);
                             physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNew(rigidBody.Mass, moment));
+                            cpCollisionHandler* handler = cpSpaceAddWildcardHandler(_physicsSpace, BaseCollisionType);
+                            handler->beginFunc = BeginCollisionBaseFunction;
+                            handler->separateFunc = EndCollisionBaseFunction;
+                            CollisionData* data = new CollisionData();
+                            data->uid = entity.GetUID();
+                            handler->userData = data;
                         }
                         else
                         {
@@ -102,7 +159,8 @@ namespace Alas
                         box.Size.x * transform.Scale.x / BOX_PHYSICS_SCALE,
                         box.Size.y * transform.Scale.y / BOX_PHYSICS_SCALE,
                         0));
-
+                    if (rigidBody.Type == RigidBody2D::BodyType::Dynamic)
+                        cpShapeSetCollisionType(bodyShape, BaseCollisionType); 
                     // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
                 }
 
@@ -186,6 +244,8 @@ namespace Alas
             cpShapeFree(idAndShape.second);
         }
         cpSpaceFree(_physicsSpace);
+
+        _gameLoopScene = nullptr;
     }
 
     void Scene::RuntimeUpdate()

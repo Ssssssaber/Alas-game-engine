@@ -41,6 +41,7 @@
 
 #define LUA_SCRIPT_C "Lua script"
 #define LUA_SCRIPT_C_FILE "Lua script file"
+#define LUA_SCRIPT_NO_COLLISION_FUNC "None"
 
 #define OVERLAY_TEXT_C "Overlay Text"
 #define OVERLAY_TEXT_C_SCREEN_POSITION "Screen Position"
@@ -124,6 +125,10 @@ namespace Alas
 		LuaScriptComponent(const LuaScriptComponent&) = default;
 		LuaScriptComponent(const std::string& filepath)
 			: Filepath(filepath) {}
+
+    // private:
+        std::string _beginCollisionFunctionName = LUA_SCRIPT_NO_COLLISION_FUNC;
+        std::string _endCollisionFunctionName = LUA_SCRIPT_NO_COLLISION_FUNC;
     };
 
     struct SpriteComponent

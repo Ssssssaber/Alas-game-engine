@@ -79,6 +79,32 @@ function rigid_body_test(delta_time)
     end
 end
 
+function collision_start()
+    print("COLLISION START")
+    -- UnbindBeginCollisionFunction()
+    rigid_body = GetRigidBody()
+    -- print(transform.rotation)
+    if (rigid_body) then
+        rigid_body.velocity.x = 50
+        rigid_body.velocity.y = 10
+        SetRigidBody(rigid_body)
+    else
+        print("No rigid_body component")
+    end
+end
+
+function collision_end()
+    print("COLLISION END")
+    -- UnbindEndCollisionFunction()
+end
+
+function OnCreate()
+    BindBeginCollisionFunction("collision_start")
+    print("begin collision added")
+    BindEndCollisionFunction("collision_end")
+    print("end collision added")
+end
+
 function Update()
     delta_time = GetDeltaTime()
     

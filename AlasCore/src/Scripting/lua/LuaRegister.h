@@ -43,6 +43,12 @@ namespace Alas
 
         lua.set_function("GetSprite", &LuaScriptHandle::GetSprite, &entity.GetComponent<LuaScriptComponent>().Handle);
         lua.set_function("SetSprite", &LuaScriptHandle::SetSprite, &entity.GetComponent<LuaScriptComponent>().Handle);
+
+        lua.set_function("BindBeginCollisionFunction", &LuaScriptHandle::BindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
+        lua.set_function("UnbindBeginCollisionFunction", &LuaScriptHandle::UnbindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
+
+        lua.set_function("BindEndCollisionFunction", &LuaScriptHandle::BindEndCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
+        lua.set_function("UnbindEndCollisionFunction", &LuaScriptHandle::UnbindEndCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
     }
 
     static void S_RisterBasicFunctionsForLuaState(sol::state& luaState)
