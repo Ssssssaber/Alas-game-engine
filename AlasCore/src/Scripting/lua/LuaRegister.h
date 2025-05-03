@@ -44,6 +44,12 @@ namespace Alas
         lua.set_function("GetSprite", &LuaScriptHandle::GetSprite, &entity.GetComponent<LuaScriptComponent>().Handle);
         lua.set_function("SetSprite", &LuaScriptHandle::SetSprite, &entity.GetComponent<LuaScriptComponent>().Handle);
 
+        lua.set_function("GetWorldspaceText", &LuaScriptHandle::GetWorldspaceText, &entity.GetComponent<LuaScriptComponent>().Handle);
+        lua.set_function("SetWorldspaceText", &LuaScriptHandle::SetWorldspaceText, &entity.GetComponent<LuaScriptComponent>().Handle);
+
+        lua.set_function("GetOverlayText", &LuaScriptHandle::GetOverlayText, &entity.GetComponent<LuaScriptComponent>().Handle);
+        lua.set_function("SetOverlayText", &LuaScriptHandle::SetOverlayText, &entity.GetComponent<LuaScriptComponent>().Handle);
+
         lua.set_function("BindBeginCollisionFunction", &LuaScriptHandle::BindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
         lua.set_function("UnbindBeginCollisionFunction", &LuaScriptHandle::UnbindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
 
@@ -105,6 +111,24 @@ namespace Alas
         luaState.new_usertype<sprite>("sprite",
             sol::constructors<sprite()>(),
             "color", &sprite::color
+        );
+
+        luaState.new_usertype<worldspace_text>("worldspace_text",
+            sol::constructors<worldspace_text()>(),
+            "offset", &worldspace_text::offset,
+            "rotation", &worldspace_text::rotation,
+            "scale", &worldspace_text::scale,
+            "display_text", &worldspace_text::display_text,
+            "color", &worldspace_text::color
+        );
+
+        luaState.new_usertype<overlay_text>("overlay_text",
+            sol::constructors<overlay_text()>(),
+            "screen_position", &overlay_text::screen_position,
+            "rotation", &overlay_text::rotation,
+            "scale", &overlay_text::scale,
+            "display_text", &overlay_text::display_text,
+            "color", &overlay_text::color
         );
     
         luaState.new_enum<ALAS_Scancode>("KeyCode", {

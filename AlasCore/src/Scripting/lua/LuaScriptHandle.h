@@ -27,6 +27,12 @@ namespace Alas
         sprite* GetSprite();
         void SetSprite(sprite* new_sprite);
 
+        worldspace_text* GetWorldspaceText();
+        void SetWorldspaceText(worldspace_text* new_text);
+
+        overlay_text* GetOverlayText();
+        void SetOverlayText(overlay_text* new_text);
+
         void BindBeginCollisionFunction(const char* functionName);
         void UnbindBeginCollisionFunction();
 

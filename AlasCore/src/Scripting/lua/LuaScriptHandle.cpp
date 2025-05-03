@@ -97,6 +97,64 @@ namespace Alas
         sprite.Color = glm::vec4(new_sprite->color.x, new_sprite->color.y, new_sprite->color.z, new_sprite->color.w);
     }
 
+    worldspace_text* LuaScriptHandle::GetWorldspaceText()
+    {
+        if (!_entity->HasComponent<WorldSpaceText>()) 
+        {
+            return nullptr;
+        }
+
+        auto& worldSpaceText = _entity->GetComponent<WorldSpaceText>();
+        return new worldspace_text{ 
+            {worldSpaceText.Offset.x, worldSpaceText.Offset.y},
+            worldSpaceText.Rotation,
+            {worldSpaceText.Scale.x, worldSpaceText.Scale.y},
+            worldSpaceText.DisplayText,
+            {worldSpaceText.Color.x, worldSpaceText.Color.y, worldSpaceText.Color.z, worldSpaceText.Color.w},
+        };
+    }
+
+    void LuaScriptHandle::SetWorldspaceText(worldspace_text* new_text)
+    {
+        if (!_entity->HasComponent<WorldSpaceText>()) return;
+        
+        auto& worldSpaceText = _entity->GetComponent<WorldSpaceText>();
+        worldSpaceText.Offset = {new_text->offset.x, new_text->offset.y};
+        worldSpaceText.Rotation = new_text->rotation;
+        worldSpaceText.Scale = {new_text->scale.x, new_text->scale.y};
+        worldSpaceText.DisplayText = new_text->display_text;
+        worldSpaceText.Color = {new_text->color.x, new_text->color.y, new_text->color.z, new_text->color.w};
+    }
+
+    overlay_text* LuaScriptHandle::GetOverlayText()
+    {
+        if (!_entity->HasComponent<OverlayText>()) 
+        {
+            return nullptr;
+        }
+
+        auto& overlayText = _entity->GetComponent<OverlayText>();
+        return new overlay_text{ 
+            {overlayText.ScreenPosition.x, overlayText.ScreenPosition.y},
+            overlayText.Rotation,
+            {overlayText.Scale.x, overlayText.Scale.y},
+            overlayText.DisplayText,
+            {overlayText.Color.x, overlayText.Color.y, overlayText.Color.z, overlayText.Color.w},
+        };
+    }
+
+    void LuaScriptHandle::SetOverlayText(overlay_text* new_text)
+    {
+        if (!_entity->HasComponent<OverlayText>()) return;
+        
+        auto& overlayText = _entity->GetComponent<OverlayText>();
+        overlayText.ScreenPosition = {new_text->screen_position.x, new_text->screen_position.y};
+        overlayText.Rotation = new_text->rotation;
+        overlayText.Scale = {new_text->scale.x, new_text->scale.y};
+        overlayText.DisplayText = new_text->display_text;
+        overlayText.Color = {new_text->color.x, new_text->color.y, new_text->color.z, new_text->color.w};
+    }
+
     void LuaScriptHandle::BindBeginCollisionFunction(const char* functionName)
     {
         if (!_entity->HasComponent<LuaScriptComponent>()) return; // could be unnecessary

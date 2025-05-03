@@ -1,11 +1,12 @@
 * Processing multiple lua scripts effectively
+* Rework lua scripting api (https://gamedev.stackexchange.com/questions/151089/binding-c-templated-functions-to-lua)
 * Resource manager UI for attaching scripts, shaders and textures to entity
 * Worldspace text invalid movement
 * Circle colliders instead of quads for some reason
-* Circle collider callbacks
+<!-- * Circle collider callbacks -->
 
-* Framebuffer implementation to render scene into imgui subwindow
-    Make it compatible with gameloop window
+<!-- * Framebuffer implementation to render scene into imgui subwindow
+    Make it compatible with gameloop window -->
 
 Issues:
-* Camera view crops everything greater than 1280x720
+* Camera view crops everything greater than 1280x720 (somewhat fixed)

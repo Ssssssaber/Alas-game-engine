@@ -82,6 +82,16 @@ end
 function collision_start()
     print("COLLISION START")
     -- UnbindBeginCollisionFunction()
+
+    worldspace_text = GetWorldspaceText()
+
+    if (worldspace_text) then
+        worldspace_text.display_text = "COLLISION START"
+        SetWorldspaceText(worldspace_text)
+    else
+        print("No worldspace_text compoent")
+    end
+
     rigid_body = GetRigidBody()
     -- print(transform.rotation)
     if (rigid_body) then
@@ -95,6 +105,24 @@ end
 
 function collision_end()
     print("COLLISION END")
+
+    worldspace_text = GetWorldspaceText()
+
+    if (worldspace_text) then
+        worldspace_text.display_text = "COLLISION END"
+        SetWorldspaceText(worldspace_text)
+    else
+        print("No worldspace_text compoent")
+    end
+
+    overlay_text = GetOverlayText()
+
+    if (overlay_text) then
+        overlay_text.display_text = "COLLISION DETECTED"
+        SetOverlayText(overlay_text)
+    else
+        print("No overlay_text compoent")
+    end
     -- UnbindEndCollisionFunction()
 end
 

@@ -48,4 +48,21 @@ namespace Alas
     {
         vec4 color;
     };
+
+    struct worldspace_text
+    {
+        vec2 offset;
+        float rotation;
+        vec2 scale;
+        std::string display_text;
+        vec4 color;
+    };
+    struct overlay_text
+    {
+        vec2 screen_position;
+        float rotation;
+        vec2 scale;
+        std::string display_text;
+        vec4 color;
+    };
 } // namespace Alas
