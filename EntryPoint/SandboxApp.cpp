@@ -187,12 +187,8 @@ public:
         
         if (Alas::Input::IsMouseButtonPressed(ALAS_MOUSE_BUTTON_LEFT))
         {
-            bool currentSelected = _entitySelected;
             _entitySelected = GetEntityUnderCursor(_selectedEntity);
-            if (currentSelected != _entitySelected && _entitySelected)
-            {
-                // make imgui select tree node
-            }
+
         }
         
         if (_entitySelected)
@@ -301,166 +297,25 @@ public:
         {
             Alas::Entity ent = it->second;
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
-
-            static int selectedComponentId = 0; // Here we store our selection data as an index.
-            if (ImGui::TreeNode(str.c_str()))
+            
+            static Alas::UID selectedComponentId = 0; // Here we store our selection data as an index.
+            if (_entitySelected && ent.GetUID() == _selectedEntity.GetUID())
             {
-                {                        
-                    // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
-                    const char* combo_preview_value = _componentsStr[selectedComponentId];
-
-                    if (ImGui::BeginCombo("Component to add", combo_preview_value))
-                    {
-                        for (int n = 0; n < IM_ARRAYSIZE(_componentsStr); n++)
-                        {
-                            const bool is_selected = (selectedComponentId == n);
-                            if (ImGui::Selectable(_componentsStr[n], is_selected))
-                            {
-                                selectedComponentId = n;
-                            }
-                                
-                            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                            if (is_selected)
-                                ImGui::SetItemDefaultFocus();
-                        }
-                        ImGui::EndCombo();
-                    }
-
-                    ImGui::Spacing();
-                    
-                }
-                
-                if (ImGui::Button("Add Component"))
-                {
-                    OnAddComponentButton(ent, selectedComponentId);
-                }
-
-                ImGui::LabelText(ID_C, std::to_string((ent.GetUID())).c_str());
-
-                ImGui::InputText(TAG_C, &ent.GetComponent<Alas::TagComponent>().Tag);
-
-                if(ImGui::TreeNode(TRANSFORM_C))
-                {
-                    auto& transform = ent.GetComponent<Alas::Transform>();
-                    ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), BASE_DRAG_STEP);
-                    ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation), BASE_DRAG_STEP);
-                    ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), BASE_DRAG_STEP);
-                    // if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::Transform>();
+                if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Selected))
+                {   
+                    ImGuiRenderEntityComponents(ent, selectedComponentId);
                     ImGui::TreePop();
                 }
-
-                if (ent.HasComponent<Alas::SpriteComponent>())
-                if(ImGui::TreeNode(SPRITE_C))
-                {
-                    auto& sprite = ent.GetComponent<Alas::SpriteComponent>();
-                    ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID()).c_str());
-                    ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID()).c_str());
-                    ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
-                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
-                    ImGui::TreePop();
-                }
-
-                if (ent.HasComponent<Alas::LuaScriptComponent>())
-                if(ImGui::TreeNode(LUA_SCRIPT_C))
-                {
-                    auto& lua = ent.GetComponent<Alas::LuaScriptComponent>();
-                    ImGui::LabelText(LUA_SCRIPT_C_FILE, (lua.Filepath).c_str());
-                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::LuaScriptComponent>();
-                    ImGui::TreePop();
-                }
-
-                if (ent.HasComponent<Alas::RigidBody2D>())
-                if(ImGui::TreeNode(RIGID_BODY_2D_C))
-                {
-                    auto& rigidBody2D = ent.GetComponent<Alas::RigidBody2D>();
-                                        
-                    {
-                                                
-                        const char* typesStr[] = {
-                            RIGID_BODY_2D_TYPE_DYNAMIC_STR,
-                            RIGID_BODY_2D_TYPE_KINEMATIC_STR,
-                            RIGID_BODY_2D_TYPE_STATIC_STR
-                        };
-
-                        const Alas::RigidBody2D::BodyType types[] = {
-                            Alas::RigidBody2D::BodyType::Dynamic,
-                            Alas::RigidBody2D::BodyType::Kinematic,
-                            Alas::RigidBody2D::BodyType::Static,
-                        };
-
-                        static int item_selected_idx = 0; // Here we store our selection data as an index.
-
-                        // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
-                        const char* combo_preview_value = typesStr[item_selected_idx];
-
-                        if (ImGui::BeginCombo("Type", combo_preview_value))
-                        {
-                            for (int n = 0; n < IM_ARRAYSIZE(typesStr); n++)
-                            {
-                                const bool is_selected = (item_selected_idx == n);
-                                if (ImGui::Selectable(typesStr[n], is_selected))
-                                {
-                                    item_selected_idx = n;
-                                    rigidBody2D.Type = types[item_selected_idx];
-                                }
-                                    
-                                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                                if (is_selected)
-                                    ImGui::SetItemDefaultFocus();
-                            }
-                            ImGui::EndCombo();
-                        }
-                        ImGui::Spacing();
-                    }
-                    
-                    ImGui::DragFloat(RIGID_BODY_2D_C_MASS, &rigidBody2D.Mass, BASE_DRAG_STEP);
-                    ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, BASE_DRAG_STEP);
-
-                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::RigidBody2D>();
-                    ImGui::TreePop();
-                }
-
-                if (ent.HasComponent<Alas::BoxCollider2D>())
-                if(ImGui::TreeNode(BOX_COLLIDER_2D_C))
-                {
-                    auto& boxCollider2D = ent.GetComponent<Alas::BoxCollider2D>();
-                    ImGui::DragFloat2(BOX_COLLIDER_2D_C_OFFSET, glm::value_ptr(boxCollider2D.Offset), BASE_DRAG_STEP);
-                    ImGui::DragFloat2(BOX_COLLIDER_2D_C_SIZE, glm::value_ptr(boxCollider2D.Size), BASE_DRAG_STEP);
-                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::BoxCollider2D>();
-                    ImGui::TreePop();
-                }
-
-                if (ent.HasComponent<Alas::OverlayText>())
-                if(ImGui::TreeNode(OVERLAY_TEXT_C))
-                {
-                    auto& overlayText = ent.GetComponent<Alas::OverlayText>();
-                    ImGui::InputText(OVERLAY_TEXT_C_DISPLAY_TEXT, &overlayText.DisplayText);
-                    ImGui::DragFloat2(OVERLAY_TEXT_C_SCREEN_POSITION, glm::value_ptr(overlayText.ScreenPosition), BASE_DRAG_STEP);
-                    ImGui::DragFloat(OVERLAY_TEXT_C_ROTATION, &overlayText.Rotation, BASE_DRAG_STEP);
-                    ImGui::DragFloat2(OVERLAY_TEXT_C_SCALE, glm::value_ptr(overlayText.Scale), BASE_DRAG_STEP);
-                    ImGui::DragFloat4(OVERLAY_TEXT_C_COLOR, glm::value_ptr(overlayText.Color), BASE_DRAG_STEP);
-                    
-                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::OverlayText>();
-                    ImGui::TreePop();
-                }
-
-                
-                if (ent.HasComponent<Alas::WorldSpaceText>())
-                if(ImGui::TreeNode(WORLD_SPACE_TEXT_C))
-                {
-                    auto& worldSpaceText = ent.GetComponent<Alas::WorldSpaceText>();
-                    ImGui::InputText(WORLD_SPACE_TEXT_C_DISPLAY_TEXT, &worldSpaceText.DisplayText);
-                    ImGui::DragFloat2(WORLD_SPACE_TEXT_C_OFFSET, glm::value_ptr(worldSpaceText.Offset), BASE_DRAG_STEP);
-                    ImGui::DragFloat(WORLD_SPACE_TEXT_C_ROTATION, &worldSpaceText.Rotation, BASE_DRAG_STEP);
-                    ImGui::DragFloat2(WORLD_SPACE_TEXT_C_SCALE, glm::value_ptr(worldSpaceText.Scale), BASE_DRAG_STEP);
-                    ImGui::DragFloat4(WORLD_SPACE_TEXT_C_COLOR, glm::value_ptr(worldSpaceText.Color), BASE_DRAG_STEP);
-                    
-                    if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::WorldSpaceText>();
-                    ImGui::TreePop();
-                }
-
-                ImGui::TreePop();
             }
+            else
+            {
+                if (ImGui::TreeNodeEx(str.c_str()))
+                {
+                    ImGuiRenderEntityComponents(ent, selectedComponentId);
+                    ImGui::TreePop();
+                }    
+            }
+
         }
 
         ImGui::End();
@@ -484,6 +339,163 @@ public:
 		ImGui::Image(textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, {0, 1}, {1, 0});
 
         ImGui::End();
+    }
+
+    void ImGuiRenderEntityComponents(Alas::Entity ent, Alas::UID selectedComponentId)
+    {
+        {                        
+            // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
+            const char* combo_preview_value = _componentsStr[selectedComponentId];
+
+            if (ImGui::BeginCombo("Component to add", combo_preview_value))
+            {
+                for (int n = 0; n < IM_ARRAYSIZE(_componentsStr); n++)
+                {
+                    const bool is_selected = (selectedComponentId == n);
+                    if (ImGui::Selectable(_componentsStr[n], is_selected))
+                    {
+                        selectedComponentId = n;
+                    }
+                        
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+
+            ImGui::Spacing();
+            
+        }
+        
+        if (ImGui::Button("Add Component"))
+        {
+            OnAddComponentButton(ent, selectedComponentId);
+        }
+
+        ImGui::LabelText(ID_C, std::to_string((ent.GetUID())).c_str());
+
+        ImGui::InputText(TAG_C, &ent.GetComponent<Alas::TagComponent>().Tag);
+
+        if(ImGui::TreeNode(TRANSFORM_C))
+        {
+            auto& transform = ent.GetComponent<Alas::Transform>();
+            ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), BASE_DRAG_STEP);
+            ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation), BASE_DRAG_STEP);
+            ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), BASE_DRAG_STEP);
+            // if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::Transform>();
+            ImGui::TreePop();
+        }
+
+        if (ent.HasComponent<Alas::SpriteComponent>())
+        if(ImGui::TreeNode(SPRITE_C))
+        {
+            auto& sprite = ent.GetComponent<Alas::SpriteComponent>();
+            ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID()).c_str());
+            ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID()).c_str());
+            ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
+            ImGui::TreePop();
+        }
+
+        if (ent.HasComponent<Alas::LuaScriptComponent>())
+        if(ImGui::TreeNode(LUA_SCRIPT_C))
+        {
+            auto& lua = ent.GetComponent<Alas::LuaScriptComponent>();
+            ImGui::LabelText(LUA_SCRIPT_C_FILE, (lua.Filepath).c_str());
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::LuaScriptComponent>();
+            ImGui::TreePop();
+        }
+
+        if (ent.HasComponent<Alas::RigidBody2D>())
+        if(ImGui::TreeNode(RIGID_BODY_2D_C))
+        {
+            auto& rigidBody2D = ent.GetComponent<Alas::RigidBody2D>();
+                                
+            {
+                                        
+                const char* typesStr[] = {
+                    RIGID_BODY_2D_TYPE_DYNAMIC_STR,
+                    RIGID_BODY_2D_TYPE_KINEMATIC_STR,
+                    RIGID_BODY_2D_TYPE_STATIC_STR
+                };
+
+                const Alas::RigidBody2D::BodyType types[] = {
+                    Alas::RigidBody2D::BodyType::Dynamic,
+                    Alas::RigidBody2D::BodyType::Kinematic,
+                    Alas::RigidBody2D::BodyType::Static,
+                };
+
+                static int item_selected_idx = 0; // Here we store our selection data as an index.
+
+                // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
+                const char* combo_preview_value = typesStr[item_selected_idx];
+
+                if (ImGui::BeginCombo("Type", combo_preview_value))
+                {
+                    for (int n = 0; n < IM_ARRAYSIZE(typesStr); n++)
+                    {
+                        const bool is_selected = (item_selected_idx == n);
+                        if (ImGui::Selectable(typesStr[n], is_selected))
+                        {
+                            item_selected_idx = n;
+                            rigidBody2D.Type = types[item_selected_idx];
+                        }
+                            
+                        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::Spacing();
+            }
+            
+            ImGui::DragFloat(RIGID_BODY_2D_C_MASS, &rigidBody2D.Mass, BASE_DRAG_STEP);
+            ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, BASE_DRAG_STEP);
+
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::RigidBody2D>();
+            ImGui::TreePop();
+        }
+
+        if (ent.HasComponent<Alas::BoxCollider2D>())
+        if(ImGui::TreeNode(BOX_COLLIDER_2D_C))
+        {
+            auto& boxCollider2D = ent.GetComponent<Alas::BoxCollider2D>();
+            ImGui::DragFloat2(BOX_COLLIDER_2D_C_OFFSET, glm::value_ptr(boxCollider2D.Offset), BASE_DRAG_STEP);
+            ImGui::DragFloat2(BOX_COLLIDER_2D_C_SIZE, glm::value_ptr(boxCollider2D.Size), BASE_DRAG_STEP);
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::BoxCollider2D>();
+            ImGui::TreePop();
+        }
+
+        if (ent.HasComponent<Alas::OverlayText>())
+        if(ImGui::TreeNode(OVERLAY_TEXT_C))
+        {
+            auto& overlayText = ent.GetComponent<Alas::OverlayText>();
+            ImGui::InputText(OVERLAY_TEXT_C_DISPLAY_TEXT, &overlayText.DisplayText);
+            ImGui::DragFloat2(OVERLAY_TEXT_C_SCREEN_POSITION, glm::value_ptr(overlayText.ScreenPosition), BASE_DRAG_STEP);
+            ImGui::DragFloat(OVERLAY_TEXT_C_ROTATION, &overlayText.Rotation, BASE_DRAG_STEP);
+            ImGui::DragFloat2(OVERLAY_TEXT_C_SCALE, glm::value_ptr(overlayText.Scale), BASE_DRAG_STEP);
+            ImGui::DragFloat4(OVERLAY_TEXT_C_COLOR, glm::value_ptr(overlayText.Color), BASE_DRAG_STEP);
+            
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::OverlayText>();
+            ImGui::TreePop();
+        }
+
+        
+        if (ent.HasComponent<Alas::WorldSpaceText>())
+        if(ImGui::TreeNode(WORLD_SPACE_TEXT_C))
+        {
+            auto& worldSpaceText = ent.GetComponent<Alas::WorldSpaceText>();
+            ImGui::InputText(WORLD_SPACE_TEXT_C_DISPLAY_TEXT, &worldSpaceText.DisplayText);
+            ImGui::DragFloat2(WORLD_SPACE_TEXT_C_OFFSET, glm::value_ptr(worldSpaceText.Offset), BASE_DRAG_STEP);
+            ImGui::DragFloat(WORLD_SPACE_TEXT_C_ROTATION, &worldSpaceText.Rotation, BASE_DRAG_STEP);
+            ImGui::DragFloat2(WORLD_SPACE_TEXT_C_SCALE, glm::value_ptr(worldSpaceText.Scale), BASE_DRAG_STEP);
+            ImGui::DragFloat4(WORLD_SPACE_TEXT_C_COLOR, glm::value_ptr(worldSpaceText.Color), BASE_DRAG_STEP);
+            
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::WorldSpaceText>();
+            ImGui::TreePop();
+        }
     }
 
     void OnEvent(Alas::Event& event) override
