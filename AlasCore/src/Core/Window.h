@@ -27,6 +27,8 @@ namespace Alas
         static void SetCurrentWindow(Window& window);
         static const Window& GetCurrentWindow();
         static const Window& GetFocusedWindow();
+
+        static void PollEvents();
         
         virtual void OnUpdate() = 0;
 

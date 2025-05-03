@@ -1,15 +1,13 @@
 #pragma once
-#include <glad/glad.h>
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_opengl.h>
 
 #include "Core/Window.h"
+#include <SDL3/SDL.h>
 struct SDL_Window;
-
 namespace Alas{
 
     class SDLGLWindow : public Window 
     {
+        friend class Window;
     public:
         SDLGLWindow(const WindowParams &params = WindowParams());
         ~SDLGLWindow();
@@ -23,7 +21,7 @@ namespace Alas{
 
         void SetEventCallback(const EventCallbackFunction& callback) override { _params.EventCallback = callback; }
         void SetVSync(bool enabled) override;
-        bool IsVSync() override;    
+        bool IsVSync() override;   
 
     private:
         void Init();
@@ -32,7 +30,7 @@ namespace Alas{
 
         struct SDLParams {
             std::string title;
-            Uint32 windowID;
+            uint32_t windowID;
 
             uint32_t width;
             uint32_t height;
@@ -44,9 +42,9 @@ namespace Alas{
             EventCallbackFunction EventCallback;
 
         } _params;
-        
+
 
         SDL_Window* _window;
-        static SDL_GLContext  _context;
+        
     };
 }

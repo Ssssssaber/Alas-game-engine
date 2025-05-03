@@ -87,6 +87,7 @@ namespace Alas
             }
             _imguiLayer->End();
 
+            Window::PollEvents();
             _window->OnUpdate();
 
             if (!_gameLoop) continue;

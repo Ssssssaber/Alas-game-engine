@@ -1,19 +1,25 @@
 
 
 #include "SDLWindow.h"
+
+#include <glad/glad.h>
+#include <SDL3/SDL_opengl.h>
+#include <imgui_impl_sdl3.h>
+
 #include "Events/Event.h"
-#include <Events/ApplicationEvent.h>
-#include <Events/MouseEvent.h>
-#include <Events/KeyboardEvent.h>
-#include "imgui_impl_sdl3.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/KeyboardEvent.h"
+
 #include "Core/Input.h"
 #include "Core/KeyCodes.h"
 namespace Alas {
 
     static bool s_IsSDLInitialized = false;
     static bool s_IsGLADInitialized = false;
+    std::unordered_map<SDL_WindowID, SDLGLWindow*> s_windows;
 
-    SDL_GLContext SDLGLWindow::_context = nullptr;
+    static SDL_GLContext _context = nullptr;
 
     Window* Window::Create(const WindowParams& params)
     {
@@ -31,6 +37,7 @@ namespace Alas {
 
     SDLGLWindow::~SDLGLWindow()
     {
+        s_windows.erase(_params.windowID);
         ShutDown();
     }
     
@@ -55,13 +62,14 @@ namespace Alas {
         }
         
         _window = SDL_CreateWindow(_params.title.data(), _params.width, _params.height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-        
+
         if (_window == NULL)
         {
             ALAS_CORE_ERROR("Window was not initialized: {0}", SDL_GetError());
             return;
         }
         _params.windowID = SDL_GetWindowID(_window);
+        s_windows[_params.windowID] = this;
 
         if (!s_IsGLADInitialized)
         {
@@ -90,28 +98,32 @@ namespace Alas {
         SDL_DestroyWindow(_window);
     }
 
-    void SDLGLWindow::OnUpdate()
+    void Window::PollEvents()
     {
-        if (SDL_GetKeyboardFocus() == _window) _focusedWindow = this;
+        _focusedWindow = s_windows[SDL_GetWindowID(SDL_GetKeyboardFocus())];
 
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
             ImGui_ImplSDL3_ProcessEvent(&e);
             
-            if (e.window.windowID != _params.windowID) continue;
-            
+            SDLGLWindow* window = s_windows[e.window.windowID];
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED || e.type == SDL_EVENT_QUIT)
             {
                 WindowCloseEvent event;
-                _params.EventCallback(event);
-                ShutDown();
+
+                window->_params.EventCallback(event);
+                window->ShutDown();
                 break;
             }
             else 
             {
-                ProcessEvents(e);
+                window->ProcessEvents(e);
             }
         }
+    }
+
+    void SDLGLWindow::OnUpdate()
+    {
         SDL_PumpEvents();
         SDL_GL_SwapWindow(_window);
     }
