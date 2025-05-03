@@ -1,4 +1,5 @@
 * Processing multiple lua scripts effectively
+* adding new components during runtime with lua scripts
 * Rework lua scripting api (https://gamedev.stackexchange.com/questions/151089/binding-c-templated-functions-to-lua)
 * Resource manager UI for attaching scripts, shaders and textures to entity
 * Worldspace text invalid movement

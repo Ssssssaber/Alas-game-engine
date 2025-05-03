@@ -109,15 +109,16 @@ namespace Alas {
             SDLGLWindow* window = s_windows[e.window.windowID];
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED || e.type == SDL_EVENT_QUIT)
             {
+                if (!window) continue;
+                
                 WindowCloseEvent event;
 
                 window->_params.EventCallback(event);
                 window->ShutDown();
-                break;
             }
             else 
             {
-                window->ProcessEvents(e);
+                if (window) window->ProcessEvents(e);
             }
         }
     }

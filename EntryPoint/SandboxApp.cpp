@@ -159,6 +159,20 @@ public:
             
             _camera->SetPosition(_cameraPos);
             _camera->SetRotation(_cameraRotation);
+
+            // if (_entityHovered && _entitySelected &&
+            //     _hoveredEntity.GetUID() == _selectedEntity.GetUID() &&
+            //     Alas::Input::IsMouseButtonPressed(ALAS_MOUSE_BUTTON_LEFT))
+            // {
+            //     auto& transform = _selectedEntity.GetComponent<Alas::Transform>();
+            //     auto[mx, my] = ImGui::GetMousePos();
+            //     mx -= m_ViewportBounds[0].x;
+            //     my -= m_ViewportBounds[0].y;
+            //     glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+            //     my = viewportSize.y - my;
+            //     transform.Position.x = mx;
+            //     transform.Position.y = mx;
+            // }
         }
         
         Alas::Renderer::BeginScene(_camera);
@@ -168,16 +182,23 @@ public:
         if (_entityHovered)
         {
             auto& transform = _hoveredEntity.GetComponent<Alas::Transform>();
-            Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+            Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 0.8f));
         }
         
         if (Alas::Input::IsMouseButtonPressed(ALAS_MOUSE_BUTTON_LEFT))
+        {
+            bool currentSelected = _entitySelected;
             _entitySelected = GetEntityUnderCursor(_selectedEntity);
+            if (currentSelected != _entitySelected && _entitySelected)
+            {
+                // make imgui select tree node
+            }
+        }
         
         if (_entitySelected)
         {
             auto& transform = _selectedEntity.GetComponent<Alas::Transform>();
-            Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+            Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 0.8f));
         }  
 
         Alas::Renderer::EndScene();
