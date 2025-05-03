@@ -23,6 +23,7 @@ namespace Alas
         OpenGLTextRendering() = default;
         virtual void Init() override;
 
-        virtual void RenderText(const std::string& text, glm::vec3 position, const glm::vec2& scale) override;
+        virtual void RenderOverlayText(const std::string& text, glm::vec3 position, const glm::vec2& scale) override;
+        virtual void RenderWorldspaceText(const std::string& text, const glm::vec2& scale) override;
     };
 } // namespace Alas

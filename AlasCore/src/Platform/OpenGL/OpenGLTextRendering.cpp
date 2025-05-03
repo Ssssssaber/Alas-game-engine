@@ -96,7 +96,7 @@ namespace Alas
         GlCall(glBindVertexArray(0));
     }
 
-    void OpenGLTextRendering::RenderText(const std::string& text, glm::vec3 position, const glm::vec2& scale)
+    void OpenGLTextRendering::RenderOverlayText(const std::string& text, glm::vec3 position, const glm::vec2& scale)
     {
         // activate corresponding render state	
         GlCall(glActiveTexture(GL_TEXTURE0));
@@ -138,5 +138,12 @@ namespace Alas
         }
         GlCall(glBindVertexArray(0));
         GlCall(glBindTexture(GL_TEXTURE_2D, 0));
+    }
+
+    void OpenGLTextRendering::RenderWorldspaceText(const std::string& text, const glm::vec2& scale)
+    {
+        glm::vec3 position = glm::vec3(0.0f);
+        // worldspace position of a text was already taken into account in shader as a uniform
+        RenderOverlayText(text, position, scale);
     }
 } // namespace Alas

@@ -179,7 +179,7 @@ namespace Alas
         );
         _Data.OverlayTextShader->setVec3("textColor", color.x, color.y, color.z);
 
-        _Data.TextRenderer->RenderText(text, {position.x, position.y, 0.0f}, scale);
+        _Data.TextRenderer->RenderOverlayText(text, {position.x, position.y, 0.0f}, scale);
     }
 
     void Renderer::SubmitWorldSpaceText(const std::string& text, const glm::vec3& position, float rotation, const glm::vec2& scale, glm::vec4 color)
@@ -199,7 +199,7 @@ namespace Alas
         
         _Data.WorldSpaceTextShader->setVec4("textColor", color.x, color.y, color.z, color.w);
 
-        _Data.TextRenderer->RenderText(text, position, scale);
+        _Data.TextRenderer->RenderWorldspaceText(text, scale);
         // Alas::Renderer::SubmitWorldSpaceText("not keke is not you", glm::vec3(50.0f), 1.0f, glm::vec2(1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
     }
