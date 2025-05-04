@@ -28,6 +28,7 @@
 #include <memory>
 #include <random>
 
+#define NULL_UID 0
 #define MIN_ID 1
 #define MAX_ID INT32_MAX
 namespace Alas {

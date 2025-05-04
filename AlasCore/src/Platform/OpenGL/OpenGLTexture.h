@@ -5,7 +5,7 @@ namespace Alas
     class OpenGLTexture : public Texture
     {
     public:
-        OpenGLTexture(const std::string& filepath);
+        OpenGLTexture(UID uid, const std::string& filepath);
         ~OpenGLTexture();
 
         

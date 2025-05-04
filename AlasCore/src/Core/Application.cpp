@@ -9,6 +9,8 @@
 
 #include "Scripting/lua/ScriptingEngine.h"
 
+#include "Resources/ResourceManager.h"
+
 namespace Alas
 {
     Application* Application::_instance = nullptr;
@@ -32,6 +34,8 @@ namespace Alas
         Renderer::Init();
 
         ScriptingEngine::Init();
+
+        ResourceManager::UpdateMetaFiles();
     }
 
     Application::~Application() {}

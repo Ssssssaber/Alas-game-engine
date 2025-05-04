@@ -298,7 +298,7 @@ public:
             Alas::Entity ent = it->second;
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
             
-            static Alas::UID selectedComponentId = 0; // Here we store our selection data as an index.
+            static int selectedComponentId = 0; // Here we store our selection data as an index.
             if (_entitySelected && ent.GetUID() == _selectedEntity.GetUID())
             {
                 if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Selected))
@@ -341,7 +341,7 @@ public:
         ImGui::End();
     }
 
-    void ImGuiRenderEntityComponents(Alas::Entity ent, Alas::UID selectedComponentId)
+    void ImGuiRenderEntityComponents(Alas::Entity ent, int& selectedComponentId)
     {
         {                        
             // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
@@ -391,8 +391,8 @@ public:
         if(ImGui::TreeNode(SPRITE_C))
         {
             auto& sprite = ent.GetComponent<Alas::SpriteComponent>();
-            ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID()).c_str());
-            ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID()).c_str());
+            ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepathString(sprite.c_Shader->GetUID()).c_str());
+            ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepathString(sprite.c_Texture->GetUID()).c_str());
             ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
             ImGui::TreePop();

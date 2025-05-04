@@ -165,8 +165,8 @@ namespace Alas
                 
                 out << YAML::BeginMap;
 
-                out << YAML::Key << SPRITE_C_SHADER << YAML::Value << ResourceManager::GetResourceFilepath(sprite.c_Shader->GetUID());
-                out << YAML::Key << SPRITE_C_TEXTURE << YAML::Value << ResourceManager::GetResourceFilepath(sprite.c_Texture->GetUID());
+                out << YAML::Key << SPRITE_C_SHADER << YAML::Value << sprite.c_Shader->GetUID();
+                out << YAML::Key << SPRITE_C_TEXTURE << YAML::Value << sprite.c_Texture->GetUID();
                 out << YAML::Key << SPRITE_C_COLOR << YAML::Value << sprite.Color;
 
                 out << YAML::EndMap;
@@ -276,6 +276,11 @@ namespace Alas
 			ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
 			return scene;
 		}
+        catch (YAML::Exception e)
+        {
+            ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
+			return scene;
+        }
 
         if (!CheckKeyExists(sceneNode, SCENE_NAME, filepath) ||
             !CheckKeyExists(sceneNode, ENTITIES, filepath)) return scene;
@@ -310,27 +315,29 @@ namespace Alas
                 auto& sprite = ent.AddComponent<SpriteComponent>();
 
                 {
-                    const std::string& shaderFilepath = spriteData[SPRITE_C_SHADER].as<std::string>();
-                    UID shaderID = ResourceManager::GetResourceIdByPath(shaderFilepath);
+                    UID shaderID = spriteData[SPRITE_C_SHADER].as<UID>();
+                    Shared<Shader> shader = ResourceManager::IsShaderUsed(shaderID);
                     if (shaderID == 0)
                     {
-                        sprite.c_Shader = Shader::Create(shaderFilepath);
+                        sprite.c_Shader = shader;
                     }
                     else
                     {
-                        sprite.c_Shader = ResourceManager::GetUsedShader(shaderID);
+                        std::string shaderFilepath = ResourceManager::GetResourceFilepathString(shaderID);
+                        sprite.c_Shader = Shader::Create(shaderFilepath);
                     }
                 }
                 {
-                    const std::string& textureFilepath = spriteData[SPRITE_C_TEXTURE].as<std::string>();
-                    UID textureID = ResourceManager::GetResourceIdByPath(textureFilepath);
-                    if (textureID == 0)
+                    UID textureID = spriteData[SPRITE_C_TEXTURE].as<UID>();
+                    Shared<Texture> texture = ResourceManager::IsTextureUsed(textureID);
+                    if (texture)
                     {
-                        sprite.c_Texture = Texture::Create(textureFilepath);
+                        sprite.c_Texture = texture;
                     }
                     else
                     {
-                        sprite.c_Texture = ResourceManager::GetUsedTexture(textureID);
+                        std::string textureFilepath = ResourceManager::GetResourceFilepathString(textureID);
+                        sprite.c_Texture = Texture::Create(textureFilepath);
                     }
                     
                 }

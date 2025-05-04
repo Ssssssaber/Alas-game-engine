@@ -8,7 +8,7 @@ Improvements:
 * Rework lua scripting api (https://gamedev.stackexchange.com/questions/151089/binding-c-templated-functions-to-lua)
 
 Needs to fixed:
-* Worldspace text invalid movement
+<!-- * Worldspace text invalid movement -->
 * Circle colliders instead of quads for some reason
 <!-- * Circle collider callbacks -->
 

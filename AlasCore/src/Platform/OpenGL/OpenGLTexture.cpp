@@ -9,7 +9,7 @@
 
 namespace Alas
 {
-    OpenGLTexture::OpenGLTexture(const std::string& filepath) : Texture()
+    OpenGLTexture::OpenGLTexture(UID uid, const std::string& filepath) : Texture(uid)
     {
         stbi_set_flip_vertically_on_load(1);
         stbi_uc* data = stbi_load(filepath.c_str(), &_width, &_height, &_numChannels, 4);

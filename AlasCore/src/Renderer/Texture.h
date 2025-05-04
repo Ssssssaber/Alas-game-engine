@@ -7,7 +7,7 @@ namespace Alas
     public:
         static Shared<Texture> Create(const std::string& filepath);
 
-        Texture() { _resourceId = GetUniqueId(); }
+        Texture(UID uid) : _resourceId(uid) { }
         UID GetUID() { return _resourceId; }
 
         virtual ~Texture() = default;

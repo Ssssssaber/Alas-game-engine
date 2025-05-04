@@ -14,10 +14,10 @@ namespace Alas {
     class Shader 
     {
     public:
-        static Shared<Shader> Create(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
+        
         static Shared<Shader> Create(const std::string& filepath);
 
-        Shader() { _resourceID = GetUniqueId();}
+        Shader(UID uid) : _resourceID(uid) { }
         UID GetUID() { return _resourceID; }
 
         virtual ~Shader() = default;
@@ -40,6 +40,7 @@ namespace Alas {
         
     private:
         static ShaderSourceCode* ParseShaderFile(const std::string& filepath);
+        static Shared<Shader> Create(UID uid, const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
         
     private:
         UID _resourceID;

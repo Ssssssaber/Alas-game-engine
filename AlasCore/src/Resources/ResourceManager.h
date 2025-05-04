@@ -1,26 +1,54 @@
 #pragma once
 
 #include <unordered_map>
+#include <filesystem>
+
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
+namespace fs = std::filesystem;
 
+// #define ASSETS_DIR fs::current_pat().append("Assets")
+#define ASSETS_DIR "Assets"
 namespace Alas
 {
     class ResourceManager
     {
     public:
+        // 
+        // static void UpdateResourceFilesRegistry()
+        // 1. recursive loop through assets directory. For each directory:
+        //     * for each file that does not have meta file - create it (how to differ assets?)
+        //     * add filepaths to registry with id taken from meta file
+        //     * check remaining meta files in a directory - if no resource file then delete meta file
+        // ------------------------------------------
+        // differing assets by their file extentions:
+        // * shaders: .shader
+        // * scripting: .lua
+        // * textures: .png
+        // * add later
+        //      fonts: .ttf
+        //      sound: .mp3
+
+        static UID RecourceExists(const std::string& filepath);
+        static UID RecourceExists(const fs::path& filepath);
+        
+        static void UpdateMetaFiles() { UpdateMetaFiles(ASSETS_DIR); }
+        static void UpdateMetaFiles(const std::string& directory);
+        // runtime logic
         static void AddResourceToRegistry(UID id, const std::string& filepath);
-        static const std::string& GetResourceFilepath(UID id);
+        static std::string GetResourceFilepathString(UID id);
         static UID GetResourceIdByPath(const std::string& filepath);
         
         static void AddUsedResource(UID id, const Shared<Shader>& shader);
         static void AddUsedResource(UID id, const Shared<Texture>& texture);
         
-        static const Shared<Shader>& GetUsedShader(UID id);
-        static const Shared<Texture>& GetUsedTexture(UID id);
+        static Shared<Shader> IsShaderUsed(UID id);
+        static Shared<Texture> IsTextureUsed(UID id);
 
     private:
-        static std::unordered_map<UID, std::string> ResourcesRegistry;
+        static void CheckRecourcesPathIntegrity();
+    private:
+        static std::unordered_map<UID, fs::path> ResourceFilesRegistry;
 
         static std::unordered_map<UID, Shared<Shader>> UsedShaders;
         static std::unordered_map<UID, Shared<Texture>> UsedTextures;
