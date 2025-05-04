@@ -53,7 +53,7 @@ public:
         body.GravityScale = 0;
         _mainGo.AddComponent<Alas::BoxCollider2D>();
 
-        auto& luaScript = _mainGo.AddComponent<Alas::LuaScriptComponent>("main-test.lua");
+        auto& luaScript = _mainGo.AddComponent<Alas::LuaScriptComponent>("Assets/Scripts/main-test.lua");
         ALAS_CORE_INFO(luaScript.Filepath);
 
         auto& text = _mainGo.AddComponent<Alas::WorldSpaceText>("keke");
@@ -278,6 +278,10 @@ public:
         if (ImGui::Button("Load Scene", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
         {
             _scene = Alas::SceneSerialization::DeserializeScene("Assets/" + _sceneToLoadName + ".yaml");  
+        }
+        if (ImGui::Button("Refresh ResourceManager", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
+        {
+            Alas::ResourceManager::UpdateMetaFiles();
         }
 
         ImGui::SeparatorText("COLLIDERS");

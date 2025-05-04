@@ -63,7 +63,7 @@ namespace Alas
         try
         {
             S_RegisterEntityRelatedFunctions(lua, entity);
-            lua.script_file(SCRIPTS_FILEPATH + filename);
+            lua.script_file(filename);
         }
         catch (const sol::error& e)
         {

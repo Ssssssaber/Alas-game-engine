@@ -206,7 +206,7 @@ namespace Alas
                 
                 out << YAML::BeginMap;
 
-                out << YAML::Key << LUA_SCRIPT_C_FILE << YAML::Value << lua.Filepath;
+                out << YAML::Key << LUA_SCRIPT_C_FILE << YAML::Value << ResourceManager::GetResourceIdByPath(lua.Filepath);
 
                 out << YAML::EndMap;
             }
@@ -265,139 +265,129 @@ namespace Alas
 		try
 		{
 			sceneNode = YAML::LoadFile(filepath);
-		}
-		catch (YAML::ParserException e)
-		{
-			ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
-			return scene;
-		}
-        catch (YAML::BadFile e)
-		{
-			ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
-			return scene;
+            if (!CheckKeyExists(sceneNode, SCENE_NAME, filepath) ||
+            !CheckKeyExists(sceneNode, ENTITIES, filepath)) return scene;
+
+            scene->Name = sceneNode[SCENE_NAME].as<std::string>();
+
+            for (auto entityNode : sceneNode[ENTITIES])
+            {
+                UID id = entityNode.first.as<UID>();
+                auto data = entityNode.second;
+                if (!data[TAG_C])
+                {
+                    ALAS_CORE_ERROR("Entity with id {0} has no tag component", id);   
+                }
+
+                Entity ent = scene->CreateEntityWithId(data[TAG_C].as<std::string>(), id);
+                
+                auto& transform = ent.GetComponent<Transform>();
+
+                auto transformData = data[TRANSFORM_C];
+                if (transformData)
+                {        
+                    transform.Position = transformData[TRANSFORM_C_POSITION].as<glm::vec3>();
+                    transform.Rotation = transformData[TRANSFORM_C_ROTATION].as<glm::vec3>();
+                    transform.Scale = transformData[TRANSFORM_C_SCLAE].as<glm::vec3>();
+                }
+
+                auto spriteData = data[SPRITE_C];
+                if (spriteData)
+                {
+                    // implement sprite
+                    auto& sprite = ent.AddComponent<SpriteComponent>();
+
+                    {
+                        UID shaderID = spriteData[SPRITE_C_SHADER].as<UID>();
+                        Shared<Shader> shader = ResourceManager::IsShaderUsed(shaderID);
+                        if (shaderID == 0)
+                        {
+                            sprite.c_Shader = shader;
+                        }
+                        else
+                        {
+                            std::string shaderFilepath = ResourceManager::GetResourceFilepathString(shaderID);
+                            sprite.c_Shader = Shader::Create(shaderFilepath);
+                        }
+                    }
+                    {
+                        UID textureID = spriteData[SPRITE_C_TEXTURE].as<UID>();
+                        Shared<Texture> texture = ResourceManager::IsTextureUsed(textureID);
+                        if (texture)
+                        {
+                            sprite.c_Texture = texture;
+                        }
+                        else
+                        {
+                            std::string textureFilepath = ResourceManager::GetResourceFilepathString(textureID);
+                            sprite.c_Texture = Texture::Create(textureFilepath);
+                        }
+                        
+                    }
+                    
+                    sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec4>();
+                }
+
+                {
+                    auto rigidBody2DData = data[RIGID_BODY_2D_C];
+                    if (rigidBody2DData)
+                    {
+                        auto& rigidBody = ent.AddComponent<RigidBody2D>();
+                        rigidBody.Type = RigidBody2D::StringToType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
+                        rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<float>();
+                        rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<float>();
+                    }
+                }
+
+                {
+                    auto boxCollider2DData = data[BOX_COLLIDER_2D_C];
+                    if (boxCollider2DData)
+                    {
+                        auto& boxCollider = ent.AddComponent<BoxCollider2D>();
+                        boxCollider.Offset = boxCollider2DData[BOX_COLLIDER_2D_C_OFFSET].as<glm::vec2>();
+                        boxCollider.Size = boxCollider2DData[BOX_COLLIDER_2D_C_SIZE].as<glm::vec2>();
+                    }
+                }
+
+                {
+                    auto overlayTextData = data[OVERLAY_TEXT_C];
+                    if (overlayTextData)
+                    {
+                        auto& overlayText = ent.AddComponent<OverlayText>();
+                        overlayText.DisplayText = overlayTextData[OVERLAY_TEXT_C_DISPLAY_TEXT].as<std::string>();
+                        overlayText.Color = overlayTextData[OVERLAY_TEXT_C_COLOR].as<glm::vec4>();
+                        overlayText.ScreenPosition = overlayTextData[OVERLAY_TEXT_C_SCREEN_POSITION].as<glm::vec2>();
+                        overlayText.Rotation = overlayTextData[OVERLAY_TEXT_C_ROTATION].as<float>();
+                        overlayText.Scale = overlayTextData[OVERLAY_TEXT_C_SCALE].as<glm::vec2>();
+                    }
+                }
+
+                {
+                    auto worldSpaceTextData = data[WORLD_SPACE_TEXT_C];
+                    if (worldSpaceTextData)
+                    {
+                        auto& worldSpaceText = ent.AddComponent<WorldSpaceText>();
+                        worldSpaceText.DisplayText = worldSpaceTextData[WORLD_SPACE_TEXT_C_DISPLAY_TEXT].as<std::string>();
+                        worldSpaceText.Color = worldSpaceTextData[WORLD_SPACE_TEXT_C_COLOR].as<glm::vec4>();
+                        worldSpaceText.Offset = worldSpaceTextData[WORLD_SPACE_TEXT_C_OFFSET].as<glm::vec2>();
+                        worldSpaceText.Rotation = worldSpaceTextData[WORLD_SPACE_TEXT_C_ROTATION].as<float>();
+                        worldSpaceText.Scale = worldSpaceTextData[WORLD_SPACE_TEXT_C_SCALE].as<glm::vec2>();
+                    }
+                }
+
+                auto luaScriptData = data[LUA_SCRIPT_C];
+                if (luaScriptData)
+                {
+                    auto& lua = ent.AddComponent<LuaScriptComponent>();
+                    UID luaUID = luaScriptData[LUA_SCRIPT_C_FILE].as<UID>();
+                    lua.Filepath = ResourceManager::GetResourceFilepathString(luaUID);
+                }
+            }
 		}
         catch (YAML::Exception e)
         {
             ALAS_CORE_ERROR("Failed to load scene file '{0}'\n     {1}", filepath, e.what());
 			return scene;
-        }
-
-        if (!CheckKeyExists(sceneNode, SCENE_NAME, filepath) ||
-            !CheckKeyExists(sceneNode, ENTITIES, filepath)) return scene;
-
-        scene->Name = sceneNode[SCENE_NAME].as<std::string>();
-
-        for (auto entityNode : sceneNode[ENTITIES])
-        {
-            UID id = entityNode.first.as<UID>();
-            auto data = entityNode.second;
-            if (!data[TAG_C])
-            {
-                ALAS_CORE_ERROR("Entity with id {0} has no tag component", id);   
-            }
-
-            Entity ent = scene->CreateEntityWithId(data[TAG_C].as<std::string>(), id);
-            
-            auto& transform = ent.GetComponent<Transform>();
-
-            auto transformData = data[TRANSFORM_C];
-            if (transformData)
-            {        
-                transform.Position = transformData[TRANSFORM_C_POSITION].as<glm::vec3>();
-                transform.Rotation = transformData[TRANSFORM_C_ROTATION].as<glm::vec3>();
-                transform.Scale = transformData[TRANSFORM_C_SCLAE].as<glm::vec3>();
-            }
-
-            auto spriteData = data[SPRITE_C];
-            if (spriteData)
-            {
-                // implement sprite
-                auto& sprite = ent.AddComponent<SpriteComponent>();
-
-                {
-                    UID shaderID = spriteData[SPRITE_C_SHADER].as<UID>();
-                    Shared<Shader> shader = ResourceManager::IsShaderUsed(shaderID);
-                    if (shaderID == 0)
-                    {
-                        sprite.c_Shader = shader;
-                    }
-                    else
-                    {
-                        std::string shaderFilepath = ResourceManager::GetResourceFilepathString(shaderID);
-                        sprite.c_Shader = Shader::Create(shaderFilepath);
-                    }
-                }
-                {
-                    UID textureID = spriteData[SPRITE_C_TEXTURE].as<UID>();
-                    Shared<Texture> texture = ResourceManager::IsTextureUsed(textureID);
-                    if (texture)
-                    {
-                        sprite.c_Texture = texture;
-                    }
-                    else
-                    {
-                        std::string textureFilepath = ResourceManager::GetResourceFilepathString(textureID);
-                        sprite.c_Texture = Texture::Create(textureFilepath);
-                    }
-                    
-                }
-                
-                sprite.Color = spriteData[SPRITE_C_COLOR].as<glm::vec4>();
-            }
-
-            {
-                auto rigidBody2DData = data[RIGID_BODY_2D_C];
-                if (rigidBody2DData)
-                {
-                    auto& rigidBody = ent.AddComponent<RigidBody2D>();
-                    rigidBody.Type = RigidBody2D::StringToType(rigidBody2DData[RIGID_BODY_2D_C_TYPE].as<std::string>());
-                    rigidBody.Mass = rigidBody2DData[RIGID_BODY_2D_C_MASS].as<float>();
-                    rigidBody.GravityScale = rigidBody2DData[RIGID_BODY_2D_C_GRAVITY_SCALE].as<float>();
-                }
-            }
-
-            {
-                auto boxCollider2DData = data[BOX_COLLIDER_2D_C];
-                if (boxCollider2DData)
-                {
-                    auto& boxCollider = ent.AddComponent<BoxCollider2D>();
-                    boxCollider.Offset = boxCollider2DData[BOX_COLLIDER_2D_C_OFFSET].as<glm::vec2>();
-                    boxCollider.Size = boxCollider2DData[BOX_COLLIDER_2D_C_SIZE].as<glm::vec2>();
-                }
-            }
-
-            {
-                auto overlayTextData = data[OVERLAY_TEXT_C];
-                if (overlayTextData)
-                {
-                    auto& overlayText = ent.AddComponent<OverlayText>();
-                    overlayText.DisplayText = overlayTextData[OVERLAY_TEXT_C_DISPLAY_TEXT].as<std::string>();
-                    overlayText.Color = overlayTextData[OVERLAY_TEXT_C_COLOR].as<glm::vec4>();
-                    overlayText.ScreenPosition = overlayTextData[OVERLAY_TEXT_C_SCREEN_POSITION].as<glm::vec2>();
-                    overlayText.Rotation = overlayTextData[OVERLAY_TEXT_C_ROTATION].as<float>();
-                    overlayText.Scale = overlayTextData[OVERLAY_TEXT_C_SCALE].as<glm::vec2>();
-                }
-            }
-
-            {
-                auto worldSpaceTextData = data[WORLD_SPACE_TEXT_C];
-                if (worldSpaceTextData)
-                {
-                    auto& worldSpaceText = ent.AddComponent<WorldSpaceText>();
-                    worldSpaceText.DisplayText = worldSpaceTextData[WORLD_SPACE_TEXT_C_DISPLAY_TEXT].as<std::string>();
-                    worldSpaceText.Color = worldSpaceTextData[WORLD_SPACE_TEXT_C_COLOR].as<glm::vec4>();
-                    worldSpaceText.Offset = worldSpaceTextData[WORLD_SPACE_TEXT_C_OFFSET].as<glm::vec2>();
-                    worldSpaceText.Rotation = worldSpaceTextData[WORLD_SPACE_TEXT_C_ROTATION].as<float>();
-                    worldSpaceText.Scale = worldSpaceTextData[WORLD_SPACE_TEXT_C_SCALE].as<glm::vec2>();
-                }
-            }
-
-            auto luaScriptData = data[LUA_SCRIPT_C];
-            if (luaScriptData)
-            {
-                auto& lua = ent.AddComponent<LuaScriptComponent>();
-                lua.Filepath = luaScriptData[LUA_SCRIPT_C_FILE].as<std::string>();
-            }
         }
 
         return scene;
