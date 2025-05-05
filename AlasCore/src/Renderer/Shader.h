@@ -14,9 +14,7 @@ namespace Alas {
     class Shader 
     {
     public:
-        
-        static Shared<Shader> Create(const std::string& filepath);
-
+        static Shared<Shader> Create(const std::string& filepath, UID uid = NULL_UID);
         Shader(UID uid) : _resourceID(uid) { }
         UID GetUID() { return _resourceID; }
 

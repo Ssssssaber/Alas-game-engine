@@ -17,6 +17,7 @@
 #define BASE_BUTTON_HEIGHT 25
 
 #define BASE_DRAG_STEP 1.0f
+#define SLOW_DRAG_STEP 0.1f
 class ExampleLayer : public Alas::Layer
 {
 public:
@@ -30,15 +31,15 @@ public:
         // _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));        
         _scene.reset(new Alas::Scene());
 
-        _textureShader = Alas::Shader::Create("Assets/Shaders/TextureShader.shader");
+        _textureShader = Alas::ResourceManager::GetShader("Assets/Shaders/TextureShader.shader");
         _textureShader->Bind();
 
-        _baseTexture = Alas::Texture::Create("Assets/Textures/wall.png");
+        _baseTexture = Alas::ResourceManager::GetTexture("Assets/Textures/wall.png");
         _baseTexture->Bind();
         
         // -------------- test scene load correctly
 
-        _mainGOTexture = Alas::Texture::Create("Assets/Textures/keke.png");
+        _mainGOTexture = Alas::ResourceManager::GetTexture("Assets/Textures/keke.png");
 
         _mainGo = _scene->CreateEntity("Main triangle");
         // auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
@@ -225,6 +226,8 @@ public:
             ent.AddComponent<Alas::RigidBody2D>();
         else if (_componentsStr[selectedComponentId] == BOX_COLLIDER_2D_C && !ent.HasComponent<Alas::BoxCollider2D>() ) 
             ent.AddComponent<Alas::BoxCollider2D>();
+        else if (_componentsStr[selectedComponentId] == LUA_SCRIPT_C && !ent.HasComponent<Alas::LuaScriptComponent>() ) 
+            ent.AddComponent<Alas::LuaScriptComponent>();
         else if (_componentsStr[selectedComponentId] == OVERLAY_TEXT_C && !ent.HasComponent<Alas::OverlayText>() ) 
             ent.AddComponent<Alas::OverlayText>();
         else if (_componentsStr[selectedComponentId] == WORLD_SPACE_TEXT_C && !ent.HasComponent<Alas::WorldSpaceText>() ) 
@@ -302,12 +305,11 @@ public:
             Alas::Entity ent = it->second;
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
             
-            static int selectedComponentId = 0; // Here we store our selection data as an index.
             if (_entitySelected && ent.GetUID() == _selectedEntity.GetUID())
             {
                 if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Selected))
                 {   
-                    ImGuiRenderEntityComponents(ent, selectedComponentId);
+                    ImGuiRenderEntityComponents(ent);
                     ImGui::TreePop();
                 }
             }
@@ -315,7 +317,7 @@ public:
             {
                 if (ImGui::TreeNodeEx(str.c_str()))
                 {
-                    ImGuiRenderEntityComponents(ent, selectedComponentId);
+                    ImGuiRenderEntityComponents(ent);
                     ImGui::TreePop();
                 }    
             }
@@ -345,8 +347,9 @@ public:
         ImGui::End();
     }
 
-    void ImGuiRenderEntityComponents(Alas::Entity ent, int& selectedComponentId)
+    void ImGuiRenderEntityComponents(Alas::Entity ent)
     {
+        static int selectedComponentId = 0; // Here we store our selection data as an index.
         {                        
             // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
             const char* combo_preview_value = _componentsStr[selectedComponentId];
@@ -395,8 +398,66 @@ public:
         if(ImGui::TreeNode(SPRITE_C))
         {
             auto& sprite = ent.GetComponent<Alas::SpriteComponent>();
+
             ImGui::LabelText(SPRITE_C_SHADER, Alas::ResourceManager::GetResourceFilepathString(sprite.c_Shader->GetUID()).c_str());
+            {
+                static int selectedShaderID = 0;
+                std::vector<std::string> shaderFiles = Alas::ResourceManager::GetFilesWithExtension(".shader");
+                const char* combo_preview_value = shaderFiles[selectedShaderID].c_str();
+
+                if (ImGui::BeginCombo("Shaders", combo_preview_value))
+                {
+                    for (int n = 0; n < shaderFiles.size(); n++)
+                    {
+                        const bool is_selected = (selectedShaderID == n);
+                        if (ImGui::Selectable(shaderFiles[n].c_str(), is_selected))
+                        {
+                            selectedShaderID = n;
+                        }
+                            
+                        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::Button("Change Shader"))
+                {
+                    sprite.c_Shader = Alas::ResourceManager::GetShader(shaderFiles[selectedShaderID]);
+                }
+            }
+            
+
             ImGui::LabelText(SPRITE_C_TEXTURE, Alas::ResourceManager::GetResourceFilepathString(sprite.c_Texture->GetUID()).c_str());
+            {
+                static int selectedTextureID = 0;
+                std::vector<std::string> textureFiles = Alas::ResourceManager::GetFilesWithExtension(".png");
+                const char* combo_preview_value = textureFiles[selectedTextureID].c_str();
+
+                if (ImGui::BeginCombo("Textures", combo_preview_value))
+                {
+                    for (int n = 0; n < textureFiles.size(); n++)
+                    {
+                        const bool is_selected = (selectedTextureID == n);
+                        if (ImGui::Selectable(textureFiles[n].c_str(), is_selected))
+                        {
+                            selectedTextureID = n;
+                        }
+                            
+                        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::Button("Change Texture"))
+                {
+                    sprite.c_Texture = Alas::ResourceManager::GetTexture(textureFiles[selectedTextureID]);
+                }
+            }
+            
             ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
             ImGui::TreePop();
@@ -407,6 +468,33 @@ public:
         {
             auto& lua = ent.GetComponent<Alas::LuaScriptComponent>();
             ImGui::LabelText(LUA_SCRIPT_C_FILE, (lua.Filepath).c_str());
+
+            static int selectedScriptID = 0;
+            std::vector<std::string> luaFiles = Alas::ResourceManager::GetFilesWithExtension(".lua");
+            const char* combo_preview_value = luaFiles[selectedScriptID].c_str();
+
+            if (ImGui::BeginCombo("Lua scripts", combo_preview_value))
+            {
+                for (int n = 0; n < luaFiles.size(); n++)
+                {
+                    const bool is_selected = (selectedScriptID == n);
+                    if (ImGui::Selectable(luaFiles[n].c_str(), is_selected))
+                    {
+                        selectedScriptID = n;
+                    }
+                        
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+
+            if (ImGui::Button("Change script"))
+            {
+                lua.Filepath = luaFiles[selectedScriptID];
+            }
+
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::LuaScriptComponent>();
             ImGui::TreePop();
         }
@@ -531,10 +619,11 @@ public:
         float _framesElapsed = 0;
         float _frameRate = 0;
 
-        const char* _componentsStr[5] = {
+        const char* _componentsStr[6] = {
             SPRITE_C,
             RIGID_BODY_2D_C,
             BOX_COLLIDER_2D_C,
+            LUA_SCRIPT_C,
             OVERLAY_TEXT_C,
             WORLD_SPACE_TEXT_C
         };

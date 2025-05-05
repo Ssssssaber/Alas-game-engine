@@ -7,8 +7,6 @@
 
 #include "Events/ApplicationEvent.h"
 
-#include "Scripting/lua/ScriptingEngine.h"
-
 #include "Resources/ResourceManager.h"
 
 namespace Alas
@@ -17,12 +15,15 @@ namespace Alas
     Application::Application()
     {
         ALAS_ASSERT(!_instance, "Application already exists");
+
         _instance = this;
 
         _window.reset(Alas::Window::Create());
         _window->SetEventCallback(
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
+
+        ResourceManager::UpdateMetaFiles();
         
         _imguiLayer = new ImGuiLayer();
         PushOverlay(_imguiLayer);
@@ -33,9 +34,6 @@ namespace Alas
 
         Renderer::Init();
 
-        ScriptingEngine::Init();
-
-        ResourceManager::UpdateMetaFiles();
     }
 
     Application::~Application() {}

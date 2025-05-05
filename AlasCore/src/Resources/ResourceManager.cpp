@@ -3,6 +3,8 @@
 
 #include <fstream>
 
+
+
 #define ASSET_ID "asset_uid"
 namespace Alas
 {
@@ -10,12 +12,12 @@ namespace Alas
     std::unordered_map<UID, Shared<Shader>> ResourceManager::UsedShaders;
     std::unordered_map<UID, Shared<Texture>> ResourceManager::UsedTextures;
 
-    UID ResourceManager::RecourceExists(const std::string& filepath)
+    UID ResourceManager::GetResourceIdByFilepath(const std::string& filepath)
     {
-        return RecourceExists(fs::path(filepath));
+        return GetResourceIdByFilepath(fs::path(filepath));
     }
     
-    UID ResourceManager::RecourceExists(const fs::path& filepath)
+    UID ResourceManager::GetResourceIdByFilepath(const fs::path& filepath)
     {
         if (!fs::exists(filepath))
         {
@@ -57,16 +59,9 @@ namespace Alas
                     continue;
                 }
     
-                // Output the full path, filename, and extension
-                std::cout << "Full path: " << full_path << '\n';
-                std::cout << "Filename: " << filename << '\n';
-                std::cout << "Extension: " << extension << '\n';
-    
                 fs::path meta_file_path = full_path.string() + ".meta";
                 if (fs::exists(meta_file_path))
                 {
-                    std::cout << ".meta file : " << meta_file_path << '\n';
-
                     // read meta file and get uid
                     std::string stringMetaFilePath = meta_file_path.string();
                     YAML::Node metaNode;
@@ -111,14 +106,15 @@ namespace Alas
         }
     }
 
-    UID ResourceManager::GetResourceIdByPath(const std::string& filepath)
+    std::vector<std::string> ResourceManager::GetFilesWithExtension(const std::string& extention)
     {
-        for (auto it = ResourceFilesRegistry.begin(); it != ResourceFilesRegistry.end(); ++it) 
+        std::vector<std::string> files;
+        for (auto it = ResourceFilesRegistry.begin(); it != ResourceFilesRegistry.end(); it++)
         {
-            if (it->second == filepath) return it->first;
+            if (it->second.extension() == extention) files.push_back(it->second.string());
         }
 
-        return 0;
+        return files;
     }
 
     std::string ResourceManager::GetResourceFilepathString(UID id)
@@ -131,8 +127,7 @@ namespace Alas
             UpdateMetaFiles();
             if (ResourceFilesRegistry.find(id) == ResourceFilesRegistry.end())
             {
-                ALAS_ASSERT(false, 
-                    "Resource with id {0} was not found ...", id);        
+                return NULL_STRING;    
             }
         }
         return ResourceFilesRegistry[id].string();
@@ -160,23 +155,72 @@ namespace Alas
         UsedTextures[id] = texture;
     }
 
-    Shared<Shader> ResourceManager::IsShaderUsed(UID id)
+    bool ResourceManager::IsShaderUsed(UID uid)
+    {
+        if (UsedShaders.find(uid) != UsedShaders.end())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool ResourceManager::IsTextureUsed(UID uid)
+    {
+        if (UsedTextures.find(uid) != UsedTextures.end())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    Shared<Shader> ResourceManager::GetShader(const std::string& filepath)
+    {
+        return GetShader(GetResourceIdByFilepath(filepath));
+    }
+
+    Shared<Shader> ResourceManager::GetShader(UID id)
     {
         auto findResult = UsedShaders.find(id);
         if (findResult == UsedShaders.end())
         {
+            std::string filepath = GetResourceFilepathString(id);
+            if (filepath != NULL_STRING)
+            {
+                Shared<Shader> shader = Shader::Create(filepath, id);
+                if (shader)
+                {
+                    UsedShaders[id] = shader;
+                    return shader;
+                }
+            }
             ALAS_CORE_WARN(
                 "Resource with id {0} does not exist.", id);
             return nullptr;
         }
         return findResult->second;
     }
+
+    Shared<Texture> ResourceManager::GetTexture(const std::string& filepath)
+    {
+        return GetTexture(GetResourceIdByFilepath(filepath));
+    }
     
-    Shared<Texture> ResourceManager::IsTextureUsed(UID id)
+    Shared<Texture> ResourceManager::GetTexture(UID id)
     {
         auto findResult = UsedTextures.find(id);
         if (findResult == UsedTextures.end())
         {
+            std::string filepath = GetResourceFilepathString(id);
+            if (filepath != NULL_STRING)
+            {
+                Shared<Texture> texture = Texture::Create(filepath, id);
+                if (texture)
+                {
+                    UsedTextures[id] = texture;
+                    return texture;
+                }
+            }
             ALAS_CORE_WARN(
                 "Resource with id {0} does not exist.", id);
             return nullptr;

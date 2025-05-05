@@ -11,46 +11,32 @@ namespace Alas {
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    ALAS_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Shared<Shader>(new OpenGLShader(uid, vertexShaderSource, fragmentShaderSource));
+            case RendererAPI::API::OpenGL:  
+            {
+                Shared<Shader> shader = Shared<Shader>(new OpenGLShader(uid, vertexShaderSource, fragmentShaderSource));
+                if (!ResourceManager::IsShaderUsed(uid))
+                    ResourceManager::AddUsedResource(uid, shader);    
+                return shader;
+            }       
         }
+        // todo: if shader is not used then add to used
+        
 
         ALAS_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
     }
 
-    Shared<Shader> Shader::Create(const std::string& filepath)
+    Shared<Shader> Shader::Create(const std::string& filepath, UID uid)
     {
-        UID shaderID = ResourceManager::RecourceExists(filepath);
-        Shared<Shader> shader;
-        // check is filepath is in registry
-        if (!shaderID)
+        if (uid == NULL_UID)
         {
-            ResourceManager::UpdateMetaFiles();
-            shaderID = ResourceManager::RecourceExists(filepath);
-            if (!shaderID)
-            {
-                ALAS_ASSERT(false, "Recource manager does not have info about recource {0}");
-                return shader;
-            }
-        }
-
-        // return shader if already used
-        shader = ResourceManager::IsShaderUsed(shaderID);
-        if (shader)
-        {
-            return shader;
+            ALAS_ASSERT(false, "Trying to create a shader with NULL_ID");
+            return nullptr;
         }
 
         // create shader if not used
         ShaderSourceCode* source = ParseShaderFile(filepath);
-        shader = Create(shaderID, source->VertexShaderSource, source->FragmentShaderSource);
-        
-        if (shader) 
-        {
-            ResourceManager::AddUsedResource(shaderID, shader);
-        }
-    
-        return shader;
+        return Create(uid, source->VertexShaderSource, source->FragmentShaderSource);
     }
 
     ShaderSourceCode* Shader::ParseShaderFile(const std::string& filepath)

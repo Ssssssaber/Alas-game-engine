@@ -8,10 +8,14 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererCommand.h"
 
+#include "Scripting/lua/ScriptingEngine.h"
+
 namespace Alas
 {
     GameLoop::GameLoop(Shared<Scene> sceneRef, Time* timeRef) : _time(timeRef)
     {
+        ScriptingEngine::Init();
+
         _scene.reset(new Scene());
         CopyScene(sceneRef);
         _scene->BOX_PHYSICS_SCALE = sceneRef->BOX_PHYSICS_SCALE;

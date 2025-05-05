@@ -5,8 +5,7 @@ namespace Alas
     class Texture
     {
     public:
-        static Shared<Texture> Create(const std::string& filepath);
-
+        static Shared<Texture> Create(const std::string& filepath, UID uid = NULL_UID);
         Texture(UID uid) : _resourceId(uid) { }
         UID GetUID() { return _resourceId; }
 

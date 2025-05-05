@@ -5,6 +5,7 @@
 
 #include "Entity/Components.h"
 
+#include "Resources/ResourceManager.h"
 namespace Alas
 {
     Renderer::RendererData Renderer::_Data = RendererData();
@@ -15,8 +16,9 @@ namespace Alas
         RenderCommand::EnableBlending();
 
 
-        _Data.OverlayTextShader = Shader::Create("Assets/Shaders/OverlayText.shader");
-        _Data.WorldSpaceTextShader = Shader::Create("Assets/Shaders/WorldSpaceText.shader");
+        _Data.OverlayTextShader = ResourceManager::GetShader("Assets/Shaders/OverlayText.shader");
+        _Data.WorldSpaceTextShader = ResourceManager::GetShader("Assets/Shaders/WorldSpaceText.shader");
+        _Data.lineShader = ResourceManager::GetShader("Assets/Shaders/Line.shader");
         _Data.TextRenderer = TextRendering::Create();
         _Data.TextRenderer->Init();
         
@@ -47,8 +49,6 @@ namespace Alas
             lineIndexBuffer.reset(Alas::IndexBuffer::Create(lineIndices, sizeof(lineIndices) / sizeof(uint32_t)));
             
             _Data.lineVertexArray->SetIndexBuffer(lineIndexBuffer);
-
-            _Data.lineShader = Shader::Create("Assets/Shaders/Line.shader");
         }
 
         {

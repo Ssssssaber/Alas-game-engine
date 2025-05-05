@@ -25,6 +25,8 @@
 	#define ALAS_CORE_ASSERT(x, ...)
 #endif
 
+#define NULL_STRING "#!1234"
+
 #include <memory>
 #include <random>
 

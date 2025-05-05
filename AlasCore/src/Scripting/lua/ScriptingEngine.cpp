@@ -9,6 +9,7 @@ namespace Alas
 
     void ScriptingEngine::Init()
     {
+        lua = sol::state();
         lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::math, sol::lib::table);
         S_RegisterTypesForLuaState(lua);
         S_RisterBasicFunctionsForLuaState(lua);

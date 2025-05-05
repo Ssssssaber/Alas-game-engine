@@ -12,12 +12,12 @@ namespace Alas {
         static void Init();
         static void InitGameLoop();
         static void HandleScript(const std::string& filename, Entity entity);
+        static void LoadScript(const std::string& filename, Entity entity);
 
         static void AddBeginCollisionUpdate(UID uid);
         static void AddEndCollisionUpdate(UID uid);
     
     private:
-        static void LoadScript(const std::string& filename, Entity entity);
         static void ExecuteFunction(const std::string& functionName);
 
     private:

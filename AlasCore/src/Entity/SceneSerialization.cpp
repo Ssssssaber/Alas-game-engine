@@ -206,7 +206,7 @@ namespace Alas
                 
                 out << YAML::BeginMap;
 
-                out << YAML::Key << LUA_SCRIPT_C_FILE << YAML::Value << ResourceManager::GetResourceIdByPath(lua.Filepath);
+                out << YAML::Key << LUA_SCRIPT_C_FILE << YAML::Value << ResourceManager::GetResourceIdByFilepath(lua.Filepath);
 
                 out << YAML::EndMap;
             }
@@ -299,28 +299,26 @@ namespace Alas
 
                     {
                         UID shaderID = spriteData[SPRITE_C_SHADER].as<UID>();
-                        Shared<Shader> shader = ResourceManager::IsShaderUsed(shaderID);
+                        Shared<Shader> shader = ResourceManager::GetShader(shaderID);
                         if (shaderID == 0)
                         {
                             sprite.c_Shader = shader;
                         }
                         else
                         {
-                            std::string shaderFilepath = ResourceManager::GetResourceFilepathString(shaderID);
-                            sprite.c_Shader = Shader::Create(shaderFilepath);
+                            sprite.c_Shader = ResourceManager::GetShader(shaderID);
                         }
                     }
                     {
                         UID textureID = spriteData[SPRITE_C_TEXTURE].as<UID>();
-                        Shared<Texture> texture = ResourceManager::IsTextureUsed(textureID);
+                        Shared<Texture> texture = ResourceManager::GetTexture(textureID);
                         if (texture)
                         {
                             sprite.c_Texture = texture;
                         }
                         else
                         {
-                            std::string textureFilepath = ResourceManager::GetResourceFilepathString(textureID);
-                            sprite.c_Texture = Texture::Create(textureFilepath);
+                            sprite.c_Texture = ResourceManager::GetTexture(textureID);
                         }
                         
                     }
