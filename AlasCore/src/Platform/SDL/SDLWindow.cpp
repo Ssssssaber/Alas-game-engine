@@ -98,14 +98,14 @@ namespace Alas {
         SDL_DestroyWindow(_window);
     }
 
-    void Window::PollEvents()
+    void Window::PollEvents(bool ImGuiEnabled)
     {
         _focusedWindow = s_windows[SDL_GetWindowID(SDL_GetKeyboardFocus())];
 
         SDL_Event e;
         while (SDL_PollEvent (&e) != 0) {
-            ImGui_ImplSDL3_ProcessEvent(&e);
-            
+            if (ImGuiEnabled) ImGui_ImplSDL3_ProcessEvent(&e);
+
             SDLGLWindow* window = s_windows[e.window.windowID];
             if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED || e.type == SDL_EVENT_QUIT)
             {

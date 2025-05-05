@@ -28,7 +28,7 @@ namespace Alas
         static const Window& GetCurrentWindow();
         static const Window& GetFocusedWindow();
 
-        static void PollEvents();
+        static void PollEvents(bool ImGuiEnabled = true);
         
         virtual void OnUpdate() = 0;
 

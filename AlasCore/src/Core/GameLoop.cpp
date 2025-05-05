@@ -12,22 +12,13 @@
 
 namespace Alas
 {
-    GameLoop::GameLoop(Shared<Scene> sceneRef, Time* timeRef) : _time(timeRef)
+    GameLoop::GameLoop(Time* timeRef) : _time(timeRef)
     {
-        ScriptingEngine::Init();
-
-        _scene.reset(new Scene());
-        CopyScene(sceneRef);
-        _scene->BOX_PHYSICS_SCALE = sceneRef->BOX_PHYSICS_SCALE;
-        _scene->GameLoopInit();
-
         _window.reset(Alas::Window::Create());
         _window->SetEventCallback(
             std::bind(&GameLoop::OnEvent, this, std::placeholders::_1)
         );
         _window->SetVSync(false);
-
-        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
         // _camera->SetPosition(glm::vec3(-500.0f, -500.0f, 0.0f));
 
     }
@@ -48,7 +39,7 @@ namespace Alas
             UID id = idAndEnt->first;
             Entity entToCopy = idAndEnt->second;
 
-            Entity newEnt = _scene->CreateEntityWithId(entToCopy.GetComponent<TagComponent>().Tag, idAndEnt->first);
+            Entity newEnt = _gameScene->CreateEntityWithId(entToCopy.GetComponent<TagComponent>().Tag, idAndEnt->first);
 
             auto& transform = newEnt.GetComponent<Transform>();
             auto& transformToCopy = entToCopy.GetComponent<Transform>();
@@ -135,11 +126,17 @@ namespace Alas
         }
     }
 
-    void GameLoop::Init()
+    void GameLoop::Init(Shared<Scene> sceneRef)
     {
         ALAS_PROFILE_FUNCTION();
-        
-        // _camera->SetPosition({0.0f, 1.0f, 0.0f});
+
+        ScriptingEngine::Init();
+
+        _gameScene.reset(new Scene());
+        CopyScene(sceneRef);
+        _gameScene->BOX_PHYSICS_SCALE = sceneRef->BOX_PHYSICS_SCALE;
+        _gameScene->GameLoopInit();
+        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
     }
 
     void GameLoop::Update()
@@ -154,18 +151,18 @@ namespace Alas
 
         Alas::Renderer::BeginScene(_camera);
 
-        _scene->Physics2DUpdate();
+        _gameScene->Physics2DUpdate();
         count += 1;
         if (count > 3)
         {
             float currentTime = Time::GetTimeInSeconds();
             _time->updateDeltaTime(currentTime - lastTime);
             lastTime = currentTime;
-            _scene->RuntimeUpdate();
+            _gameScene->RuntimeUpdate();
             count = 0;   
         }
         
-        _scene->SceneUpdate();
+        _gameScene->SceneUpdate();
         _window->OnUpdate();
         Renderer::EndScene();
     }
@@ -189,7 +186,7 @@ namespace Alas
 
     bool GameLoop::OnWindowClose(WindowCloseEvent& event)
     {
-        _scene->Physics2DStop();
+        _gameScene->Physics2DStop();
         _isRunning = false;
 
         return true;

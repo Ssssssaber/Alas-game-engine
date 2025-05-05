@@ -36,5 +36,5 @@ uniform vec4 u_Color;
 void main()
 {
     color = texture(u_Texture, o_TexCoord) * u_Color;
-    color2 = 50;
+    color2 = o_EntityId;
 }

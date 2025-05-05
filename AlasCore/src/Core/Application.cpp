@@ -57,8 +57,8 @@ namespace Alas
 
     void Application::StartGameLoop(Shared<Scene> scene)
     {
-        _gameLoop.reset(new GameLoop(scene, _time));
-        _gameLoop->Init();
+        _gameLoop.reset(new GameLoop(_time));
+        _gameLoop->Init(scene);
     }
     
     void Application::Run()

@@ -14,12 +14,12 @@ namespace Alas
     class GameLoop
     {
     public:
-        GameLoop(Shared<Scene> sceneRef, Time* timeRef);
+        GameLoop::GameLoop(Time* timeRef);
         ~GameLoop();
 
         bool GetIsRunning() { return _isRunning; }
 
-        void Init();
+        void Init(Shared<Scene> sceneRef);
 
         void Update();
 
@@ -34,7 +34,7 @@ namespace Alas
         void CopyScene(Shared<Scene> sceneRef);
 
     private:        
-        Shared<Scene> _scene;
+        Shared<Scene> _gameScene;
         Shared<OrthCamera> _camera;
         Shared<Window> _window;
         Time* _time;

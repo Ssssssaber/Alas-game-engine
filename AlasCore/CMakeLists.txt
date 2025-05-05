@@ -93,3 +93,4 @@ target_link_libraries(alas_engine_core PUBLIC
     freetype
 )
 
+add_subdirectory(Game)
