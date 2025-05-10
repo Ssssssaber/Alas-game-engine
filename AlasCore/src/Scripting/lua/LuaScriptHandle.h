@@ -1,10 +1,10 @@
 #pragma once
 
-#include "LuaComponents.h"
 
 namespace Alas
 {
     class Entity;
+    struct LuaEntity;
 
     class LuaScriptHandle
     {
@@ -14,24 +14,10 @@ namespace Alas
         LuaScriptHandle() = default;
         LuaScriptHandle(const LuaScriptHandle& other) = default;
         LuaScriptHandle(Shared<Entity> entity);
-        
-        vec2* GetVelocity();
-        void SetVelocity(vec2* new_velocity);
 
-        transform* GetTransform();
-        void SetTransform(transform* new_transform);
+        // void DestroyEntity
 
-        rigid_body* GetRigidBody();
-        void SetRigidBody(rigid_body* new_rigid_body);
-
-        sprite* GetSprite();
-        void SetSprite(sprite* new_sprite);
-
-        worldspace_text* GetWorldspaceText();
-        void SetWorldspaceText(worldspace_text* new_text);
-
-        overlay_text* GetOverlayText();
-        void SetOverlayText(overlay_text* new_text);
+        Shared<LuaEntity> GetSelf();
 
         void BindBeginCollisionFunction(const char* functionName);
         void UnbindBeginCollisionFunction();
@@ -40,8 +26,11 @@ namespace Alas
         void UnbindEndCollisionFunction();
 
         // void DeleteEntity
-    
+    private:
+        void UpdateLuaEntity();
+
     private:
         Shared<Entity> _entity;
+        Shared<LuaEntity> _luaEntity;
     };
 } // namespace Alas

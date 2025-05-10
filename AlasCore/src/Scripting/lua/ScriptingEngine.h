@@ -2,7 +2,6 @@
 
 #include "LuaRegister.h"
 #include <set>
-#define SCRIPTS_FILEPATH std::string("Assets/Scripts/")
 
 namespace Alas {
 
@@ -19,6 +18,7 @@ namespace Alas {
     
     private:
         static void ExecuteFunction(const std::string& functionName);
+        static void ExecuteFunction(const std::string& functionName, Entity& entity);
 
     private:
         static sol::state lua; 

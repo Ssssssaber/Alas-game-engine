@@ -38,7 +38,7 @@ namespace Alas
             auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
             if (luaHandle._beginCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
             {
-                ExecuteFunction(luaHandle._beginCollisionFunctionName);
+                ExecuteFunction(luaHandle._beginCollisionFunctionName, entity);
                 beginCollisionUpdate.erase(entity.GetUID());
             }
         }
@@ -48,7 +48,7 @@ namespace Alas
             auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
             if (luaHandle._endCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
             {
-                ExecuteFunction(luaHandle._endCollisionFunctionName);
+                ExecuteFunction(luaHandle._endCollisionFunctionName, entity);
                 endCollisionUpdate.erase(entity.GetUID());
             }
         }
@@ -77,6 +77,22 @@ namespace Alas
     {
         ALAS_PROFILE_FUNCTION()
         auto result = lua[functionName]();
+
+        if (!result.valid())
+        {
+            sol::error e = result;
+            ALAS_CORE_ERROR("{0}", e.what());
+        }
+    }
+
+    void ScriptingEngine::ExecuteFunction(const std::string& functionName, Entity& entity)
+    {
+        ALAS_PROFILE_FUNCTION()
+        if (!entity.HasComponent<LuaScriptComponent>()) return;
+
+        auto result = lua[functionName](
+            entity.GetComponent<LuaScriptComponent>().Handle.GetSelf()
+        );
 
         if (!result.valid())
         {

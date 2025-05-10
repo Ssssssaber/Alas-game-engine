@@ -27,7 +27,7 @@ Entities:
   1019680954:
     Tag: Main triangle
     Transform:
-      Position: [0, 0, 0]
+      Position: [290, 445, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     Sprite:
@@ -46,7 +46,7 @@ Entities:
     Overlay Text:
       Display Text: keke
       Color: [1, 1, 1, 1]
-      Screen Position: [338, 418]
+      Screen Position: [685, 607]
       Rotation: 0
       Scale: [1, 1]
     World Space Text:

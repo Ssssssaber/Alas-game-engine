@@ -28,33 +28,38 @@ namespace Alas
         {
             return Input::IsKeyPressed(keyCode);
         }
+
+        static glm::vec2 Normalize2(glm::vec2 vec)
+        {
+            if (vec.length > 0)
+                glm::normalize(vec);
+            return vec;
+        }
+        
+        static glm::vec3 Normalize3(glm::vec3 vec)
+        {
+            if (vec.length > 0)
+                glm::normalize(vec);
+            return vec;
+        }
+        
+        static glm::vec4 Normalize4(glm::vec4 vec)
+        {
+            if (vec.length > 0)
+                glm::normalize(vec);
+            return vec;
+        }
     };
 
     static void S_RegisterEntityRelatedFunctions(sol::state& lua, Entity entity)
     {
-        lua.set_function("GetVelocity", &LuaScriptHandle::GetVelocity, &entity.GetComponent<LuaScriptComponent>().Handle);
-        lua.set_function("SetVelocity", &LuaScriptHandle::SetVelocity, &entity.GetComponent<LuaScriptComponent>().Handle);
-
-        lua.set_function("GetTransform", &LuaScriptHandle::GetTransform, &entity.GetComponent<LuaScriptComponent>().Handle);
-        lua.set_function("SetTransform", &LuaScriptHandle::SetTransform, &entity.GetComponent<LuaScriptComponent>().Handle);
-
-        lua.set_function("GetRigidBody", &LuaScriptHandle::GetRigidBody, &entity.GetComponent<LuaScriptComponent>().Handle);
-        lua.set_function("SetRigidBody", &LuaScriptHandle::SetRigidBody, &entity.GetComponent<LuaScriptComponent>().Handle);
-
-        lua.set_function("GetSprite", &LuaScriptHandle::GetSprite, &entity.GetComponent<LuaScriptComponent>().Handle);
-        lua.set_function("SetSprite", &LuaScriptHandle::SetSprite, &entity.GetComponent<LuaScriptComponent>().Handle);
-
-        lua.set_function("GetWorldspaceText", &LuaScriptHandle::GetWorldspaceText, &entity.GetComponent<LuaScriptComponent>().Handle);
-        lua.set_function("SetWorldspaceText", &LuaScriptHandle::SetWorldspaceText, &entity.GetComponent<LuaScriptComponent>().Handle);
-
-        lua.set_function("GetOverlayText", &LuaScriptHandle::GetOverlayText, &entity.GetComponent<LuaScriptComponent>().Handle);
-        lua.set_function("SetOverlayText", &LuaScriptHandle::SetOverlayText, &entity.GetComponent<LuaScriptComponent>().Handle);
-
         lua.set_function("BindBeginCollisionFunction", &LuaScriptHandle::BindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
         lua.set_function("UnbindBeginCollisionFunction", &LuaScriptHandle::UnbindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
 
         lua.set_function("BindEndCollisionFunction", &LuaScriptHandle::BindEndCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
         lua.set_function("UnbindEndCollisionFunction", &LuaScriptHandle::UnbindEndCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
+
+        lua.set_function("GetSelf", &LuaScriptHandle::GetSelf, &entity.GetComponent<LuaScriptComponent>().Handle);
     }
 
     static void S_RisterBasicFunctionsForLuaState(sol::state& luaState)
@@ -62,73 +67,107 @@ namespace Alas
         luaState.set_function("GetDeltaTime", &LuaBasicFunctions::GetDeltaTime);
         luaState.set_function("GetElapsedTime", &LuaBasicFunctions::GetElapsedTime);
         luaState.set_function("IsButtonPressed", &LuaBasicFunctions::IsButtonPressed);
+        luaState.set_function("Normalize2", &LuaBasicFunctions::Normalize2);
+        luaState.set_function("Normalize3", &LuaBasicFunctions::Normalize3);
+        luaState.set_function("Normalize4", &LuaBasicFunctions::Normalize4);
     }
 
     static void S_RegisterTypesForLuaState(sol::state& luaState)
     {
-        luaState.new_usertype<vec2>("vec2",
-            sol::constructors<vec2()>(),
-            "x", &vec2::x,
-            "y", &vec2::y
+        luaState.new_usertype<glm::vec2>("vec2",
+            sol::constructors<glm::vec2()>(),
+            "x", &glm::vec2::x,
+            "y", &glm::vec2::y
         );
 
-        luaState.new_usertype<vec3>("vec3",
-            sol::constructors<vec3()>(),
-            "x", &vec3::x,
-            "y", &vec3::y,
-            "z", &vec3::z
+        luaState.new_usertype<glm::vec3>("vec3",
+            sol::constructors<glm::vec3()>(),
+            "x", &glm::vec3::x,
+            "y", &glm::vec3::y,
+            "z", &glm::vec3::z
         );
 
-        luaState.new_usertype<vec4>("vec4",
-            sol::constructors<vec4()>(),
-            "x", &vec4::x,
-            "y", &vec4::y,
-            "z", &vec4::z,
-            "w", &vec4::w
+        luaState.new_usertype<glm::vec4>("vec4",
+            sol::constructors<glm::vec4()>(),
+            "x", &glm::vec4::x,
+            "y", &glm::vec4::y,
+            "z", &glm::vec4::z,
+            "w", &glm::vec4::w
+        );
+
+        luaState.new_usertype<TagComponent>("tag",
+            sol::constructors<TagComponent()>(),
+            "text", &TagComponent::Tag
         );
     
-        luaState.new_usertype<transform>("transform",
-            sol::constructors<transform()>(),
-            "position", &transform::position,
-            "rotation", &transform::rotation,
-            "scale", &transform::scale
+        luaState.new_usertype<Transform>("transform",
+            sol::constructors<Transform()>(),
+            "position", &Transform::Position,
+            "rotation", &Transform::Rotation,
+            "scale", &Transform::Scale
         );
 
-        luaState.new_enum<body_type>("body_type", {
-                {"STATIC", body_type::STATIC},
-                {"KINEMATIC", body_type::KINEMATIC},
-                {"DYNAMIC", body_type::DYNAMIC}
+        luaState.new_enum<RigidBody2D::BodyType>("body_type", {
+                {"STATIC", RigidBody2D::BodyType::Static},
+                {"KINEMATIC", RigidBody2D::BodyType::Kinematic},
+                {"DYNAMIC", RigidBody2D::BodyType::Dynamic}
             } 
         );
     
-        luaState.new_usertype<rigid_body>("rigid_body",
-            sol::constructors<rigid_body()>(),
-            "type", &rigid_body::type,
-            "velocity", &rigid_body::velocity,
-            "mass", &rigid_body::mass
+        luaState.new_usertype<RigidBody2D>("rigid_body",
+            sol::constructors<RigidBody2D()>(),
+            "type", &RigidBody2D::Type,
+            "velocity", &RigidBody2D::Velocity,
+            "mass", &RigidBody2D::Mass
         );
 
-        luaState.new_usertype<sprite>("sprite",
-            sol::constructors<sprite()>(),
-            "color", &sprite::color
+        luaState.new_usertype<SpriteComponent>("sprite",
+            sol::constructors<SpriteComponent()>(),
+            "color", &SpriteComponent::Color
         );
 
-        luaState.new_usertype<worldspace_text>("worldspace_text",
-            sol::constructors<worldspace_text()>(),
-            "offset", &worldspace_text::offset,
-            "rotation", &worldspace_text::rotation,
-            "scale", &worldspace_text::scale,
-            "display_text", &worldspace_text::display_text,
-            "color", &worldspace_text::color
+        luaState.new_usertype<WorldSpaceText>("worldspace_text",
+            sol::constructors<WorldSpaceText()>(),
+            "offset", &WorldSpaceText::Offset,
+            "rotation", &WorldSpaceText::Rotation,
+            "scale", &WorldSpaceText::Scale,
+            "display_text", &WorldSpaceText::DisplayText,
+            "color", &WorldSpaceText::Color
         );
 
-        luaState.new_usertype<overlay_text>("overlay_text",
-            sol::constructors<overlay_text()>(),
-            "screen_position", &overlay_text::screen_position,
-            "rotation", &overlay_text::rotation,
-            "scale", &overlay_text::scale,
-            "display_text", &overlay_text::display_text,
-            "color", &overlay_text::color
+        luaState.new_usertype<OverlayText>("overlay_text",
+            sol::constructors<OverlayText()>(),
+            "screen_position", &OverlayText::ScreenPosition,
+            "rotation", &OverlayText::Rotation,
+            "scale", &OverlayText::Scale,
+            "display_text", &OverlayText::DisplayText,
+            "color", &OverlayText::Color
+        );
+
+    //     struct entity
+    // {
+    //     uint32_t uid;
+    //     components components;
+    // };
+
+    // struct components
+    // {
+    //     transform transform;
+    //     rigid_body rigid_body;
+    //     sprite sprite;
+    //     worldspace_text worldspace_text;
+    //     overlay_text overlay_text;
+    // };
+
+        luaState.new_usertype<LuaEntity>("entity",
+            sol::constructors<LuaEntity()>(),
+            "uid", &LuaEntity::uid,
+            "tag", &LuaEntity::tag,
+            "transform", &LuaEntity::transform,
+            "rigid_body", &LuaEntity::rigid_body,
+            "sprite", &LuaEntity::sprite,
+            "worldspace_text", &LuaEntity::worldspace_text,
+            "overlay_text", &LuaEntity::overlay_text
         );
     
         luaState.new_enum<ALAS_Scancode>("KeyCode", {

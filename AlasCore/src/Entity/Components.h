@@ -185,7 +185,6 @@ namespace Alas
                 return DEFAULT_RIGID_BODY_2D_TYPE;
             }
         }
-        
     };
 
     struct BoxCollider2D

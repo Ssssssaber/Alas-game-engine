@@ -1,129 +1,49 @@
-keke_speed = 100
-rotation_speed = 110
+local ref = GetSelf()
+local keke_speed = 3000
+local rotation_speed = 110
 
 function velocity_test(delta_time)
-    -- velocity = vec2:new()
-    velocity = GetVelocity()
-    if (velocity) then
+    if (ref.rigid_body) then
+        local direction = vec2:new()
         if (IsButtonPressed(KeyCode.KEY_W)) then
-            velocity.y = velocity.y + keke_speed * delta_time
+            direction.y = 1
         end
         
         if (IsButtonPressed(KeyCode.KEY_A)) then 
-            velocity.x = velocity.x - keke_speed * delta_time
+            direction.x = -1
         end
         
         if (IsButtonPressed(KeyCode.KEY_S)) then 
-            velocity.y = velocity.y - keke_speed * delta_time
+            direction.y = -1
         end
         
         if (IsButtonPressed(KeyCode.KEY_D)) then 
-            velocity.x = velocity.x + keke_speed * delta_time
+            direction.x = 1
         end
-        SetVelocity(velocity)
+        direction = Normalize2(direction)
+
+        ref.rigid_body.velocity.x = direction.x * keke_speed * delta_time;
+        ref.rigid_body.velocity.y = direction.y * keke_speed * delta_time;
     else
         print("No rigid body component")
     end
 end
 
-
-function transform_test(delta_time)
-    transform = GetTransform()
-    -- print(transform.rotation)
-    if (transform) then
-        if (IsButtonPressed(KeyCode.KEY_W)) then
-            transform.position.y = keke_speed * delta_time
-        end
-        
-        if (IsButtonPressed(KeyCode.KEY_A)) then 
-            transform.position.x = -keke_speed * delta_time
-        end
-        
-        if (IsButtonPressed(KeyCode.KEY_S)) then 
-            transform.position.y = -keke_speed * delta_time
-        end
-        
-        if (IsButtonPressed(KeyCode.KEY_D)) then 
-            transform.position.x = keke_speed * delta_time
-        end
-
-        transform.rotation = delta_time * rotation_speed
-        transform.scale.x = delta_time * rotation_speed
-        SetTransform(transform)
-    else
-        print("No transform component")
-    end
-end
-
-function sprite_test(delta_time)
-    sprite = GetSprite()
-    -- print(transform.rotation)
-    if (sprite) then
-        sprite.color.x = delta_time
-        sprite.color.y = delta_time
-        SetSprite(sprite)
-    else
-        print("No sprite component")
-    end
-end
-
-function rigid_body_test(delta_time)
-    rigid_body = GetRigidBody()
-    -- print(transform.rotation)
-    if (rigid_body) then
-        rigid_body.velocity.x = delta_time
-        rigid_body.velocity.y = -delta_time
-        SetRigidBody(rigid_body)
-    else
-        print("No rigid_body component")
-    end
-end
-
-function collision_start()
+function collision_start(ent)
     print("COLLISION START")
     -- UnbindBeginCollisionFunction()
-
-    worldspace_text = GetWorldspaceText()
-
-    if (worldspace_text) then
-        worldspace_text.display_text = "COLLISION START"
-        SetWorldspaceText(worldspace_text)
-    else
-        print("No worldspace_text compoent")
-    end
-
-    rigid_body = GetRigidBody()
-    -- print(transform.rotation)
-    if (rigid_body) then
-        rigid_body.velocity.x = 50
-        rigid_body.velocity.y = 10
-        SetRigidBody(rigid_body)
-    else
-        print("No rigid_body component")
+    -- entTag = Get
+    if (ent.tag) then
+        if (ref.worldspace_text and ent.tag) then
+            ref.worldspace_text.display_text = ent.tag.text 
+        else
+            print("No worldspace_text compoent")
+        end
     end
 end
 
-function collision_end()
+function collision_end(entity)
     print("COLLISION END")
-
-    worldspace_text = GetWorldspaceText()
-
-    if (worldspace_text) then
-        worldspace_text.display_text = "COLLISION END"
-        SetWorldspaceText(worldspace_text)
-    else
-        print("No worldspace_text compoent")
-    end
-
-    overlay_text = GetOverlayText()
-
-    if (overlay_text) then
-        overlay_text.display_text = "COLLISION DETECTED"
-        SetOverlayText(overlay_text)
-    else
-        print("No overlay_text compoent")
-    end
-    -- UnbindEndCollisionFunction()
 end
 
 function OnCreate()
@@ -134,8 +54,12 @@ function OnCreate()
 end
 
 function Update()
+    ref = GetSelf()
+
     delta_time = GetDeltaTime()
-    
+    -- print(ref.rigid_body.mass)
+    -- print(ref.rigid_body.type)
+    -- print(ref.sprite.color.x)
     velocity_test(delta_time)
     -- transform_test(delta_time)
     -- sprite_test(delta_time)
