@@ -11,8 +11,8 @@ namespace Alas
     {
         lua = sol::state();
         lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::math, sol::lib::table);
-        S_RegisterTypesForLuaState(lua);
-        S_RisterBasicFunctionsForLuaState(lua);
+        LuaBasicFunctions::S_RegisterTypesForLuaState(lua);
+        LuaBasicFunctions::S_RisterBasicFunctionsForLuaState(lua);
     }
 
     void ScriptingEngine::InitGameLoop()
@@ -78,7 +78,7 @@ namespace Alas
         ALAS_PROFILE_FUNCTION()
         try
         {
-            S_RegisterEntityRelatedFunctions(lua, entity);
+            LuaBasicFunctions::S_RegisterEntityRelatedFunctions(lua, entity);
             lua.script_file(filename);
         }
         catch (const sol::error& e)

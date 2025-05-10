@@ -9,6 +9,7 @@
 #include "Renderer/Renderer.h"
 
 #include "Scripting/lua/ScriptingEngine.h"
+#include <chipmunk/chipmunk_structs.h>
 
 namespace Alas
 {
@@ -51,12 +52,31 @@ namespace Alas
 
     void Scene::DeleteEntityWithId(UID id)
     {
+        if (!GetEntityByIdIfExists(id)) return;
+        
         Entity entity = _entityMap[id];
 		DeleteEntity(entity);
     }
 
     void Scene::DeleteEntity(Entity& entity)
     {
+        auto body = _physicsSpaceBodyMap[entity.GetUID()];
+        auto shape = _physicsSpaceShapeMap[entity.GetUID()];
+
+        if (shape) {
+            cpSpaceRemoveShape(_physicsSpace, shape);
+            cpShapeFree(shape);
+            _physicsSpaceShapeMap.erase(entity.GetUID()); // Prevent double deletion
+        }
+
+        if (body) {
+            cpSpaceRemoveBody(_physicsSpace, body);
+            cpBodyFree(body);
+            _physicsSpaceBodyMap.erase(entity.GetUID()); // Prevent double deletion
+        }
+
+        
+        
         _entityMap.erase(entity.GetUID());
 		_entityRegistry.destroy(entity._entityHandle);
     }
@@ -200,6 +220,8 @@ namespace Alas
                     if (rigidBody.Type == RigidBody2D::BodyType::Dynamic)
                         cpShapeSetCollisionType(bodyShape, BaseCollisionType); 
                     // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
+
+                    _physicsSpaceShapeMap[entity.GetUID()] = bodyShape;
                 }
 
                 
@@ -276,11 +298,6 @@ namespace Alas
     void Scene::Physics2DStop()
     {
         ALAS_PROFILE_FUNCTION();
-        for (auto idAndShape : _physicsSpaceShapeMap)
-        {
-            cpBodyFree(cpShapeGetBody(idAndShape.second));
-            cpShapeFree(idAndShape.second);
-        }
         cpSpaceFree(_physicsSpace);
 
         _gameLoopScene = nullptr;
