@@ -582,6 +582,11 @@ public:
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::WorldSpaceText>();
             ImGui::TreePop();
         }
+
+        if (ImGui::Button("Delete entity", { BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT}))
+        {
+            _scene->DeleteEntityWithId(ent.GetUID());
+        }
     }
 
     void OnEvent(Alas::Event& event) override
