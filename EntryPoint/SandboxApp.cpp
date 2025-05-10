@@ -30,12 +30,6 @@ public:
         
         // _camera.reset(new Alas::OrthCamera(-1.6f, 1.6f, -0.9f, 0.9f));        
         _scene.reset(new Alas::Scene());
-
-        _textureShader = Alas::ResourceManager::GetShader("Assets/Shaders/TextureShader.shader");
-        _textureShader->Bind();
-
-        _baseTexture = Alas::ResourceManager::GetTexture("Assets/Textures/wall.png");
-        _baseTexture->Bind();
         
         // -------------- test scene load correctly
 
@@ -45,7 +39,7 @@ public:
         // auto& script = _mainGo.AddComponent<Alas::NativeScriptComponent>();
         // script.Bind<Triangle>();
 
-        auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, _textureShader);
+        auto& sprite = _mainGo.AddComponent<Alas::SpriteComponent>(_mainGOTexture, Alas::ResourceManager::GetBaseShader());
         sprite.Color = glm::vec4(1.0f);
 
         _mainGo.GetComponent<Alas::Transform>().Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -206,7 +200,7 @@ public:
     Alas::Entity OnCreateObjectButton()
     {
         Alas::Entity ent = _scene->CreateEntity("Quad");
-        auto& sprite = ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
+        auto& sprite = ent.AddComponent<Alas::SpriteComponent>(Alas::ResourceManager::GetBaseTexture(), Alas::ResourceManager::GetBaseShader());
         auto& transform = ent.GetComponent<Alas::Transform>();
         transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
         transform.Position = glm::vec3(0.0f);
@@ -221,7 +215,7 @@ public:
         if (selectedComponentId >= IM_ARRAYSIZE(_componentsStr)) return ent;
 
         if (_componentsStr[selectedComponentId] == SPRITE_C && !ent.HasComponent<Alas::SpriteComponent>())
-            ent.AddComponent<Alas::SpriteComponent>(_baseTexture, _textureShader);
+            ent.AddComponent<Alas::SpriteComponent>(Alas::ResourceManager::GetBaseTexture(), Alas::ResourceManager::GetBaseShader());
         else if (_componentsStr[selectedComponentId] == RIGID_BODY_2D_C && !ent.HasComponent<Alas::RigidBody2D>())
             ent.AddComponent<Alas::RigidBody2D>();
         else if (_componentsStr[selectedComponentId] == BOX_COLLIDER_2D_C && !ent.HasComponent<Alas::BoxCollider2D>() ) 
@@ -636,10 +630,6 @@ public:
         Alas::Shared<Alas::Scene> _scene;
 
         Alas::Entity _mainGo;
-        
-        Alas::Shared<Alas::Shader> _textureShader;
-
-        Alas::Shared<Alas::Texture> _baseTexture;
         Alas::Shared<Alas::Texture> _mainGOTexture;
 
         Alas::Shared<Alas::OrthCamera> _camera;

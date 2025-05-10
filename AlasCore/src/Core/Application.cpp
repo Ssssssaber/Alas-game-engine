@@ -23,6 +23,7 @@ namespace Alas
             std::bind(&Application::OnEvent, this, std::placeholders::_1)
         );
 
+        ResourceManager::Init();
         ResourceManager::UpdateMetaFiles();
         
         _imguiLayer = new ImGuiLayer();

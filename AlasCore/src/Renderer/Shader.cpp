@@ -1,6 +1,6 @@
 #include "Shader.h"
 #include "Renderer.h"
-#include "Resources/ResourceManager.h"
+// #include "Resources/ResourceManager.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include <sstream>
 #include <fstream>
@@ -14,8 +14,8 @@ namespace Alas {
             case RendererAPI::API::OpenGL:  
             {
                 Shared<Shader> shader = Shared<Shader>(new OpenGLShader(uid, vertexShaderSource, fragmentShaderSource));
-                if (!ResourceManager::IsShaderUsed(uid))
-                    ResourceManager::AddUsedResource(uid, shader);    
+                // if (!ResourceManager::IsShaderUsed(uid))
+                //     ResourceManager::AddUsedResource(uid, shader);    
                 return shader;
             }       
         }

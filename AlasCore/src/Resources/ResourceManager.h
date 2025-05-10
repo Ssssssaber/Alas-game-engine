@@ -29,6 +29,9 @@ namespace Alas
         // * add later
         //      fonts: .ttf
         //      sound: .mp3
+        static void Init();
+        static Shared<Shader> GetBaseShader() { return baseShader; }
+        static Shared<Texture> GetBaseTexture() { return baseTexture; }
 
         static UID GetResourceIdByFilepath(const std::string& filepath);
         static UID GetResourceIdByFilepath(const fs::path& filepath);
@@ -59,5 +62,8 @@ namespace Alas
 
         static std::unordered_map<UID, Shared<Shader>> UsedShaders;
         static std::unordered_map<UID, Shared<Texture>> UsedTextures;
+
+        static Shared<Shader> baseShader;
+        static Shared<Texture> baseTexture;
     };   
 } // namespace Alas

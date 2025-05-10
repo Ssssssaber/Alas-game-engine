@@ -12,6 +12,58 @@ namespace Alas
     std::unordered_map<UID, Shared<Shader>> ResourceManager::UsedShaders;
     std::unordered_map<UID, Shared<Texture>> ResourceManager::UsedTextures;
 
+    Shared<Shader> ResourceManager::baseShader;
+    Shared<Texture> ResourceManager::baseTexture;
+
+    void ResourceManager::Init()
+    {
+        std::string vertexSrc = R"(
+        #version 450
+                
+        layout(location = 0) in vec3 a_Position;
+        layout(location = 1) in vec2 a_TexCoord;
+
+        out vec2 o_TexCoord;
+        out flat int o_EntityId;
+
+        uniform mat4 u_viewProjectionMatrix;
+        uniform mat4 u_model;
+        uniform int u_EntityId;
+
+        void main()
+        {
+            gl_Position = u_viewProjectionMatrix * u_model * vec4(a_Position.xy, 0.0, 1.0);	
+            
+            o_TexCoord = a_TexCoord;
+            o_EntityId = u_EntityId;
+        })";
+
+        std::string fragmentSrc = R"(
+        #version 450
+
+        out vec4 color;
+        out int color2;
+
+        in vec2 o_TexCoord;
+        in flat int o_EntityId;
+
+        uniform sampler2D u_Texture;
+        uniform vec4 u_Color;
+
+        void main()
+        {
+            color = texture(u_Texture, o_TexCoord) * u_Color;
+            color2 = o_EntityId;
+        }
+        )";
+
+        baseShader = Shader::Create(GetUniqueId(), vertexSrc, fragmentSrc);
+
+        baseTexture = Texture::Create(GetUniqueId(), 1, 1);
+        uint32_t whiteTextureData = 0xffffffff;
+		baseTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+    }
+
     UID ResourceManager::GetResourceIdByFilepath(const std::string& filepath)
     {
         return GetResourceIdByFilepath(fs::path(filepath));
@@ -196,7 +248,7 @@ namespace Alas
             }
             ALAS_CORE_WARN(
                 "Resource with id {0} does not exist.", id);
-            return nullptr;
+            return baseShader;
         }
         return findResult->second;
     }
@@ -223,7 +275,7 @@ namespace Alas
             }
             ALAS_CORE_WARN(
                 "Resource with id {0} does not exist.", id);
-            return nullptr;
+            return baseTexture;
         }
         return findResult->second;
     }

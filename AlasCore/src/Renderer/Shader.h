@@ -15,6 +15,8 @@ namespace Alas {
     {
     public:
         static Shared<Shader> Create(const std::string& filepath, UID uid = NULL_UID);
+        static Shared<Shader> Create(UID uid, const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
+        
         Shader(UID uid) : _resourceID(uid) { }
         UID GetUID() { return _resourceID; }
 
@@ -38,7 +40,6 @@ namespace Alas {
         
     private:
         static ShaderSourceCode* ParseShaderFile(const std::string& filepath);
-        static Shared<Shader> Create(UID uid, const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
         
     private:
         UID _resourceID;

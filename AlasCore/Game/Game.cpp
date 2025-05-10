@@ -19,7 +19,8 @@ namespace Alas
         _time = new Time();
 
         _gameLoop.reset(new GameLoop(_time));
-
+        
+        ResourceManager::Init();
         Renderer::Init();
         _gameLoop->Init(SceneSerialization::DeserializeScene("Assets/main.yaml"));
     }

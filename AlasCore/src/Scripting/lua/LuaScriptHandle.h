@@ -38,6 +38,8 @@ namespace Alas
 
         void BindEndCollisionFunction(const char* functionName);
         void UnbindEndCollisionFunction();
+
+        // void DeleteEntity
     
     private:
         Shared<Entity> _entity;
