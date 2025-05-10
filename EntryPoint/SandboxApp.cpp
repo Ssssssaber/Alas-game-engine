@@ -173,22 +173,22 @@ public:
         Alas::Renderer::BeginScene(_camera);
 
         _scene->SceneUpdate();
-        _entityHovered = GetEntityUnderCursor(_hoveredEntity);
-        if (_entityHovered)
+        _hoveredEntity = GetEntityUnderCursor();
+        if (_hoveredEntity)
         {
-            auto& transform = _hoveredEntity.GetComponent<Alas::Transform>();
+            auto& transform = _hoveredEntity->GetComponent<Alas::Transform>();
             Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 0.8f));
         }
         
         if (Alas::Input::IsMouseButtonPressed(ALAS_MOUSE_BUTTON_LEFT))
         {
-            _entitySelected = GetEntityUnderCursor(_selectedEntity);
+            _selectedEntity = GetEntityUnderCursor();
 
         }
         
-        if (_entitySelected)
+        if (_selectedEntity)
         {
-            auto& transform = _selectedEntity.GetComponent<Alas::Transform>();
+            auto& transform = _selectedEntity->GetComponent<Alas::Transform>();
             Alas::Renderer::DrawBox(transform.Position, transform.Rotation.z, transform.Scale, glm::vec4(0.0f, 1.0f, 0.0f, 0.8f));
         }  
 
@@ -299,7 +299,7 @@ public:
             Alas::Entity ent = it->second;
             std::string str = "ID: " + std::to_string((ent.GetUID())) + " " + ent.GetComponent<Alas::TagComponent>().Tag;
             
-            if (_entitySelected && ent.GetUID() == _selectedEntity.GetUID())
+            if (_selectedEntity && ent.GetUID() == _selectedEntity->GetUID())
             {
                 if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Selected))
                 {   
@@ -594,7 +594,7 @@ public:
         
     }
 
-    bool GetEntityUnderCursor(Alas::Entity& entity)
+    Alas::Entity* GetEntityUnderCursor()
     {
         auto[mx, my] = ImGui::GetMousePos();
 		mx -= m_ViewportBounds[0].x;
@@ -607,7 +607,7 @@ public:
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
 		{
 			uint32_t id = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            return _scene->GetEntityByIdIfExists(id, entity);
+            return _scene->GetEntityByIdIfExists(id);
 		}
 
         return false;
@@ -648,10 +648,8 @@ public:
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_ViewportBounds[2];
 
-        Alas::Entity _selectedEntity;
-        bool _entitySelected = false;
-        Alas::Entity _hoveredEntity;
-        bool _entityHovered = false;
+        Alas::Entity* _selectedEntity = nullptr;
+        Alas::Entity* _hoveredEntity = nullptr;
 };
 
 class Sandbox : public Alas::Application

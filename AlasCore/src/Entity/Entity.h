@@ -15,7 +15,7 @@ namespace Alas
 		Entity(const Entity& other) = default;
         Entity(entt::entity handle, Scene* scene) : _entityHandle(handle), _scene(scene) {}
         
-        UID GetUID() { return GetComponent<IDComponent>().ID; }
+        UID GetUID() const { return GetComponent<IDComponent>().ID; }
 
         template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
@@ -35,14 +35,14 @@ namespace Alas
 		}
 
         template<typename T>
-		T& GetComponent()
+		T& GetComponent() const
 		{
 			ALAS_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
 			return _scene->_entityRegistry.get<T>(_entityHandle);
 		}
 
 		template<typename T>
-		bool HasComponent()
+		bool HasComponent() const
 		{
 			return _scene->_entityRegistry.all_of<T>(_entityHandle);
 		}

@@ -4,8 +4,8 @@ namespace Alas
 {
     sol::state ScriptingEngine::lua = sol::state();
     std::set<UID> ScriptingEngine::updatedScripts;
-    std::set<UID> ScriptingEngine::beginCollisionUpdate;
-    std::set<UID> ScriptingEngine::endCollisionUpdate;
+    std::unordered_map<UID, std::set<UID>> ScriptingEngine::beginCollisionUpdate;
+    std::unordered_map<UID, std::set<UID>> ScriptingEngine::endCollisionUpdate;
 
     void ScriptingEngine::Init()
     {
@@ -22,7 +22,7 @@ namespace Alas
         endCollisionUpdate.clear();
     }
 
-    void ScriptingEngine::HandleScript(const std::string& filename, Entity entity)
+    void ScriptingEngine::HandleScript(const std::string& filename, const Entity& entity)
     {
         LoadScript(filename, entity);
         
@@ -35,12 +35,21 @@ namespace Alas
 
         if (beginCollisionUpdate.find(entity.GetUID()) != beginCollisionUpdate.end())
         {
+            ALAS_CORE_INFO("{0} {1}", entity.GetComponent<TagComponent>().Tag, entity.GetUID());
             auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
             if (luaHandle._beginCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
             {
-                ExecuteFunction(luaHandle._beginCollisionFunctionName, entity);
-                beginCollisionUpdate.erase(entity.GetUID());
+                std::set<UID> entities = beginCollisionUpdate[entity.GetUID()]; 
+                for (auto it = entities.begin(); it != entities.end(); it++)
+                {
+                    Entity* currentEntity = Scene::GetGameLoopScene()->GetEntityByIdIfExists(*it);
+                    
+                    ALAS_CORE_INFO("{0}", currentEntity->GetComponent<TagComponent>().Tag, currentEntity->GetUID());
+                    if (!currentEntity) continue;
+                    ExecuteFunction(luaHandle._beginCollisionFunctionName, *currentEntity);
+                }
             }
+            beginCollisionUpdate.erase(entity.GetUID());
         }
 
         if (endCollisionUpdate.find(entity.GetUID()) != endCollisionUpdate.end())
@@ -48,9 +57,15 @@ namespace Alas
             auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
             if (luaHandle._endCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
             {
-                ExecuteFunction(luaHandle._endCollisionFunctionName, entity);
-                endCollisionUpdate.erase(entity.GetUID());
+                std::set<UID> entities = endCollisionUpdate[entity.GetUID()]; 
+                for (auto it = entities.begin(); it != entities.end(); it++)
+                {
+                    Entity* currentEntity = Scene::GetGameLoopScene()->GetEntityByIdIfExists(*it);
+                    if (!currentEntity) continue;
+                    ExecuteFunction(luaHandle._endCollisionFunctionName, *currentEntity);
+                }
             }
+            endCollisionUpdate.erase(entity.GetUID());
         }
         
         ExecuteFunction("Update");
@@ -58,7 +73,7 @@ namespace Alas
 
     }
 
-    void ScriptingEngine::LoadScript(const std::string& filename, Entity entity)
+    void ScriptingEngine::LoadScript(const std::string& filename, const Entity& entity)
     {
         ALAS_PROFILE_FUNCTION()
         try
@@ -85,13 +100,11 @@ namespace Alas
         }
     }
 
-    void ScriptingEngine::ExecuteFunction(const std::string& functionName, Entity& entity)
+    void ScriptingEngine::ExecuteFunction(const std::string& functionName, const Entity& entity)
     {
         ALAS_PROFILE_FUNCTION()
-        if (!entity.HasComponent<LuaScriptComponent>()) return;
-
         auto result = lua[functionName](
-            entity.GetComponent<LuaScriptComponent>().Handle.GetSelf()
+            FromEntityToLuaEntity(entity)
         );
 
         if (!result.valid())
@@ -101,15 +114,15 @@ namespace Alas
         }
     }
 
-    void ScriptingEngine::AddBeginCollisionUpdate(UID uid)
+    void ScriptingEngine::AddBeginCollisionUpdate(UID first, UID second)
     {
         ALAS_PROFILE_FUNCTION();
-        beginCollisionUpdate.insert(uid);
+        beginCollisionUpdate[first].insert(second);
     }
     
-    void ScriptingEngine::AddEndCollisionUpdate(UID uid)
+    void ScriptingEngine::AddEndCollisionUpdate(UID first, UID second)
     {
         ALAS_PROFILE_FUNCTION();
-        endCollisionUpdate.insert(uid);
+        endCollisionUpdate[first].insert(second);
     }
 }

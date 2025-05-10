@@ -33,17 +33,20 @@ namespace Alas
 		return entity;
     }
 
-    bool Scene::GetEntityByIdIfExists(UID uid, Entity& resultEntity)
+    Entity* Scene::GetEntityByIdIfExists(UID uid)
     {
-        if (_entityMap.find(uid) == _entityMap.end())
+        auto view = _entityRegistry.view<IDComponent>();
+        for (auto entt : view)
         {
-            ALAS_CORE_WARN(
-                "Entity with id {0} does not exist",
-                uid);
-            return false;
+            auto& myID = view.get<IDComponent>(entt);
+            if (myID.ID == uid)
+            {
+                _entityMap[uid] = {entt, this};
+                return &_entityMap[uid];
+            }
+                
         }
-        resultEntity = _entityMap[uid];
-        return true;
+        return nullptr;
     }
 
     void Scene::DeleteEntityWithId(UID id)
@@ -58,6 +61,20 @@ namespace Alas
 		_entityRegistry.destroy(entity._entityHandle);
     }
 
+    Entity* Scene::GetEntityFromShape(cpBody* body)
+    {
+        Entity* entity = nullptr;
+        for (auto it = _gameLoopScene->_physicsSpaceBodyMap.begin(); it != _gameLoopScene->_physicsSpaceBodyMap.end(); ++it) 
+        {
+            if (it->second != body) continue;
+            
+            entity = _gameLoopScene->GetEntityByIdIfExists(it->first);
+            if (!entity) break;
+        }
+
+        return entity;
+    }
+
     struct CollisionData {
         UID uid;
     };
@@ -65,31 +82,55 @@ namespace Alas
     static cpCollisionType BaseCollisionType;
 
     cpBool Scene::BeginCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data) {
-        CollisionData* collisionData = (struct CollisionData*)(data);
-        
-        Entity entity;
-        if (!_gameLoopScene->GetEntityByIdIfExists(collisionData->uid, entity)) return cpFalse;
-        
-        if (entity.HasComponent<LuaScriptComponent>())
+        cpBody* first;
+        cpBody* second;
+
+        cpArbiterGetBodies(arb, &first, &second);
+        Entity* firstEntity = GetEntityFromShape(first);
+        Entity* secondEntity = GetEntityFromShape(second);
+
+        if (!firstEntity || !secondEntity) return cpFalse;
+
+        if (firstEntity->HasComponent<LuaScriptComponent>())
         {
-            auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
+            auto& luaHandle = firstEntity->GetComponent<LuaScriptComponent>();
             if (luaHandle._beginCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
-                ScriptingEngine::AddBeginCollisionUpdate(collisionData->uid);
+                ScriptingEngine::AddBeginCollisionUpdate(firstEntity->GetUID(), secondEntity->GetUID());
         }
+        
+        if (secondEntity->HasComponent<LuaScriptComponent>())
+        {
+            auto& luaHandle = secondEntity->GetComponent<LuaScriptComponent>();
+            if (luaHandle._beginCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
+                ScriptingEngine::AddBeginCollisionUpdate(secondEntity->GetUID(), firstEntity->GetUID());
+        }
+
         return cpTrue;
     }
 
     void Scene::EndCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data) {
-        CollisionData* collisionData = (struct CollisionData*)(data);
+        cpBody* first;
+        cpBody* second;
 
-        Entity entity;
-        if (!_gameLoopScene->GetEntityByIdIfExists(collisionData->uid, entity)) return;
+        cpArbiterGetBodies(arb, &first, &second);
+        Entity* firstEntity = GetEntityFromShape(first);
+        Entity* secondEntity = GetEntityFromShape(second);
+
+        if (!firstEntity || !secondEntity) return;
+
         
-        if (entity.HasComponent<LuaScriptComponent>())
+        if (firstEntity->HasComponent<LuaScriptComponent>())
         {
-            auto& luaHandle = entity.GetComponent<LuaScriptComponent>();
+            auto& luaHandle = firstEntity->GetComponent<LuaScriptComponent>();
             if (luaHandle._endCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
-                ScriptingEngine::AddEndCollisionUpdate(collisionData->uid);
+                ScriptingEngine::AddBeginCollisionUpdate(firstEntity->GetUID(), secondEntity->GetUID());
+        }
+        
+        if (secondEntity->HasComponent<LuaScriptComponent>())
+        {
+            auto& luaHandle = secondEntity->GetComponent<LuaScriptComponent>();
+            if (luaHandle._endCollisionFunctionName != LUA_SCRIPT_NO_COLLISION_FUNC)
+                ScriptingEngine::AddBeginCollisionUpdate(secondEntity->GetUID(), firstEntity->GetUID());
         }
     }    
 
@@ -127,9 +168,6 @@ namespace Alas
                             cpCollisionHandler* handler = cpSpaceAddWildcardHandler(_physicsSpace, BaseCollisionType);
                             handler->beginFunc = BeginCollisionBaseFunction;
                             handler->separateFunc = EndCollisionBaseFunction;
-                            CollisionData* data = new CollisionData();
-                            data->uid = entity.GetUID();
-                            handler->userData = data;
                         }
                         else
                         {

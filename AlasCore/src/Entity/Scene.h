@@ -19,13 +19,16 @@ namespace Alas {
 
         Entity CreateEntity(const std::string name = std::string());
         Entity CreateEntityWithId(const std::string name, UID id);
-        bool GetEntityByIdIfExists(UID id, Entity& resultEntity);
+        Entity* Scene::GetEntityByIdIfExists(UID uid);
 
         void DeleteEntityWithId(UID id);
         void DeleteEntity(Entity& entity);
         
         void GameLoopInit();
+        static Scene* GetGameLoopScene() { return _gameLoopScene; }
 
+        
+        static Entity* Scene::GetEntityFromShape(cpBody* shape);
         static cpBool BeginCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
         static void EndCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
     
