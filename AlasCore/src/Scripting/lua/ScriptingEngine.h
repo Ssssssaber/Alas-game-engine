@@ -15,17 +15,19 @@ namespace Alas {
 
         static void AddBeginCollisionUpdate(UID first, UID second);
         static void AddEndCollisionUpdate(UID first, UID second);
+        static LuaEntity* FromEntityToLuaEntity(const Entity& _entity);
     
     private:
         static void ExecuteFunction(const std::string& functionName);
         static void ExecuteFunction(const std::string& functionName, const Entity& entity);
+        // static void GetOrCreateLuaEntity(const Entity& _entity);
 
     private:
         static sol::state lua; 
         static std::set<UID> updatedScripts;
         static std::unordered_map<UID, std::set<UID>> beginCollisionUpdate;
         static std::unordered_map<UID, std::set<UID>> endCollisionUpdate;
-        // static std::unordered_map<UID, LuaEntity> luaEntityMap;
+        static std::unordered_map<UID, LuaEntity> LuaEntityMap;
     };
 }
 

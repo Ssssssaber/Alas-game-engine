@@ -1,7 +1,7 @@
 #include "LuaRegister.h"
 
 #include "Entity/Scene.h"
-
+#include "ScriptingEngine.h"
 namespace Alas
 {
     float LuaBasicFunctions::GetDeltaTime()
@@ -48,10 +48,7 @@ namespace Alas
     LuaEntity* LuaBasicFunctions::GetEntityWithTag(const std::string& tag)
     {
         Entity* toCopy = Scene::GetGameLoopScene()->FindEntityWithTag(tag);
-        LuaEntity* ent = FromEntityToLuaEntity(
-            *toCopy
-        );
-        return ent;
+        return ScriptingEngine::FromEntityToLuaEntity(*toCopy);
     }
     
     LuaEntity* LuaBasicFunctions::CreateEntityWithComponents(LuaComponents* components)
@@ -94,7 +91,7 @@ namespace Alas
             Scene::GetGameLoopScene()->AddPhysicsBody(entity);
         }
 
-        return FromEntityToLuaEntity(entity);
+        return ScriptingEngine::FromEntityToLuaEntity(entity);
     }
 
     void LuaBasicFunctions::S_RegisterEntityRelatedFunctions(sol::state& lua, Entity entity)

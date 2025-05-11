@@ -6,7 +6,7 @@ namespace Alas
     std::set<UID> ScriptingEngine::updatedScripts;
     std::unordered_map<UID, std::set<UID>> ScriptingEngine::beginCollisionUpdate;
     std::unordered_map<UID, std::set<UID>> ScriptingEngine::endCollisionUpdate;
-    // std::unordered_map<UID, LuaEntity> ScriptingEngine::luaEntityMap;
+    std::unordered_map<UID, LuaEntity> ScriptingEngine::LuaEntityMap;
 
     void ScriptingEngine::Init()
     {
@@ -16,11 +16,36 @@ namespace Alas
         LuaBasicFunctions::S_RisterBasicFunctionsForLuaState(lua);
     }
 
+    LuaEntity* ScriptingEngine::FromEntityToLuaEntity(const Entity& _entity)
+    {
+        // get or create enitity
+        auto idLuaEntity = LuaEntityMap.find(_entity.GetUID());
+        if (idLuaEntity == LuaEntityMap.end())
+        {
+            LuaEntityMap[_entity.GetUID()] = LuaEntity();
+        }
+
+        // updating lua entity;
+        LuaEntity* _luaEntity = &LuaEntityMap[_entity.GetUID()];
+
+        _luaEntity->uid = _entity.GetUID();
+        
+        if(_entity.HasComponent<TagComponent>()) _luaEntity->components->tag = &_entity.GetComponent<TagComponent>();
+        if(_entity.HasComponent<Transform>()) _luaEntity->components->transform = &_entity.GetComponent<Transform>();
+        if(_entity.HasComponent<RigidBody2D>()) _luaEntity->components->rigid_body = &_entity.GetComponent<RigidBody2D>();
+        if(_entity.HasComponent<SpriteComponent>()) _luaEntity->components->sprite = &_entity.GetComponent<SpriteComponent>();
+        if(_entity.HasComponent<WorldSpaceText>()) _luaEntity->components->worldspace_text = &_entity.GetComponent<WorldSpaceText>();
+        if(_entity.HasComponent<OverlayText>()) _luaEntity->components->overlay_text = &_entity.GetComponent<OverlayText>();
+        
+        return _luaEntity;
+    }
+
     void ScriptingEngine::InitGameLoop()
     {
         updatedScripts.clear();
         beginCollisionUpdate.clear();
         endCollisionUpdate.clear();
+        LuaEntityMap.clear();
     }
 
     void ScriptingEngine::HandleScript(const std::string& filename, const Entity& entity)
@@ -30,6 +55,8 @@ namespace Alas
         if (updatedScripts.find(entity.GetUID()) == updatedScripts.end())
         {
             // TODO: check if oncreate exists
+
+            // LuaEntityMap[entity.GetUID()] = *FromEntityToLuaEntity(entity);
             ExecuteFunction("OnCreate");
             updatedScripts.insert(entity.GetUID());
         }
@@ -103,9 +130,10 @@ namespace Alas
 
     void ScriptingEngine::ExecuteFunction(const std::string& functionName, const Entity& entity)
     {
+        FromEntityToLuaEntity(entity);
         ALAS_PROFILE_FUNCTION()
         auto result = lua[functionName](
-            FromEntityToLuaEntity(entity)
+            LuaEntityMap[entity.GetUID()]
         );
 
         if (!result.valid())
