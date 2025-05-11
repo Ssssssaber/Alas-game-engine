@@ -25,6 +25,7 @@ namespace Alas {
         static std::set<UID> updatedScripts;
         static std::unordered_map<UID, std::set<UID>> beginCollisionUpdate;
         static std::unordered_map<UID, std::set<UID>> endCollisionUpdate;
+        // static std::unordered_map<UID, LuaEntity> luaEntityMap;
     };
 }
 

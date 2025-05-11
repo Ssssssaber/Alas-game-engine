@@ -2,8 +2,9 @@ local ref = GetSelf()
 local keke_speed = 3000
 local rotation_speed = 110
 
+
 function velocity_test(delta_time)
-    if (ref.rigid_body) then
+    if (ref.components.rigid_body) then
         local direction = vec2:new()
         if (IsButtonPressed(KeyCode.KEY_W)) then
             direction.y = 1
@@ -22,8 +23,8 @@ function velocity_test(delta_time)
         end
         direction = Normalize2(direction)
 
-        ref.rigid_body.velocity.x = direction.x * keke_speed * delta_time;
-        ref.rigid_body.velocity.y = direction.y * keke_speed * delta_time;
+        ref.components.rigid_body.velocity.x = direction.x * keke_speed * delta_time;
+        ref.components.rigid_body.velocity.y = direction.y * keke_speed * delta_time;
     else
         print("No rigid body component")
     end
@@ -32,17 +33,27 @@ end
 function collision_start(ent)
     print("COLLISION START")
     -- UnbindBeginCollisionFunction()
-    -- entTag = Get
-    if (ent.tag) then
-        if (ref.worldspace_text and ent.tag) then
-            ref.worldspace_text.display_text = ent.tag.text 
+    -- entTag = 
+    if (ent.components.tag) then
+        if (ref.components.worldspace_text and ent.components.tag) then
+            ref.components.worldspace_text.display_text = ent.components.tag.text
+
+            
+            local pomelo_ref = GetEntityWithTag("P")
+            print("COLLISION START2")
+            print(pomelo_ref.components.transform)
+
+            pomelo = CreateEntityWithComponents(pomelo_ref.components)
+            pomelo.components.transform.position = ent.components.transform.position
+
+            DestroyEntity(ent)
         else
             print("No worldspace_text compoent")
         end
     end
 end
 
-function collision_end(entity)
+function collision_end(ent)
     print("COLLISION END")
 end
 

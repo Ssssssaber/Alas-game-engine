@@ -6,6 +6,7 @@ namespace Alas
     std::set<UID> ScriptingEngine::updatedScripts;
     std::unordered_map<UID, std::set<UID>> ScriptingEngine::beginCollisionUpdate;
     std::unordered_map<UID, std::set<UID>> ScriptingEngine::endCollisionUpdate;
+    // std::unordered_map<UID, LuaEntity> ScriptingEngine::luaEntityMap;
 
     void ScriptingEngine::Init()
     {

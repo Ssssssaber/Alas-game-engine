@@ -10,6 +10,16 @@ Entities:
       Shader: 1351442033
       Texture: 797468401
       Color: [1, 1, 1, 1]
+  294109167:
+    Tag: P
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: 652639163
+      Texture: 1752329941
+      Color: [1, 1, 1, 1]
   371741827:
     Tag: Quad
     Transform:

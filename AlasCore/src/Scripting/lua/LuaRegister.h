@@ -20,7 +20,7 @@ namespace Alas
         static void S_RisterBasicFunctionsForLuaState(sol::state& luaState);
 
         static void S_RegisterTypesForLuaState(sol::state& luaState);
-        
+
         static float GetDeltaTime();
 
         static float GetElapsedTime();
@@ -34,6 +34,9 @@ namespace Alas
         static glm::vec4 Normalize4(glm::vec4 vec);
 
         static void DestroyEntity(LuaEntity* entity);
+
+        static LuaEntity* GetEntityWithTag(const std::string& tag);
+        static LuaEntity* CreateEntityWithComponents(LuaComponents* components);
     };
 
     

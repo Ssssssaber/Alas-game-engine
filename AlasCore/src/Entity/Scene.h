@@ -19,12 +19,15 @@ namespace Alas {
 
         Entity CreateEntity(const std::string name = std::string());
         Entity CreateEntityWithId(const std::string name, UID id);
-        Entity* Scene::GetEntityByIdIfExists(UID uid);
+        Entity* GetEntityByIdIfExists(UID uid);
+
+        Entity* FindEntityWithTag(const std::string& tag);
 
         void DeleteEntityWithId(UID id);
         void DeleteEntity(Entity& entity);
         
         void GameLoopInit();
+        void AddPhysicsBody(const Entity& entity);
         static Scene* GetGameLoopScene() { return _gameLoopScene; }
 
         

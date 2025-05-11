@@ -45,6 +45,58 @@ namespace Alas
         Scene::GetGameLoopScene()->DeleteEntityWithId(entity->uid);
     }
 
+    LuaEntity* LuaBasicFunctions::GetEntityWithTag(const std::string& tag)
+    {
+        Entity* toCopy = Scene::GetGameLoopScene()->FindEntityWithTag(tag);
+        LuaEntity* ent = FromEntityToLuaEntity(
+            *toCopy
+        );
+        return ent;
+    }
+    
+    LuaEntity* LuaBasicFunctions::CreateEntityWithComponents(LuaComponents* components)
+    {
+        if (!components->tag) return nullptr;
+
+        Entity entity = Scene::GetGameLoopScene()->CreateEntity(components->tag->Tag);
+
+        entity.GetComponent<TagComponent>().Tag = components->tag->Tag;
+        if (components->transform)
+        {
+            auto& transform = entity.GetComponent<Transform>();
+            transform.Position = components->transform->Position;
+            transform.Rotation = components->transform->Rotation;
+            transform.Scale = components->transform->Scale;
+        }
+
+        if (components->sprite)
+        {
+            auto& sprite = entity.AddComponent<SpriteComponent>();
+            sprite.c_Shader = components->sprite->c_Shader;
+            sprite.c_Texture = components->sprite->c_Texture;
+            sprite.Color = components->sprite->Color;
+        }
+
+        if (components->rigid_body)
+        {
+            auto& rigid_body = entity.AddComponent<RigidBody2D>();
+            rigid_body.Velocity = components->rigid_body->Velocity;
+            rigid_body.GravityScale = components->rigid_body->GravityScale;
+            rigid_body.Mass = components->rigid_body->Mass;
+
+            if (components->box_collider)
+            {
+                auto& box_collider = entity.AddComponent<BoxCollider2D>();
+                box_collider.Offset = components->box_collider->Offset;
+                box_collider.Size = components->box_collider->Size;
+            }
+
+            Scene::GetGameLoopScene()->AddPhysicsBody(entity);
+        }
+
+        return FromEntityToLuaEntity(entity);
+    }
+
     void LuaBasicFunctions::S_RegisterEntityRelatedFunctions(sol::state& lua, Entity entity)
     {
         lua.set_function("BindBeginCollisionFunction", &LuaScriptHandle::BindBeginCollisionFunction, &entity.GetComponent<LuaScriptComponent>().Handle);
@@ -67,6 +119,9 @@ namespace Alas
         luaState.set_function("Normalize4", &LuaBasicFunctions::Normalize4);
 
         luaState.set_function("DestroyEntity", &LuaBasicFunctions::DestroyEntity);
+
+        luaState.set_function("CreateEntityWithComponents", &LuaBasicFunctions::CreateEntityWithComponents);
+        luaState.set_function("GetEntityWithTag", &LuaBasicFunctions::GetEntityWithTag);
     }
 
     void LuaBasicFunctions::S_RegisterTypesForLuaState(sol::state& luaState)
@@ -140,17 +195,24 @@ namespace Alas
             "display_text", &OverlayText::DisplayText,
             "color", &OverlayText::Color
         );
-        
+
+        luaState.new_usertype<LuaComponents>("components",
+            sol::constructors<LuaComponents()>(),
+            "tag", &LuaComponents::tag,
+            "transform", &LuaComponents::transform,
+            "rigid_body", &LuaComponents::rigid_body,
+            "box_collider", &LuaComponents::box_collider,
+            "sprite", &LuaComponents::sprite,
+            "worldspace_text", &LuaComponents::worldspace_text,
+            "overlay_text", &LuaComponents::overlay_text
+        );
+
         luaState.new_usertype<LuaEntity>("entity",
             sol::constructors<LuaEntity()>(),
             "uid", &LuaEntity::uid,
-            "tag", &LuaEntity::tag,
-            "transform", &LuaEntity::transform,
-            "rigid_body", &LuaEntity::rigid_body,
-            "sprite", &LuaEntity::sprite,
-            "worldspace_text", &LuaEntity::worldspace_text,
-            "overlay_text", &LuaEntity::overlay_text
+            "components", &LuaEntity::components
         );
+
     
         luaState.new_enum<ALAS_Scancode>("KeyCode", {
             {"KEY_UNKNOWN", ALAS_KEY_UNKNOWN},

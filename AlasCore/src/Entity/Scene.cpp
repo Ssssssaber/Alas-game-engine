@@ -50,6 +50,35 @@ namespace Alas
         return nullptr;
     }
 
+    Entity* Scene::FindEntityWithTag(const std::string& tag)
+    {
+        // auto view = m_Registry.view<TransformComponent, CameraComponent>();
+		// 	for (auto entity : view)
+		// 	{
+		// 		auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				
+		// 		if (camera.Primary)
+		// 		{
+		// 			mainCamera = &camera.Camera;
+		// 			cameraTransform = transform.GetTransform();
+		// 			break;
+		// 		}
+		// 	}
+
+        auto view = _entityRegistry.view<IDComponent, TagComponent>();
+        for (auto entt : view)
+        {
+            auto [myID, myTag] = view.get<IDComponent, TagComponent>(entt);
+            if (myTag.Tag == tag)
+            {
+                _entityMap[myID.ID] = {entt, this};
+                return &_entityMap[myID.ID];
+            }
+                
+        }
+        return nullptr;
+    }
+
     void Scene::DeleteEntityWithId(UID id)
     {
         if (!GetEntityByIdIfExists(id)) return;
@@ -154,6 +183,70 @@ namespace Alas
         }
     }    
 
+    void Scene::AddPhysicsBody(const Entity& entity)
+    {
+        if (!entity.HasComponent<RigidBody2D>())
+        {
+            ALAS_CORE_INFO("Trying to add physics body without RigidBody2D component");
+            return;
+        }
+        
+        auto& rigidBody = entity.GetComponent<RigidBody2D>();
+        auto& transform = entity.GetComponent<Transform>();
+        
+        cpBody *physicsBody;
+        switch (rigidBody.Type)
+        {
+            case RigidBody2D::BodyType::Dynamic:
+                if (entity.HasComponent<BoxCollider2D>())
+                {
+                    auto& box = entity.GetComponent<BoxCollider2D>();
+                    cpFloat moment = cpMomentForBox(rigidBody.Mass, box.Size.x * transform.Scale.x, box.Size.y * transform.Scale.y);
+                    physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNew(rigidBody.Mass, moment));
+                    cpCollisionHandler* handler = cpSpaceAddWildcardHandler(_physicsSpace, BaseCollisionType);
+                    handler->beginFunc = BeginCollisionBaseFunction;
+                    handler->separateFunc = EndCollisionBaseFunction;
+                }
+                else
+                {
+                    cpFloat radius = 1;
+                    cpFloat mass = 1;
+                    cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+                    physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNew(mass, moment));
+                }
+                break;
+            case RigidBody2D::BodyType::Kinematic:
+                physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNewKinematic());
+                break;
+            case RigidBody2D::BodyType::Static:
+                physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNewStatic());
+                break;
+        }
+
+        cpBodySetPosition(physicsBody, cpv(transform.Position.x, transform.Position.y));
+        cpBodySetAngle(physicsBody, transform.Rotation.z);
+
+        if (entity.HasComponent<BoxCollider2D>())
+        {
+            auto& box = entity.GetComponent<BoxCollider2D>();
+            // // cpBB 
+            cpShape *bodyShape = cpSpaceAddShape(_physicsSpace, cpBoxShapeNew(
+                physicsBody,
+                box.Size.x * transform.Scale.x / BOX_PHYSICS_SCALE,
+                box.Size.y * transform.Scale.y / BOX_PHYSICS_SCALE,
+                0));
+            if (rigidBody.Type == RigidBody2D::BodyType::Dynamic)
+                cpShapeSetCollisionType(bodyShape, BaseCollisionType); 
+            // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
+
+            _physicsSpaceShapeMap[entity.GetUID()] = bodyShape;
+        }
+
+        
+
+        _physicsSpaceBodyMap[entity.GetUID()] = physicsBody;
+    }
+
     void Scene::GameLoopInit()
     {
         ALAS_PROFILE_FUNCTION();
@@ -169,65 +262,7 @@ namespace Alas
 
         for (auto idAndEntity : _entityMap)
         {
-            auto entity = idAndEntity.second;
-
-            if (entity.HasComponent<RigidBody2D>())
-            {
-                auto& rigidBody = entity.GetComponent<RigidBody2D>();
-                auto& transform = entity.GetComponent<Transform>();
-                
-                cpBody *physicsBody;
-                switch (rigidBody.Type)
-                {
-                    case RigidBody2D::BodyType::Dynamic:
-                        if (entity.HasComponent<BoxCollider2D>())
-                        {
-                            auto& box = entity.GetComponent<BoxCollider2D>();
-                            cpFloat moment = cpMomentForBox(rigidBody.Mass, box.Size.x * transform.Scale.x, box.Size.y * transform.Scale.y);
-                            physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNew(rigidBody.Mass, moment));
-                            cpCollisionHandler* handler = cpSpaceAddWildcardHandler(_physicsSpace, BaseCollisionType);
-                            handler->beginFunc = BeginCollisionBaseFunction;
-                            handler->separateFunc = EndCollisionBaseFunction;
-                        }
-                        else
-                        {
-                            cpFloat radius = 1;
-                            cpFloat mass = 1;
-                            cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
-                            physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNew(mass, moment));
-                        }
-                        break;
-                    case RigidBody2D::BodyType::Kinematic:
-                        physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNewKinematic());
-                        break;
-                    case RigidBody2D::BodyType::Static:
-                        physicsBody = cpSpaceAddBody(_physicsSpace, cpBodyNewStatic());
-                        break;
-                }
-
-                cpBodySetPosition(physicsBody, cpv(transform.Position.x, transform.Position.y));
-                cpBodySetAngle(physicsBody, transform.Rotation.z);
-
-                if (entity.HasComponent<BoxCollider2D>())
-                {
-                    auto& box = entity.GetComponent<BoxCollider2D>();
-                    // // cpBB 
-                    cpShape *bodyShape = cpSpaceAddShape(_physicsSpace, cpBoxShapeNew(
-                        physicsBody,
-                        box.Size.x * transform.Scale.x / BOX_PHYSICS_SCALE,
-                        box.Size.y * transform.Scale.y / BOX_PHYSICS_SCALE,
-                        0));
-                    if (rigidBody.Type == RigidBody2D::BodyType::Dynamic)
-                        cpShapeSetCollisionType(bodyShape, BaseCollisionType); 
-                    // cpShapeSetCollisionType(bodyShape, cpCollisionHandler::typeA);
-
-                    _physicsSpaceShapeMap[entity.GetUID()] = bodyShape;
-                }
-
-                
-
-                _physicsSpaceBodyMap[entity.GetUID()] = physicsBody;
-            }
+            AddPhysicsBody(idAndEntity.second);
         }
     }
 
