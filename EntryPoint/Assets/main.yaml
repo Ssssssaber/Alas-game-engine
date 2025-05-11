@@ -1,80 +1,82 @@
 Scene name: Scene
 Entities:
-  225416001:
-    Tag: Quad
+  138031194:
+    Tag: t2
     Transform:
-      Position: [0, -407, 0]
+      Position: [592, 439, 0.1]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [2.5, 2.5, 1]
     Sprite:
-      Shader: 1351442033
-      Texture: 797468401
+      Shader: 1865795807
+      Texture: 230669721
       Color: [1, 1, 1, 1]
-  294109167:
-    Tag: P
+  317637367:
+    Tag: t3
     Transform:
-      Position: [0, 0, 0]
+      Position: [288, 339, 0.5]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [1.5, 1.5, 1]
     Sprite:
-      Shader: 652639163
-      Texture: 1752329941
+      Shader: 1865795807
+      Texture: 230669721
       Color: [1, 1, 1, 1]
-  371741827:
-    Tag: Quad
+  334400756:
+    Tag: t1
     Transform:
-      Position: [288, 464, 0]
+      Position: [1027, 389, 0.8]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [2, 2, 1]
     Sprite:
-      Shader: 1351442033
-      Texture: 797468401
+      Shader: 1865795807
+      Texture: 230669721
       Color: [1, 1, 1, 1]
-    RigidBody2D:
-      Type: Dynamic
-      Mass: 13
-      Gravity scale: 1
-  1019680954:
-    Tag: Main triangle
+  426507684:
+    Tag: Y
     Transform:
-      Position: [290, 445, 0]
+      Position: [488, 271, 0.9]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [0.8, 0.8, 1]
     Sprite:
-      Shader: 1351442033
-      Texture: 687170205
+      Shader: 1865795807
+      Texture: 2107610315
       Color: [1, 1, 1, 1]
     RigidBody2D:
       Type: Dynamic
-      Mass: 1
-      Gravity scale: 0
+      Mass: 500
+      Gravity scale: 44
     Box Collider:
       Offset: [0, 0]
-      Size: [250, 250]
+      Size: [232, 250]
     Lua script:
-      Lua script file: 1362629115
+      Lua script file: 1852584339
     Overlay Text:
-      Display Text: keke
+      Display Text: "Pomelo count: 0"
       Color: [1, 1, 1, 1]
-      Screen Position: [685, 607]
+      Screen Position: [0, 0]
       Rotation: 0
       Scale: [1, 1]
-    World Space Text:
-      Display Text: keke
-      Color: [1, 1, 1, 1]
-      Position: [1, 1]
-      Rotation: 0
-      Scale: [1, 1]
-  1069711150:
-    Tag: Quad
+    Camera:
+      Offset: [0, 0]
+  975144755:
+    Tag: S
     Transform:
-      Position: [530, 547, 0]
+      Position: [599, 250, 0]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [6.2, 6.2, 1]
     Sprite:
-      Shader: 1351442033
-      Texture: 797468401
+      Shader: 1865795807
+      Texture: 1406423651
       Color: [1, 1, 1, 1]
+  1004628759:
+    Tag: W2
+    Transform:
+      Position: [1322, 389, 0.95]
+      Rotation: [0, 0, 0]
+      Scale: [1, 4, 1]
+    Sprite:
+      Shader: 1865795807
+      Texture: 1269265556
+      Color: [0.27450982, 0.19607843, 0.19607843, 1]
     RigidBody2D:
       Type: Static
       Mass: 1
@@ -82,27 +84,54 @@ Entities:
     Box Collider:
       Offset: [0, 0]
       Size: [250, 250]
-  1178173803:
-    Tag: world space text
+  1432766671:
+    Tag: G
     Transform:
-      Position: [0, 0, 0]
+      Position: [660, 90, 0.1]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    World Space Text:
-      Display Text: keke
-      Color: [1, 0, 0, 0]
-      Position: [0, 0]
-      Rotation: 0
-      Scale: [1, 1]
-  1400414950:
-    Tag: overlay text
+      Scale: [5.6, 1, 6.7]
+    Sprite:
+      Shader: 1865795807
+      Texture: 1269265556
+      Color: [0.32941177, 0.5882353, 0.29411766, 1]
+    RigidBody2D:
+      Type: Static
+      Mass: 1
+      Gravity scale: 1
+    Box Collider:
+      Offset: [0, 0]
+      Size: [250, 250]
+  1475405490:
+    Tag: W1
     Transform:
-      Position: [0, 0, 0]
+      Position: [-2, 388, 0.95]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    Overlay Text:
-      Display Text: keke wa baba
-      Color: [0.5, 0.5, 0.5, 0.5]
-      Screen Position: [0, 0]
-      Rotation: 0
-      Scale: [1, 1]
+      Scale: [1, 4, 1]
+    Sprite:
+      Shader: 1865795807
+      Texture: 1269265556
+      Color: [0.27450982, 0.19607843, 0.19607843, 1]
+    RigidBody2D:
+      Type: Static
+      Mass: 1
+      Gravity scale: 1
+    Box Collider:
+      Offset: [0, 0]
+      Size: [250, 250]
+  2103178848:
+    Tag: p
+    Transform:
+      Position: [1465, 496, 1]
+      Rotation: [0, 0, 0]
+      Scale: [0.2, 0.2, 1]
+    Sprite:
+      Shader: 1865795807
+      Texture: 1752329941
+      Color: [1, 1, 1, 1]
+    RigidBody2D:
+      Type: Dynamic
+      Mass: 10
+      Gravity scale: 150
+    Box Collider:
+      Offset: [0, 0]
+      Size: [250, 250]

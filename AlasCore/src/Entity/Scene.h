@@ -49,6 +49,7 @@ namespace Alas {
         float BOX_PHYSICS_SCALE = 1.260f;
         glm::vec2 _gravity = glm::vec2(0.0f, -9.81f);
         std::string Name = "Scene";
+        bool DrawColliders = false;
     private:
         static Scene* _gameLoopScene;
         entt::registry _entityRegistry;

@@ -57,6 +57,8 @@
 #define WORLD_SPACE_TEXT_C_DISPLAY_TEXT "Display Text"
 #define WORLD_SPACE_TEXT_C_COLOR "Color"
 
+#define CAMERA_C "Camera"
+#define CAMERA_C_OFFSET "Offset"
 namespace Alas
 {
     struct IDComponent
@@ -231,5 +233,10 @@ namespace Alas
         OverlayText(const std::string& text, const glm::vec4& color) :
             DisplayText(text), Color(color) {}
 
+    };
+
+    struct CameraComponent
+    {
+        glm::vec2 Offset;
     };
 } // namespace Alas

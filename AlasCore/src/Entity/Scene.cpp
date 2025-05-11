@@ -375,16 +375,31 @@ namespace Alas
     {
         ALAS_PROFILE_FUNCTION();
         {
+            // get view
             auto spriteGO = _entityRegistry.group<Transform>(entt::get<SpriteComponent>);
+            
+            // sort entities by z value of position
+            std::vector<std::pair<entt::entity, float>> entitiesDepth;
             for (auto entt : spriteGO)
             {
-                Entity entity = {entt, this};
+                float z = spriteGO.get<Transform>(entt).Position.z;
+                entitiesDepth.push_back(std::pair<entt::entity, float>(entt, z));
+            }
+
+            std::sort(entitiesDepth.begin(), entitiesDepth.end(), [](const auto& a, const auto& b) {
+                return a.second < b.second;
+            });
+
+            // draw sorted entities
+            for (auto enttPair : entitiesDepth)
+            {
+                Entity entity = {enttPair.first, this};
                 auto& transform = entity.GetComponent<Transform>();
                 auto& sprite = entity.GetComponent<SpriteComponent>();
                 
 
                 Renderer::Submit2D(sprite.c_Texture, sprite.c_Shader, sprite.Color, transform.CalculateModelMatrix(), entity.GetUID());
-                if (entity.HasComponent<BoxCollider2D>())
+                if (DrawColliders && entity.HasComponent<BoxCollider2D>())
                 {
                     auto& box = entity.GetComponent<BoxCollider2D>();
                     glm::vec3 boxPosition = {

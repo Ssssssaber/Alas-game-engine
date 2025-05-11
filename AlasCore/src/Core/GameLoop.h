@@ -36,6 +36,8 @@ namespace Alas
     private:        
         Shared<Scene> _gameScene;
         Shared<OrthCamera> _camera;
+        // Entity _cameraFollowEntity;
+
         Shared<Window> _window;
         Time* _time;
 

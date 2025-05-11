@@ -11,7 +11,7 @@ namespace Alas
     void ScriptingEngine::Init()
     {
         lua = sol::state();
-        lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::math, sol::lib::table);
+        lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::math, sol::lib::table, sol::lib::string);
         LuaBasicFunctions::S_RegisterTypesForLuaState(lua);
         LuaBasicFunctions::S_RisterBasicFunctionsForLuaState(lua);
     }
@@ -50,12 +50,12 @@ namespace Alas
 
     void ScriptingEngine::HandleScript(const std::string& filename, const Entity& entity)
     {
-        LoadScript(filename, entity);
         
         if (updatedScripts.find(entity.GetUID()) == updatedScripts.end())
         {
             // TODO: check if oncreate exists
 
+            LoadScript(filename, entity);
             // LuaEntityMap[entity.GetUID()] = *FromEntityToLuaEntity(entity);
             ExecuteFunction("OnCreate");
             updatedScripts.insert(entity.GetUID());

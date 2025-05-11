@@ -1,90 +1,93 @@
-keke_speed = 100
-rotation_speed = 110
+local ref = GetSelf()
+local keke_speed = 12000
+local score = 0
+local pomelo_ref = GetEntityWithTag("p")
+local trees_ref = {}
+local jumping = false
+local jump_speed = keke_speed * 50
+trees_ref[1] = GetEntityWithTag("t1")
+trees_ref[2] = GetEntityWithTag("t2")
+trees_ref[3] = GetEntityWithTag("t3")
 
 function handle_velocity(delta_time)
-    velocity = GetVelocity()
-    if (velocity) then
-        if (IsButtonPressed(KeyCode.KEY_W)) then
-            velocity.y = keke_speed * delta_time
+    if (ref.components.rigid_body) then
+        local direction = vec2:new()
+        ref.components.rigid_body.velocity = vec2:new()
+        if (IsButtonPressed(KeyCode.KEY_W) and not jumping) then
+            ref.components.rigid_body.velocity.y = jump_speed * delta_time
+            jumping = true
         end
         
         if (IsButtonPressed(KeyCode.KEY_A)) then 
-            velocity.x = keke_speed * delta_time
-        end
-        
-        if (IsButtonPressed(KeyCode.KEY_S)) then 
-            velocity.y = keke_speed * delta_time
+            direction.x = -1
         end
         
         if (IsButtonPressed(KeyCode.KEY_D)) then 
-            velocity.x = keke_speed * delta_time
+            direction.x = 1
         end
-        SetVelocity(velocity)
+
+        ref.components.rigid_body.velocity.x = direction.x * keke_speed * delta_time;
+        ref.components.transform.rotation.z = 0;
     else
         print("No rigid body component")
     end
 end
 
-function collision_start()
+function collision_start(ent)
     print("COLLISION START")
-    -- UnbindBeginCollisionFunction()
-
-    worldspace_text = GetWorldspaceText()
-
-    if (worldspace_text) then
-        worldspace_text.display_text = "COLLISION START"
-        SetWorldspaceText(worldspace_text)
-    else
-        print("No worldspace_text compoent")
-    end
-
-    rigid_body = GetRigidBody()
-    -- print(transform.rotation)
-    if (rigid_body) then
-        rigid_body.velocity.x = 50
-        rigid_body.velocity.y = 10
-        SetRigidBody(rigid_body)
-    else
-        print("No rigid_body component")
+    if (ent.components.tag) then
+        if (ent.components.tag.text == "p") then
+            if (ent.components.sprite.color.x > 0.5) then
+                score = score + 1
+            else
+                score = score - 1
+            end
+            ref.components.overlay_text.display_text = string.format("Score: %d", score) 
+            DestroyEntity(ent)
+        end
+        if (ent.components.tag.text == "G") then
+            jumping = false;
+        end
     end
 end
 
-function collision_end()
+function create_pomelo(tree_ref)
+    pomelo = CreateEntityWithComponents(pomelo_ref.components)
+    pomelo.components.transform.position = tree_ref.components.transform.position
+    -- pomelo.components.transform.position.x = pomelo.components.transform.position + 100
+    pomelo.components.transform.position.x = pomelo.components.transform.position.x + math.random(-50, 50)
+    pomelo.components.sprite.color.x = math.random()
+    pomelo.components.transform.position.z = 1
+    -- print()
+end
+
+function collision_end(ent)
     print("COLLISION END")
-
-    worldspace_text = GetWorldspaceText()
-
-    if (worldspace_text) then
-        worldspace_text.display_text = "COLLISION END"
-        SetWorldspaceText(worldspace_text)
-    else
-        print("No worldspace_text compoent")
-    end
-
-    overlay_text = GetOverlayText()
-
-    if (overlay_text) then
-        overlay_text.display_text = "COLLISION DETECTED"
-        SetOverlayText(overlay_text)
-    else
-        print("No overlay_text compoent")
-    end
-    -- UnbindEndCollisionFunction()
 end
 
 function OnCreate()
     BindBeginCollisionFunction("collision_start")
     print("begin collision added")
-    BindEndCollisionFunction("collision_end")
-    print("end collision added")
+    -- BindEndCollisionFunction("collision_end")
+    -- print("end collision added")
+end
+
+time_passed = 0
+local pomelo_cooldown = 1
+
+function pomelo_spawner(delta_time)
+    -- print(delta_time)
+    time_passed = time_passed + delta_time
+    -- print(time_passed)
+    if (time_passed > pomelo_cooldown) then
+        time_passed = 0
+        create_pomelo(trees_ref[math.random( #trees_ref )])
+    end
 end
 
 function Update()
-    delta_time = GetDeltaTime()
-    
-    velocity_test(delta_time)
-    -- transform_test(delta_time)
-    -- sprite_test(delta_time)
-    -- rigid_body_test(delta_time)
 
+    delta_time = GetDeltaTime()
+    pomelo_spawner(delta_time)
+    handle_velocity(delta_time)
 end

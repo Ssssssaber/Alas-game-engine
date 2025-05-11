@@ -123,6 +123,14 @@ namespace Alas
                 text.Rotation = textToCopy.Rotation;
                 text.Scale = textToCopy.Scale;
             }
+
+            if (entToCopy.HasComponent<CameraComponent>())
+            {
+                auto& transform = entToCopy.GetComponent<Transform>();
+                // _camera->SetPosition(transform.Position);
+                // _camera->SetRotation(transform.Rotation.z);
+
+            }
         }
     }
 
@@ -133,10 +141,10 @@ namespace Alas
         ScriptingEngine::Init();
 
         _gameScene.reset(new Scene());
+        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
         CopyScene(sceneRef);
         _gameScene->BOX_PHYSICS_SCALE = sceneRef->BOX_PHYSICS_SCALE;
         _gameScene->GameLoopInit();
-        _camera.reset(new OrthCamera(_window->GetWidth(), _window->GetHeight()));
     }
 
     void GameLoop::Update()

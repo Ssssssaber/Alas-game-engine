@@ -89,8 +89,8 @@ public:
 
         _camera.reset(new Alas::OrthCamera(spec.Width, spec.Height));
         
-        _cameraPos = glm::vec3(-500.0f, -500.0f, 0.0f);
-        _camera->SetPosition(_cameraPos);
+        // _cameraPos = glm::vec3(-500.0f, -500.0f, 0.0f);
+        // _camera->SetPosition(_cameraPos);
     }
 
     void OnUpdate() override
@@ -226,7 +226,8 @@ public:
             ent.AddComponent<Alas::OverlayText>();
         else if (_componentsStr[selectedComponentId] == WORLD_SPACE_TEXT_C && !ent.HasComponent<Alas::WorldSpaceText>() ) 
             ent.AddComponent<Alas::WorldSpaceText>();
-            
+        else if (_componentsStr[selectedComponentId] == CAMERA_C && !ent.HasComponent<Alas::CameraComponent>() ) 
+            ent.AddComponent<Alas::CameraComponent>();
         return ent; 
     }
 
@@ -283,6 +284,7 @@ public:
 
         ImGui::SeparatorText("COLLIDERS");
         ImGui::DragFloat("Box scale", &_scene->BOX_PHYSICS_SCALE, BASE_DRAG_STEP);
+        ImGui::Checkbox("Draw Colliders", &_scene->DrawColliders);
         ImGui::SeparatorText("GRAVITY");
         ImGui::DragFloat2("Gravity", glm::value_ptr(_scene->_gravity), BASE_DRAG_STEP);
 
@@ -583,6 +585,16 @@ public:
             ImGui::TreePop();
         }
 
+        if (ent.HasComponent<Alas::CameraComponent>())
+        if(ImGui::TreeNode(CAMERA_C))
+        {
+            auto& camera = ent.GetComponent<Alas::CameraComponent>();
+            ImGui::DragFloat2(CAMERA_C_OFFSET, glm::value_ptr(camera.Offset), BASE_DRAG_STEP);
+            if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::WorldSpaceText>();
+            ImGui::TreePop();
+        }
+
+
         if (ImGui::Button("Delete entity", { BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT}))
         {
             _scene->DeleteEntityWithId(ent.GetUID());
@@ -618,13 +630,14 @@ public:
         float _framesElapsed = 0;
         float _frameRate = 0;
 
-        const char* _componentsStr[6] = {
+        const char* _componentsStr[7] = {
             SPRITE_C,
             RIGID_BODY_2D_C,
             BOX_COLLIDER_2D_C,
             LUA_SCRIPT_C,
             OVERLAY_TEXT_C,
-            WORLD_SPACE_TEXT_C
+            WORLD_SPACE_TEXT_C,
+            CAMERA_C
         };
         Alas::Shared<Alas::Framebuffer> m_Framebuffer;
 

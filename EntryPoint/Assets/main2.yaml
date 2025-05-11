@@ -1,0 +1,108 @@
+Scene name: Scene
+Entities:
+  225416001:
+    Tag: Quad
+    Transform:
+      Position: [0, -407, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: 1351442033
+      Texture: 797468401
+      Color: [1, 1, 1, 1]
+  294109167:
+    Tag: P
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: 652639163
+      Texture: 1752329941
+      Color: [1, 1, 1, 1]
+  371741827:
+    Tag: Quad
+    Transform:
+      Position: [288, 464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: 1351442033
+      Texture: 797468401
+      Color: [1, 1, 1, 1]
+    RigidBody2D:
+      Type: Dynamic
+      Mass: 13
+      Gravity scale: 1
+  1019680954:
+    Tag: Main triangle
+    Transform:
+      Position: [290, 445, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: 1351442033
+      Texture: 687170205
+      Color: [1, 1, 1, 1]
+    RigidBody2D:
+      Type: Dynamic
+      Mass: 1
+      Gravity scale: 0
+    Box Collider:
+      Offset: [0, 0]
+      Size: [250, 250]
+    Lua script:
+      Lua script file: 1362629115
+    Overlay Text:
+      Display Text: keke
+      Color: [1, 1, 1, 1]
+      Screen Position: [685, 607]
+      Rotation: 0
+      Scale: [1, 1]
+    World Space Text:
+      Display Text: keke
+      Color: [1, 1, 1, 1]
+      Position: [1, 1]
+      Rotation: 0
+      Scale: [1, 1]
+  1069711150:
+    Tag: Quad
+    Transform:
+      Position: [530, 547, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite:
+      Shader: 1351442033
+      Texture: 797468401
+      Color: [1, 1, 1, 1]
+    RigidBody2D:
+      Type: Static
+      Mass: 1
+      Gravity scale: 1
+    Box Collider:
+      Offset: [0, 0]
+      Size: [250, 250]
+  1178173803:
+    Tag: world space text
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    World Space Text:
+      Display Text: keke
+      Color: [1, 0, 0, 0]
+      Position: [0, 0]
+      Rotation: 0
+      Scale: [1, 1]
+  1400414950:
+    Tag: overlay text
+    Transform:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Overlay Text:
+      Display Text: keke wa baba
+      Color: [0.5, 0.5, 0.5, 0.5]
+      Screen Position: [0, 0]
+      Rotation: 0
+      Scale: [1, 1]

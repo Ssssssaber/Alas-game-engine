@@ -244,6 +244,18 @@ namespace Alas
 
                 out << YAML::EndMap;
             }
+
+            if (entity.HasComponent<CameraComponent>())
+            {
+                auto& camera = entity.GetComponent<CameraComponent>();
+                out << YAML::Key << CAMERA_C;
+                
+                out << YAML::BeginMap;
+
+                out << YAML::Key << CAMERA_C_OFFSET << YAML::Value << camera.Offset;
+
+                out << YAML::EndMap;
+            }
     
             out << YAML::EndMap;
         }
@@ -372,13 +384,23 @@ namespace Alas
                         worldSpaceText.Scale = worldSpaceTextData[WORLD_SPACE_TEXT_C_SCALE].as<glm::vec2>();
                     }
                 }
-
-                auto luaScriptData = data[LUA_SCRIPT_C];
-                if (luaScriptData)
                 {
-                    auto& lua = ent.AddComponent<LuaScriptComponent>();
-                    UID luaUID = luaScriptData[LUA_SCRIPT_C_FILE].as<UID>();
-                    lua.Filepath = ResourceManager::GetResourceFilepathString(luaUID);
+                    auto luaScriptData = data[LUA_SCRIPT_C];
+                    if (luaScriptData)
+                    {
+                        auto& lua = ent.AddComponent<LuaScriptComponent>();
+                        UID luaUID = luaScriptData[LUA_SCRIPT_C_FILE].as<UID>();
+                        lua.Filepath = ResourceManager::GetResourceFilepathString(luaUID);
+                    }
+                }
+                
+                {
+                    auto cameraData = data[CAMERA_C];
+                    if (cameraData)
+                    {
+                        auto& camera = ent.AddComponent<CameraComponent>();
+                        camera.Offset = cameraData[CAMERA_C_OFFSET].as<glm::vec2>();
+                    }
                 }
             }
 		}
