@@ -7,17 +7,17 @@ Small 2d engine using OpenGL for rendering
 * Windows MinGW64 link: https://sourceforge.net/projects/mingw-w64/
 
 # Build from source
-#### Windows
+## Windows
 ```console
 git clone https://github.com/Ssssssaber/Alas-game-engine.git
 cd .\Alas-game-engine\
 git submodule update --init
-./install.bat
+.\build.sh
 ```
-#### Linux
+## Linux
 ```console
 git clone https://github.com/Ssssssaber/Alas-game-engine.git
 cd Alas-game-engine/
 git submodule update --init
-./install.sh
+./build.sh
 ```

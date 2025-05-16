@@ -287,7 +287,7 @@ namespace Alas
                 {
                     cpVect actualVelocity = cpBodyGetVelocity(_physicsSpaceBodyMap[entity.GetUID()]);
                     glm::vec2 deltaVelocity = rigid.Velocity - glm::vec2(actualVelocity.x, actualVelocity.y);
-                    glm::vec2 acceleration = deltaVelocity / Time::getPhysicsDeltaTime() + glm::vec2(rigid.Mass * _gravity.x * rigid.GravityScale, rigid.Mass * _gravity.y * rigid.GravityScale);
+                    glm::vec2 acceleration = (deltaVelocity + glm::vec2(rigid.Mass * _gravity.x * rigid.GravityScale, rigid.Mass * _gravity.y * rigid.GravityScale)) * Time::getPhysicsDeltaTime();
                     cpBodySetForce(_physicsSpaceBodyMap[entity.GetUID()], {acceleration.x, acceleration.y});
                     break;
                 }

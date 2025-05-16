@@ -11,8 +11,6 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include <imgui_internal.h>
 
-#include "CustomScripts/Triangle.h"
-
 #define BASE_BUTTON_WIDTH 125
 #define BASE_BUTTON_HEIGHT 25
 
@@ -235,7 +233,6 @@ public:
     {
         ALAS_PROFILE_FUNCTION();
         bool open = true;
-        ImGui::ShowDemoWindow(&open);
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
