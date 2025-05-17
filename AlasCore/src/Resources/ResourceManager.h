@@ -51,9 +51,9 @@ namespace Alas
         static bool IsTextureUsed(UID uid);
 
         static Shared<Shader> GetShader(UID id);
-        static Shared<Shader> ResourceManager::GetShader(const std::string& filepath);
+        static Shared<Shader> GetShader(const std::string& filepath);
         static Shared<Texture> GetTexture(UID id);
-        static Shared<Texture> ResourceManager::GetTexture(const std::string& filepath);
+        static Shared<Texture> GetTexture(const std::string& filepath);
 
     private:
         static void CheckRecourcesPathIntegrity();

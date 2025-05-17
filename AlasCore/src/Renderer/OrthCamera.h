@@ -6,7 +6,7 @@ namespace Alas
     class OrthCamera
     {
     public:
-        OrthCamera::OrthCamera(uint32_t width, uint32_t height);
+        OrthCamera(uint32_t width, uint32_t height);
 
         float GetWidth() { return _width; }
         float GetHeight() { return _height; }

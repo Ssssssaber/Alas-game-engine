@@ -619,7 +619,7 @@ public:
             return _scene->GetEntityByIdIfExists(id);
 		}
 
-        return false;
+        return nullptr;
     }
 
     private:

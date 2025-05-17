@@ -18,7 +18,7 @@ namespace Alas
 	class Framebuffer
 	{
 	public:
-        static Shared<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec);
+        static Shared<Framebuffer> Create(const FramebufferSpecification& spec);
         virtual ~Framebuffer() = default;
 
         virtual const FramebufferSpecification& GetSpecification() const = 0;

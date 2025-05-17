@@ -14,7 +14,7 @@ namespace Alas
     class GameLoop
     {
     public:
-        GameLoop::GameLoop(Time* timeRef);
+        GameLoop(Time* timeRef);
         ~GameLoop();
 
         bool GetIsRunning() { return _isRunning; }

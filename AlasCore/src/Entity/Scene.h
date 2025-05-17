@@ -31,7 +31,7 @@ namespace Alas {
         static Scene* GetGameLoopScene() { return _gameLoopScene; }
 
         
-        static Entity* Scene::GetEntityFromShape(cpBody* shape);
+        static Entity* GetEntityFromShape(cpBody* shape);
         static cpBool BeginCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
         static void EndCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
     

@@ -11,7 +11,7 @@ namespace Alas
         WorldSpaceText* worldspace_text;
         OverlayText* overlay_text;
 
-        LuaComponents::LuaComponents()
+        LuaComponents()
         {
             tag = new TagComponent();
             transform = new Transform();
@@ -28,7 +28,7 @@ namespace Alas
         uint32_t uid;
         LuaComponents* components;
 
-        LuaEntity::LuaEntity()
+        LuaEntity()
         {
             components = new LuaComponents();
         }
