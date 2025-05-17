@@ -21,8 +21,8 @@
 		throw("Alas game engine does not support MacOS");
 	#endif
 #else
-	#define ALAS_ASSERT(x, ...)
-	#define ALAS_CORE_ASSERT(x, ...)
+	#define ALAS_ASSERT(x, ...) { if(!(x)) { ALAS_CLIENT_ERROR("Assertion Failed: {0}", __VA_ARGS__); } }
+    #define ALAS_CORE_ASSERT(x, ...) { if(!(x)) { ALAS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);  } }
 #endif
 
 #define NULL_STRING "#!1234"

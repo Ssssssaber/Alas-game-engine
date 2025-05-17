@@ -8,13 +8,20 @@
 #include "Events/ApplicationEvent.h"
 
 #include "Resources/ResourceManager.h"
-
+#include <filesystem>
+namespace fs = std::filesystem;
 namespace Alas
 {
     Application* Application::_instance = nullptr;
     Application::Application()
     {
         ALAS_ASSERT(!_instance, "Application already exists");
+
+        if(!fs::exists("Assets/"))
+        {
+            ALAS_ASSERT(false, "No Assets/ folder");
+            throw;
+        }
 
         _instance = this;
 

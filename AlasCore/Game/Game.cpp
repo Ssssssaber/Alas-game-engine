@@ -8,10 +8,19 @@
 #include "Resources/ResourceManager.h"
 #include "Entity/SceneSerialization.h"
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 namespace Alas
 {
     Game::Game()
     {
+        if(!fs::exists("Assets/"))
+        {
+            ALAS_ASSERT(false, "No Assets/ folder");
+            throw;
+        }
+
         ResourceManager::UpdateMetaFiles();
 
         _input = Input::Init();
