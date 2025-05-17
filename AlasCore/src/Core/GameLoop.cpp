@@ -32,6 +32,8 @@ namespace Alas
     {
         ALAS_PROFILE_FUNCTION();
 
+        _gameScene->_gravity = sceneRef->_gravity;
+
         auto entities = sceneRef->GetEntityMap();
 
         for (auto idAndEnt = entities.begin(); idAndEnt != entities.end(); idAndEnt++)
