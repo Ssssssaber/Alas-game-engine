@@ -261,7 +261,7 @@ namespace Alas
 
         // init physics system
         _physicsSpace = cpSpaceNew();
-        cpSpaceSetGravity(_physicsSpace, {_gravity.x, _gravity.y});
+        cpSpaceSetGravity(_physicsSpace, cpvzero);
 
         for (auto idAndEntity : _entityMap)
         {
@@ -269,7 +269,7 @@ namespace Alas
         }
     }
 
-    void Scene::Physics2DUpdate()
+    void Scene::PhysicsUpdate(float fixedDeltaTime)
     {
         ALAS_PROFILE_FUNCTION();
         auto physicsEntt = _entityRegistry.view<RigidBody2D>();
@@ -280,8 +280,8 @@ namespace Alas
 
             auto& transform = entity.GetComponent<Transform>();
             
-            // cpBodySetPosition(_physicsSpaceBodyMap[entity.GetUID()], {transform.Position.x, transform.Position.y});
-            // cpBodySetAngle(_physicsSpaceBodyMap[entity.GetUID()], transform.Rotation.z);
+            cpBodySetPosition(_physicsSpaceBodyMap[entity.GetUID()], {transform.Position.x, transform.Position.y});
+            cpBodySetAngle(_physicsSpaceBodyMap[entity.GetUID()], transform.Rotation.z);
             
             auto& rigid = entity.GetComponent<RigidBody2D>();
             switch (rigid.Type)
@@ -290,17 +290,17 @@ namespace Alas
                 {
                     cpVect actualVelocity = cpBodyGetVelocity(_physicsSpaceBodyMap[entity.GetUID()]);
                     glm::vec2 deltaVelocity = rigid.Velocity - glm::vec2(actualVelocity.x, actualVelocity.y);
-                    // glm::vec2 acceleration = ((deltaVelocity / Time::getPhysicsDeltaTime() + glm::vec2(rigid.Mass * _gravity.x * rigid.GravityScale, rigid.Mass * _gravity.y * rigid.GravityScale))) * Time::getPhysicsDeltaTime();
-                    glm::vec2 acceleration = deltaVelocity / Time::getPhysicsDeltaTime();
-                    cpBodySetForce(_physicsSpaceBodyMap[entity.GetUID()], {acceleration.x, acceleration.y});
+                    glm::vec2 acceleration = deltaVelocity / fixedDeltaTime;
+                    glm::vec2 force = (acceleration + _gravity * rigid.GravityScale)* rigid.Mass;
+                    cpBodySetForce(_physicsSpaceBodyMap[entity.GetUID()], {force.x, force.y});
                     break;
                 }
                 case RigidBody2D::BodyType::Kinematic:
                 {
                     cpBodySetVelocity(
                         _physicsSpaceBodyMap[entity.GetUID()],
-                        {entity.GetComponent<RigidBody2D>().Velocity.x * Time::getPhysicsDeltaTime(),
-                        entity.GetComponent<RigidBody2D>().Velocity.y * Time::getPhysicsDeltaTime()});
+                        {entity.GetComponent<RigidBody2D>().Velocity.x,
+                         entity.GetComponent<RigidBody2D>().Velocity.y});
                     break;
                 }                    
                 case RigidBody2D::BodyType::Static:
@@ -314,7 +314,7 @@ namespace Alas
             }
         }
 
-        cpSpaceStep(_physicsSpace, Time::getPhysicsDeltaTime());
+        cpSpaceStep(_physicsSpace, fixedDeltaTime);
 
         auto rigidBodies = _entityRegistry.group<IDComponent>(entt::get<RigidBody2D>);
         for (auto entt : rigidBodies)
@@ -375,7 +375,7 @@ namespace Alas
             
     }
 
-    void Scene::SceneUpdate()
+    void Scene::RenderUpdate()
     {
         ALAS_PROFILE_FUNCTION();
         {

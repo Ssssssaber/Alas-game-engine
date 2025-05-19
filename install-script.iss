@@ -30,13 +30,13 @@ Name: "createDesktopShortcut"; Description: "Create a desktop shortcut"; GroupDe
 Type: files; Name: "{app}\game.exe"
 Type: files; Name: "{app}\alas_entry_point.exe"
 Type: files; Name: "{app}\SDL.dll"
-Type: files; Name: "{app}"
+Type: files; Name: "{app}\imgui.ini"
 Type: files; Name: "{app}\Assets\*"
 
 
 [Run]
 ; Run the 32-bit redistributable silently if the system is 32-bit or if the application is 32-bit on a 64-bit system
-Check: not Is64BitInstallMode; Filename: "{tmp}\VC_redist.x86.exe"; Parameters: "/install /quiet /norestart"; Flags: waituntilterminated
+Check: Is64BitInstallMode; Filename: "{tmp}\VC_redist.x86.exe"; Parameters: "/install /norestart"; Flags: waituntilterminated
 
 ; Run the 64-bit redistributable silently if the system is 64-bit
-Check: Is64BitInstallMode; Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /quiet /norestart"; Flags: waituntilterminated
+Check: not Is64BitInstallMode; Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /norestart"; Flags: waituntilterminated

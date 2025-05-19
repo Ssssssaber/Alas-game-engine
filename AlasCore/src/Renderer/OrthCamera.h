@@ -12,6 +12,7 @@ namespace Alas
         float GetHeight() { return _height; }
 
         void SetNewSize(uint32_t width, uint32_t height);
+        void SetNewProjection(const glm::mat4& projectionMatrix);
 
         const glm::vec3& GetPosition() { return _position; }
         void SetPosition(const glm::vec3& position) { _position = position;  CalculateViewMatrix(); }

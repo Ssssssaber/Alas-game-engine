@@ -10,6 +10,7 @@
 
 #include "Scripting/lua/ScriptingEngine.h"
 
+#define FIXED_DELTA_TIME 1.0f / 60.0f
 namespace Alas
 {
     GameLoop::GameLoop(Time* timeRef) : _time(timeRef)
@@ -149,11 +150,21 @@ namespace Alas
         _gameScene->GameLoopInit();
     }
 
+    void GameLoop::FixedUpdate(float deltaTime)
+    {   
+        static float s_timePassed = 0.0f; 
+        s_timePassed += deltaTime;
+
+        if (s_timePassed < FIXED_DELTA_TIME) return;
+
+        s_timePassed = 0.0f;
+        _gameScene->PhysicsUpdate(FIXED_DELTA_TIME);
+        _gameScene->RuntimeUpdate();
+    }
+
     void GameLoop::Update()
     {
         ALAS_PROFILE_FUNCTION();
-        static int count = 3;
-        static float lastTime = 0;
 
         Window::SetCurrentWindow(*_window);
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
@@ -161,19 +172,11 @@ namespace Alas
 
         Alas::Renderer::BeginScene(_camera);
 
-        _gameScene->Physics2DUpdate();
-        count += 1;
-        if (count > 3)
-        {
-            float currentTime = Time::GetTimeInSeconds();
-            _time->updateDeltaTime(currentTime - lastTime);
-            lastTime = currentTime;
-            _gameScene->RuntimeUpdate();
-            count = 0;   
-        }
+        FixedUpdate(_time->GetDeltaTime());
         
-        _gameScene->SceneUpdate();
+        _gameScene->RenderUpdate();
         _window->OnUpdate();
+
         Renderer::EndScene();
     }
 

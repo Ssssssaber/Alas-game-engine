@@ -82,7 +82,7 @@ namespace Alas
 
             ALAS_PROFILE_SCOPE("RunLoop");
             float currentTime = Time::GetTimeInSeconds();
-            _time->updatePhysicsDeltaTime(currentTime - lastTime);
+            _time->UpdateDeltaTime(currentTime - lastTime);
             lastTime = currentTime;
             
             for (Layer* layer : _layerStack)

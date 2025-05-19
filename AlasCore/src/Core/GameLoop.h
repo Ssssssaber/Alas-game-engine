@@ -22,6 +22,7 @@ namespace Alas
         void Init(Shared<Scene> sceneRef);
 
         void Update();
+        void FixedUpdate(float deltaTime);
 
         void Stop();
 

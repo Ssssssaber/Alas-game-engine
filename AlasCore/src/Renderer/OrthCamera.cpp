@@ -8,6 +8,12 @@ namespace Alas
         SetNewSize(width, height);
     }
 
+    void OrthCamera::SetNewProjection(const glm::mat4& projectionMatrix)
+    {
+        _projectionMatrix = projectionMatrix;
+        CalculateViewMatrix();
+    }
+
     void OrthCamera::SetNewSize(uint32_t width, uint32_t height)
     {
         _height = height;

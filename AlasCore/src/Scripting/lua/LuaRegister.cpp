@@ -6,7 +6,7 @@ namespace Alas
 {
     float LuaBasicFunctions::GetDeltaTime()
     {
-        return Time::getDeltaTime();
+        return Time::GetDeltaTime();
     }
 
     float LuaBasicFunctions::GetElapsedTime()

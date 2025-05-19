@@ -6,6 +6,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtx/string_cast.hpp>
 #include <gtc/type_ptr.hpp>
+#include "gtc/matrix_transform.hpp"
 
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
@@ -14,8 +15,8 @@
 #define BASE_BUTTON_WIDTH 125
 #define BASE_BUTTON_HEIGHT 25
 
-#define BASE_DRAG_STEP 1.0f
-#define SLOW_DRAG_STEP 0.1f
+#define BASE_DRAG_STEP 0.01f
+#define SLOW_DRAG_STEP 0.001f
 class ExampleLayer : public Alas::Layer
 {
 public:
@@ -88,7 +89,8 @@ public:
         _camera.reset(new Alas::OrthCamera(spec.Width, spec.Height));
         
         // _cameraPos = glm::vec3(-500.0f, -500.0f, 0.0f);
-        // _camera->SetPosition(_cameraPos);
+        _camera->SetPosition(_cameraPos);
+        _camera->SetRotation(_cameraRotation);
     }
 
     void OnUpdate() override
@@ -111,7 +113,7 @@ public:
         Alas::RenderCommand::SetClearColor({ 0.6f, 0.6f, 0.8f, 1 });
         Alas::RenderCommand::Clear();
 
-        float deltaTime = Alas::Time::getPhysicsDeltaTime();
+        float deltaTime = Alas::Time::GetDeltaTime();
         _timeElapsed += deltaTime;
         _framesElapsed += 1;
 
@@ -170,7 +172,7 @@ public:
         
         Alas::Renderer::BeginScene(_camera);
 
-        _scene->SceneUpdate();
+        _scene->RenderUpdate();
         _hoveredEntity = GetEntityUnderCursor();
         if (_hoveredEntity)
         {
@@ -280,10 +282,10 @@ public:
         }
 
         ImGui::SeparatorText("COLLIDERS");
-        ImGui::DragFloat("Box scale", &_scene->BOX_PHYSICS_SCALE, BASE_DRAG_STEP);
+        ImGui::DragFloat("Box scale", &_scene->BOX_PHYSICS_SCALE, SLOW_DRAG_STEP);
         ImGui::Checkbox("Draw Colliders", &_scene->DrawColliders);
         ImGui::SeparatorText("GRAVITY");
-        ImGui::DragFloat2("Gravity", glm::value_ptr(_scene->_gravity), BASE_DRAG_STEP);
+        ImGui::DragFloat2("Gravity", glm::value_ptr(_scene->_gravity), SLOW_DRAG_STEP);
 
         ImGui::SeparatorText("Game objects");
         if (ImGui::Button("Create game object", ImVec2(BASE_BUTTON_WIDTH, BASE_BUTTON_HEIGHT)))
@@ -382,7 +384,7 @@ public:
             auto& transform = ent.GetComponent<Alas::Transform>();
             ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), BASE_DRAG_STEP);
             ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation), BASE_DRAG_STEP);
-            ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), BASE_DRAG_STEP);
+            ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), SLOW_DRAG_STEP);
             // if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::Transform>();
             ImGui::TreePop();
         }
@@ -451,7 +453,7 @@ public:
                 }
             }
             
-            ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color));
+            ImGui::ColorEdit4("Color", glm::value_ptr(ent.GetComponent<Alas::SpriteComponent>().Color), SLOW_DRAG_STEP);
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::SpriteComponent>();
             ImGui::TreePop();
         }
@@ -537,7 +539,7 @@ public:
             }
             
             ImGui::DragFloat(RIGID_BODY_2D_C_MASS, &rigidBody2D.Mass, BASE_DRAG_STEP);
-            ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, BASE_DRAG_STEP);
+            ImGui::DragFloat(RIGID_BODY_2D_C_GRAVITY_SCALE, &rigidBody2D.GravityScale, SLOW_DRAG_STEP);
 
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::RigidBody2D>();
             ImGui::TreePop();
@@ -560,8 +562,8 @@ public:
             ImGui::InputText(OVERLAY_TEXT_C_DISPLAY_TEXT, &overlayText.DisplayText);
             ImGui::DragFloat2(OVERLAY_TEXT_C_SCREEN_POSITION, glm::value_ptr(overlayText.ScreenPosition), BASE_DRAG_STEP);
             ImGui::DragFloat(OVERLAY_TEXT_C_ROTATION, &overlayText.Rotation, BASE_DRAG_STEP);
-            ImGui::DragFloat2(OVERLAY_TEXT_C_SCALE, glm::value_ptr(overlayText.Scale), BASE_DRAG_STEP);
-            ImGui::DragFloat4(OVERLAY_TEXT_C_COLOR, glm::value_ptr(overlayText.Color), BASE_DRAG_STEP);
+            ImGui::DragFloat2(OVERLAY_TEXT_C_SCALE, glm::value_ptr(overlayText.Scale), SLOW_DRAG_STEP);
+            ImGui::DragFloat4(OVERLAY_TEXT_C_COLOR, glm::value_ptr(overlayText.Color), SLOW_DRAG_STEP);
             
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::OverlayText>();
             ImGui::TreePop();
@@ -575,8 +577,8 @@ public:
             ImGui::InputText(WORLD_SPACE_TEXT_C_DISPLAY_TEXT, &worldSpaceText.DisplayText);
             ImGui::DragFloat2(WORLD_SPACE_TEXT_C_OFFSET, glm::value_ptr(worldSpaceText.Offset), BASE_DRAG_STEP);
             ImGui::DragFloat(WORLD_SPACE_TEXT_C_ROTATION, &worldSpaceText.Rotation, BASE_DRAG_STEP);
-            ImGui::DragFloat2(WORLD_SPACE_TEXT_C_SCALE, glm::value_ptr(worldSpaceText.Scale), BASE_DRAG_STEP);
-            ImGui::DragFloat4(WORLD_SPACE_TEXT_C_COLOR, glm::value_ptr(worldSpaceText.Color), BASE_DRAG_STEP);
+            ImGui::DragFloat2(WORLD_SPACE_TEXT_C_SCALE, glm::value_ptr(worldSpaceText.Scale), SLOW_DRAG_STEP);
+            ImGui::DragFloat4(WORLD_SPACE_TEXT_C_COLOR, glm::value_ptr(worldSpaceText.Color), SLOW_DRAG_STEP);
             
             if (ImGui::Button("Remove Component")) ent.RemoveComponent<Alas::WorldSpaceText>();
             ImGui::TreePop();
@@ -600,7 +602,22 @@ public:
 
     void OnEvent(Alas::Event& event) override
     {
+        if (!m_ViewportFocused) return;
+		
+        Alas::EventDispatcher manager(event);
+        manager.Dispatch<Alas::MouseScrolledEvent>(
+        std::bind(&ExampleLayer::OnMouseScrolled, this, std::placeholders::_1)
+        );
         
+    }
+
+    bool OnMouseScrolled(Alas::MouseScrolledEvent& event)
+    {
+    
+        // _cameraScale.z += event.GetYOffset() * 0.1f;
+        // glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+        // _camera->SetNewProjection(glm::ortho(_cameraScale.z, static_cast<float>(viewportSize.x) * _cameraScale.z, _cameraScale.z, static_cast<float>(viewportSize.y) * _cameraScale.z));
+        return true;
     }
 
     Alas::Entity* GetEntityUnderCursor()
@@ -650,6 +667,7 @@ public:
         Alas::Shared<Alas::OrthCamera> _camera;
         glm::vec3 _cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
         float _cameraRotation = 0;
+        glm::vec3 _cameraScale = glm::vec3(1.0f);
 
         float _cameraSpeed = 100.0f;
         float _cameraRotationSpeed = 15.0f;

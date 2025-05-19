@@ -35,11 +35,11 @@ namespace Alas {
         static cpBool BeginCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
         static void EndCollisionBaseFunction(cpArbiter *arb, cpSpace *space, void *data);
     
-        void Physics2DUpdate();
+        void PhysicsUpdate(float fixedDeltaTime);
         void Physics2DStop();
         void RuntimeUpdate();
 
-        void SceneUpdate();
+        void RenderUpdate();
 
         // void AddGameObject(Shared<GameObject> gameObject) { _sceneDict.insert(std::make_pair(gameObject->GetId(), gameObject)); }
         // void DeleteGameObject(uint64_t id) { _sceneDict.erase(id); }
