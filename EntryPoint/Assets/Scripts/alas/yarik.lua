@@ -1,5 +1,5 @@
 local ref = GetSelf()
-local keke_speed = 120000000
+local keke_speed = 300
 local score = 0
 local pomelo_ref = GetEntityWithTag("p")
 local trees_ref = {}
