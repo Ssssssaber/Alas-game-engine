@@ -5,6 +5,6 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 cd ..
-copy -r EntryPoint/Assets bin/Release/
-copy MiscScripts/imgui.ini /bin/Release/
-copy LICENSE bin/Release/
+cp -r EntryPoint/Assets bin/Release/
+cp MiscScripts/imgui.ini /bin/Release/
+cp LICENSE bin/Release/

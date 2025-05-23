@@ -21,22 +21,19 @@ namespace Alas
 
     glm::vec2 LuaBasicFunctions::Normalize2(glm::vec2 vec)
     {
-        if (vec.length > 0)
-            glm::normalize(vec);
+        glm::normalize(vec);
         return vec;
     }
     
     glm::vec3 LuaBasicFunctions::Normalize3(glm::vec3 vec)
     {
-        if (vec.length > 0)
-            glm::normalize(vec);
+        glm::normalize(vec);
         return vec;
     }
     
     glm::vec4 LuaBasicFunctions::Normalize4(glm::vec4 vec)
     {
-        if (vec.length > 0)
-            glm::normalize(vec);
+        glm::normalize(vec);
         return vec;
     }
 
