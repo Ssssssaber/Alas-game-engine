@@ -613,7 +613,6 @@ public:
 
     bool OnMouseScrolled(Alas::MouseScrolledEvent& event)
     {
-    
         // _cameraScale.z += event.GetYOffset() * 0.1f;
         // glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
         // _camera->SetNewProjection(glm::ortho(_cameraScale.z, static_cast<float>(viewportSize.x) * _cameraScale.z, _cameraScale.z, static_cast<float>(viewportSize.y) * _cameraScale.z));

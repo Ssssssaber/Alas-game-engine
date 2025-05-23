@@ -159,7 +159,6 @@ namespace Alas
 
         s_timePassed = 0.0f;
         _gameScene->PhysicsUpdate(FIXED_DELTA_TIME);
-        _gameScene->RuntimeUpdate();
     }
 
     void GameLoop::Update()
@@ -173,6 +172,7 @@ namespace Alas
         Alas::Renderer::BeginScene(_camera);
 
         FixedUpdate(_time->GetDeltaTime());
+        _gameScene->RuntimeUpdate();
         
         _gameScene->RenderUpdate();
         _window->OnUpdate();
